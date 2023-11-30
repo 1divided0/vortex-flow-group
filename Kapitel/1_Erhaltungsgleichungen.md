@@ -42,32 +42,32 @@ $$
     \partial_t m = \partial_t (\rho \Omega) = \sum_i (\dot m_{\mathrm{ein}} - \dot m_{\mathrm{aus}})_i = \dot m
 $$
 
-> **Abbildung (Massenstrombilanz)
+> **Abbildung (Massenstrombilanz)**
 >
 > ![Massenstrombilanz](../Dateien/Bilder/Massenstrombilanz.svg)
 
 Der an der vorderen Querschnittsfläche einer Achse eintretende Massenstrom ergibt sich durch Multiplikation dieser Querschnittsfläche mit der senkrecht zu ihr stehenden Eintrittsgeschwindigkeit und der entsprechenden Fluiddichte.
 
 $$
-    (\dot m_{\mathrm{ein}})_i = \rho \dot x_i \Omega/dx_i
+    (\dot m_{\mathrm{ein}})_i = \rho u_i \Omega/dx_i
 $$
 
-Der an der hinteren Querschnittsfläche einer Achse austretende Massenstrom ergibt sich wiederum durch die Taylorreihe des eintretenden Massenstroms, entwickelt an der vorderen und ausgewertet an der hinteren Stelle.
+Der an der hinteren Querschnittsfläche einer Achse austretende Massenstrom ergibt sich durch die Taylorreihe des eintretenden Massenstroms, entwickelt an der vorderen und ausgewertet an der hinteren Stelle.
 
 $$
-    (\dot m_{\mathrm{aus}})_i = (\rho \dot x_i /dx_i + \partial_{x_i}(\rho \dot x_i) + \mathcal{O}(dx_i)) \Omega
+    (\dot m_{\mathrm{aus}})_i = (\rho u_i /dx_i + \partial_{x_i}(\rho u_i) + \mathcal{O}(dx_i)) \Omega
 $$
 
 Dieser Zusammenhang kann nun in die Bilanzgleichung für den Massenstrom eingesetzt werden.
 
 $$
-    \partial_t(\rho V) = -\sum_i (\partial_{x_i}(\rho \dot x_i) + \mathcal{O}(dx_i)) \Omega
+    \partial_t(\rho \Omega) = -\sum_i (\partial_{x_i}(\rho u_i) + \mathcal{O}(dx_i)) \Omega
 $$
 
 Da das Kontrollvolumen nach der Euler'schen Betrachtungsweise nicht von der Zeit abhängt, kann es aus der Gleichung gekürzt werden. Aufgrund seiner Infinitesimalität verschwinden außerdem die Terme höherer Ordnung.
 
 $$
-    \lim_{\Omega\to 0} \partial_t \rho = -\sum_i \partial_{x_i}(\rho \dot x_i)
+    \lim_{\Omega\to 0} \partial_t \rho = -\sum_i \partial_{x_i}(\rho u_i)
 $$
 
 Übrig bleibt die Kontinuitätsgleichung in ihrer vollen Pracht
@@ -79,5 +79,5 @@ $$
 oder unter der Annahme von Inkompressibilität
 
 $$
-    \rho \nabla\cdot (\mathbf{u}) = 0.
+    \rho \nabla\cdot \mathbf{u} = 0.
 $$
