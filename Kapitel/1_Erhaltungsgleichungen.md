@@ -39,7 +39,7 @@ Massenerhaltung (alias Kontinuitätsgleichung)
 Für die Herleitung der Massenerhaltungsgleichung wird von einem infinitesimalen ortsfesten Kontrollvolumen $\Omega$ ausgegangen. Dafür wird zunächst der Massenstrom über die einzelnen Raumachsen $i$ bilanziert.
 
 $$
-    \partial_t m = \partial_t (\rho \Omega) = \sum_i (\dot m_{\mathrm{ein}} - \dot m_{\mathrm{aus}})_i = \dot m
+    \partial_t m = \partial_t (\rho \Omega) = \sum_{i=1}^n (\dot m_{\mathrm{ein}} - \dot m_{\mathrm{aus}})_i = \dot m
 $$
 
 > **Abbildung (Massenstrombilanz)**
@@ -61,7 +61,7 @@ $$
 Dieser Zusammenhang kann nun in die Bilanzgleichung für den Massenstrom eingesetzt werden.
 
 $$
-    \partial_t(\rho \Omega) = -\sum_i (\partial_{x_i}(\rho u_i) + \mathcal{O}(dx_i)) \Omega
+    \partial_t(\rho \Omega) = -\sum_{i=1}^n (\partial_{x_i}(\rho u_i) + \mathcal{O}(dx_i)) \Omega
 $$
 
 Da das Kontrollvolumen nach der Euler'schen Betrachtungsweise nicht von der Zeit abhängt, kann es aus der Gleichung gekürzt werden. Aufgrund seiner Infinitesimalität 
@@ -73,7 +73,7 @@ $$
 verschwinden außerdem die Terme höherer Ordnung und es konzentriert sich auf einen Punkt.
 
 $$
-    \lim_{\Omega\to 0} \partial_t \rho = -\sum_i \partial_{x_i}(\rho u_i)
+    \lim_{\Omega\to 0} \partial_t \rho = -\sum_{i=1}^n \partial_{x_i}(\rho u_i)
 $$
 
 Übrig bleibt die Kontinuitätsgleichung in ihrer vollen Pracht
@@ -82,8 +82,14 @@ $$
     \partial_t\, \rho + \nabla\cdot (\rho \mathbf{u}) = 0,
 $$
 
-oder unter der Annahme von Inkompressibilität
+oder unter der Annahme von Inkompressibilität (das Kontrollvolumen verändert sich nicht mit dem Druck $p$ und die Dichte $\rho$ bleibt konstant), d. h. in diesem Fall
 
 $$
-    \rho \nabla\cdot \mathbf{u} = 0.
+    \partial_p \Omega = 0 ~\Leftrightarrow~ \rho = \mathrm{konstant}
+$$
+
+und somit
+
+$$
+    \rho (\nabla\cdot \mathbf{u}) = 0.
 $$
