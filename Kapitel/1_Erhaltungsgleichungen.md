@@ -36,7 +36,7 @@ Massenerhaltung (alias Kontinuitätsgleichung)
 ------------------------------------------------------------------------------->
 ## Massenerhaltung (alias Kontinuitätsgleichung)
 
-Für die Herleitung der Massenerhaltungsgleichung wird von einem infinitesimalen ortsfesten Kontrollvolumen $\Omega$ ausgegangen. Dafür wird zunächst der Massenstrom über die einzelnen Raumachsen $i$ bilanziert.
+Für die Herleitung der Massenerhaltungsgleichung wird von einem infinitesimalen ortsfesten Kontrollvolumen $\Omega$ ausgegangen. Dafür wird zunächst der Massenstrom über die einzelnen Raumachsen $1$ bis $n$ bilanziert.
 
 $$
     \partial_t m = \partial_t (\rho \Omega) = \sum_{i=1}^n (\dot m_{\mathrm{ein}} - \dot m_{\mathrm{aus}})_i = \dot m
