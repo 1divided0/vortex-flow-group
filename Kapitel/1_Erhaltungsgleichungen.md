@@ -64,7 +64,13 @@ $$
     \partial_t(\rho \Omega) = -\sum_i (\partial_{x_i}(\rho u_i) + \mathcal{O}(dx_i)) \Omega
 $$
 
-Da das Kontrollvolumen nach der Euler'schen Betrachtungsweise nicht von der Zeit abhängt, kann es aus der Gleichung gekürzt werden. Aufgrund seiner Infinitesimalität verschwinden außerdem die Terme höherer Ordnung.
+Da das Kontrollvolumen nach der Euler'schen Betrachtungsweise nicht von der Zeit abhängt, kann es aus der Gleichung gekürzt werden. Aufgrund seiner Infinitesimalität 
+
+$$
+    \forall i \in \{ 1,\ldots,n \}\colon~ \lim_{\Omega\to 0} dx_i = 0
+$$
+
+verschwinden außerdem die Terme höherer Ordnung und es konzentriert sich auf einen Punkt.
 
 $$
     \lim_{\Omega\to 0} \partial_t \rho = -\sum_i \partial_{x_i}(\rho u_i)
