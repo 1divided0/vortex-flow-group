@@ -32,16 +32,25 @@ $$
     \partial_t\boldsymbol{\omega} + (\boldsymbol{u}\cdot\nabla)\boldsymbol{\omega} = (\boldsymbol{\omega}\cdot\nabla)\boldsymbol{u} + \nu\nabla^2\boldsymbol{\omega}
 $$
 
-wird die Rotation auf die inkompressible Navier-Stokes-Gleichung angewendet:
+wird die Rotation auf die inkompressible Navier-Stokes-Gleichung angewendet,
 
 $$
     \nabla\times \left\{ \partial_t\boldsymbol{u} + (\boldsymbol{u}\cdot\nabla)\boldsymbol{u} \right\} = \nabla\times \left\{ -\nabla{p}/\rho + \nu\nabla^2\boldsymbol{u} + \boldsymbol{g} \right\}
 $$
 
+und es werden die folgenden Zusammenhänge einbezogen.
+
+$$
+\begin{align*}
+    (\boldsymbol{u}\cdot\nabla)\boldsymbol{u} &=\nabla\boldsymbol{u}^2/2 -\boldsymbol{u}\times\boldsymbol{\omega} \\
+    \nabla\times(\boldsymbol{u}\times\boldsymbol{\omega}) &= \boldsymbol{u}(\nabla\cdot\boldsymbol{\omega}) - \boldsymbol{\omega}(\nabla\cdot\boldsymbol{u}) + (\boldsymbol{\omega}\cdot\nabla)\boldsymbol{u} - (\boldsymbol{u}\cdot\nabla)\boldsymbol{\omega} \\
+    \nabla\cdot\boldsymbol{\omega} &=0 \quad\text{(Die Wirbelstärke erfüllt die Kontinuitätsgleichung)} \\
+    \nabla\times\nabla\phi &=0 \quad\text{(Gradientenfelder sind wirbelfrei)}
+\end{align*}
+$$
+
 > **Aufgabe (Herleitung der Wirbeltransportgleichung)**
 >
-> Leitet die Wirbeltransportgleichung für inkompressible zweidimensionale Strömungen her. Verwendet dazu die folgenden Zusammenhänge.
-> 
-> $$ \begin{align*} (\boldsymbol{u}\cdot\nabla)\boldsymbol{u} &=\nabla\boldsymbol{u}^2/2 -\boldsymbol{u}\times\boldsymbol{\omega} \\ \nabla\times(\boldsymbol{u}\times\boldsymbol{\omega}) &= \boldsymbol{u}(\nabla\cdot\boldsymbol{\omega}) - \boldsymbol{\omega}(\nabla\cdot\boldsymbol{u}) + (\boldsymbol{\omega}\cdot\nabla)\boldsymbol{u} - (\boldsymbol{u}\cdot\nabla)\boldsymbol{\omega} \\ \nabla\cdot\boldsymbol{\omega} &=0 \quad\text{(Die Wirbelstärke erfüllt die Kontinuitätsgleichung)} \\ \nabla\times\nabla\phi &=0 \quad\text{(Gradientenfelder sind wirbelfrei)} \end{align*} $$
+> Leitet die Wirbeltransportgleichung für inkompressible zweidimensionale Strömungen her.
 > 
 > **Tipp:** Die Schwerkraft ist eine konservative Kraft und lässt sich somit als Gradient der potentiellen Energie schreiben.
