@@ -204,7 +204,7 @@ Allgemeine Transportgleichung (alias Konvektions-Diffusions-Gleichung)
 ------------------------------------------------------------------------------->
 ## Allgemeine Transportgleichung (alias Konvektions-Diffusions-Gleichung)
 
-Aus den beiden Herleitungen gehen gewisse Ähnlichkeiten hervor. Darum stellt sich die Frage, ob es nicht eine Art Blaupause für die Herleitung solcher Erhaltungsgleichungen gibt -- und die gibt es in der Tat. Um dem Verständnis für die Erhaltungsgleichungen näher zu kommen, ist es durchaus von Vorteil, das Konzept einer solchen zu generalisieren. Dafür wird die Kontinuitätsgleichung für eine allgemeine Strömungsgröße $\Phi$ mit Quellterm $R$ aufgestellt.
+Aus den beiden Herleitungen gehen gewisse Ähnlichkeiten hervor. Darum stellt sich die Frage, ob es nicht eine Art Blaupause für die Herleitung solcher Erhaltungsgleichungen gibt – und die gibt es in der Tat. Um dem Verständnis für die Erhaltungsgleichungen näher zu kommen, ist es durchaus von Vorteil, das Konzept einer solchen zu generalisieren. Dafür wird die Kontinuitätsgleichung für eine allgemeine Strömungsgröße $\Phi$ mit Quellterm $R$ aufgestellt.
 
 $$
     \partial_t \Phi + \nabla\cdot\boldsymbol{J} = R
@@ -212,8 +212,9 @@ $$
 
 Dabei ist $\boldsymbol{J}$ die Stromdichte, die den Fluss der Größe $\Phi$ durch die Grenzflächen des Kontrollvolumens beschreibt. Die Stromdichte setzt sich aus zwei Anteilen zusammen:
 
-- dem Diffusionsanteil $\boldsymbol{J}_\mathrm{diff} = -c\nabla\Phi$, welcher nach dem 1. Fick'schen Gesetz den Transport durch Diffusion beschreibt (als negativ proportional zum Konzentrationsgradienten, da die Stromdichte in Diffusionsrichtung abnimmt) und
-- dem Konvektionsanteil $\boldsymbol{J}_\mathrm{konv} = \boldsymbol{u}\Phi$, welcher den Transport durch Konvektion beschreibt (als Produkt der Geschwindigkeit mit der Strömungsgröße).
+- dem Diffusionsanteil $$\boldsymbol{J}_\mathrm{diff} = -c\nabla\Phi,$$ welcher nach dem 1. Fick'schen Gesetz den Transport durch Diffusion beschreibt (als negativ proportional zum Konzentrationsgradienten, da die Stromdichte in Diffusionsrichtung abnimmt) und
+
+- dem Konvektionsanteil $$\boldsymbol{J}_\mathrm{konv} = \boldsymbol{u}\Phi,$$ welcher den Transport durch Konvektion beschreibt (als Produkt der Geschwindigkeit mit der Strömungsgröße).
 
 Damit setzt sich die Stromdichte folgendermaßen zusammen.
 

@@ -10,7 +10,7 @@ Wirbeltransportgleichung
 ------------------------------------------------------------------------------->
 ## Wirbeltransportgleichung
 
-Um Wirbelströmungen adäquat untersuchen zu können, wird der Transport einer ganz bestimmten Strömungsgröße betrachtet -- nämlich der Wirbelstärke $\boldsymbol{\omega}$. Sie ist wie folgt definiert:
+Um Wirbelströmungen adäquat untersuchen zu können, wird der Transport einer ganz bestimmten Strömungsgröße betrachtet – nämlich der Wirbelstärke $\boldsymbol{\omega}$. Sie ist wie folgt definiert:
 
 $$
     \boldsymbol{\omega} \coloneqq \operatorname{rot}(\boldsymbol{u}) = \nabla\times\boldsymbol{u}
@@ -42,13 +42,6 @@ $$
 >
 > Leitet die Wirbeltransportgleichung für inkompressible zweidimensionale Strömungen her. Verwendet dazu die folgenden Zusammenhänge.
 > 
-> $$
->   \begin{align*}
->   (\boldsymbol{u}\cdot\nabla)\boldsymbol{u} &=\nabla\boldsymbol{u}^2/2 -\boldsymbol{u}\times\boldsymbol{\omega} \\
->   \nabla\times(\boldsymbol{u}\times\boldsymbol{\omega}) &= \boldsymbol{u}(\nabla\cdot\boldsymbol{\omega}) - \boldsymbol{\omega}(\nabla\cdot\boldsymbol{u}) + (\boldsymbol{\omega}\cdot\nabla)\boldsymbol{u} - (\boldsymbol{u}\cdot\nabla)\boldsymbol{\omega} \\
->   \nabla\cdot\boldsymbol{\omega} &=0 \quad\text{(Die Wirbelstärke erfüllt die Kontinuitätsgleichung)} \\
->   \nabla\times\nabla\phi &=0 \quad\text{(Gradientenfelder sind wirbelfrei)}
->   \end{align*}
-> $$
+> $$ \begin{align*} (\boldsymbol{u}\cdot\nabla)\boldsymbol{u} &=\nabla\boldsymbol{u}^2/2 -\boldsymbol{u}\times\boldsymbol{\omega} \\ \nabla\times(\boldsymbol{u}\times\boldsymbol{\omega}) &= \boldsymbol{u}(\nabla\cdot\boldsymbol{\omega}) - \boldsymbol{\omega}(\nabla\cdot\boldsymbol{u}) + (\boldsymbol{\omega}\cdot\nabla)\boldsymbol{u} - (\boldsymbol{u}\cdot\nabla)\boldsymbol{\omega} \\ \nabla\cdot\boldsymbol{\omega} &=0 \quad\text{(Die Wirbelstärke erfüllt die Kontinuitätsgleichung)} \\ \nabla\times\nabla\phi &=0 \quad\text{(Gradientenfelder sind wirbelfrei)} \end{align*} $$
 > 
 > **Tipp:** Die Schwerkraft ist eine konservative Kraft und lässt sich somit als Gradient der potentiellen Energie schreiben.
