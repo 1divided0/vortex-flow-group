@@ -44,13 +44,141 @@ $$
 \begin{align*}
     (\boldsymbol{u}\cdot\nabla)\boldsymbol{u} &=\nabla\boldsymbol{u}^2/2 -\boldsymbol{u}\times\boldsymbol{\omega} \\
     \nabla\times(\boldsymbol{u}\times\boldsymbol{\omega}) &= \boldsymbol{u}(\nabla\cdot\boldsymbol{\omega}) - \boldsymbol{\omega}(\nabla\cdot\boldsymbol{u}) + (\boldsymbol{\omega}\cdot\nabla)\boldsymbol{u} - (\boldsymbol{u}\cdot\nabla)\boldsymbol{\omega} \\
-    \nabla\cdot\boldsymbol{\omega} &=0 \quad\text{(Die Wirbelstärke erfüllt die Kontinuitätsgleichung)} \\
-    \nabla\times\nabla\phi &=0 \quad\text{(Gradientenfelder sind wirbelfrei)}
+    \nabla\cdot\boldsymbol{\omega} &= 0 \quad\text{(Die Wirbelstärke erfüllt die Kontinuitätsgleichung)} \\
+    \nabla\times\nabla\phi &= \boldsymbol{0} \quad\text{(Gradientenfelder sind immer wirbelfrei)}
 \end{align*}
 $$
 
+---
 > **Aufgabe (Herleitung der Wirbeltransportgleichung)**
 >
 > Leitet die Wirbeltransportgleichung für inkompressible zweidimensionale Strömungen her.
 > 
-> **Tipp:** Die Schwerkraft ist eine konservative Kraft und lässt sich somit als Gradient der potentiellen Energie schreiben.
+> _**Tipp:** Die Schwerkraft ist eine konservative Kraft und lässt sich somit als Gradient der potentiellen Energie schreiben._
+
+---
+> **Aufgabe (Zuordnung der Terme)**
+>
+> Vergleicht die soeben hergeleitete Wirbeltransportgleichung mit der allgemeinen Transportgleichung. Welche Terme finden sich in ihr wieder?
+
+
+<!------------------------------------------------------------------------------
+Stromlinien
+------------------------------------------------------------------------------->
+## Stromlinien
+
+Ein wichtiges Konzept zur Visualisierung und Vereinfachung sind die Stromlinien. Sie sind diejenigen Kurven im Geschwindigkeitsfeld einer Strömung, deren Tangentenrichtung mit den Richtungen der Geschwindigkeitsvektoren übereinstimmen.
+
+> **Abbildung (Schlörwagen im Windkanal)**
+>
+> ![Schlörwagen](../Dateien/Bilder/Schloerwagen.jpg)
+>
+> _**Quelle:** Deutsches Zentrum für Luft- und Raumfahrt. Schlörwagen-Strömungsbild. <https://www.dlr.de/de/bilder/verkehr/schloerwagen-stroemungsbild>. (2011)_
+
+Mathematisch ausgedrückt: Die Tangentialvektoren dieser Kurven verlaufen kollinear zum Vektorfeld der Geschwindigkeit.
+
+$$
+    d\boldsymbol{x}\times\boldsymbol{u} \overset{!}{=} \boldsymbol{0}
+$$
+
+Für dreidimensionale Strömungen folgt
+
+$$
+    \begin{bmatrix}dx\\dy\\dz\end{bmatrix}\times\begin{bmatrix}u\\v\\w\end{bmatrix} = \begin{bmatrix}dy \cdot w - dz \cdot v\\dz \cdot u - dx \cdot w\\dx \cdot v - dy \cdot u\end{bmatrix} \overset{!}{=} \begin{bmatrix}0\\0\\0\end{bmatrix}
+$$
+
+und somit
+
+$$
+\begin{gather*}
+    \begin{cases}dy/v &=~~~ dz/w\\dz/w &=~~~ dx/u \\dx/u &=~~~ dy/v\end{cases} \\[20pt]
+    ~~~\Updownarrow \\[5pt]
+    dx/u = dy/v = dz/w
+\end{gather*}
+$$
+
+bzw. für zweidimensionale Strömungen entsprechend
+
+$$
+    dx/u = dy/v.
+$$
+
+
+<!------------------------------------------------------------------------------
+Stromfunktion
+------------------------------------------------------------------------------->
+## Stromfunktion
+
+Um die Geschwindigkeit anhand der Stromlinien zu vereinfachen, wird eine Stromfunktion $\Psi$ eingeführt, sodass die Stromlinien Niveaulinien dieser Stromfunktion darstellen. Entlang der Stromlinien ist dann die Stromfunktion konstant. Außerdem werden die Niveaustufen so festgelegt, dass ihre Differenz dem dazwischen passierenden Volumenstrom entspricht. Für inkompressible zweidimensionale Strömungen lässt die Stromfunktion als Differenz über ein bestimmtes Integral zwischen zwei Punkten $A$ und $B$ definieren.
+
+$$
+    \Psi(B) - \Psi(A) = \int_A^B (d\dot V_x - d\dot V_y) = \int_A^B (u\,dy - v\,dx)
+$$
+
+> **Abbildung (Definition der Stromfunktion)**
+>
+> ![Definition der Stromfunktion](../Dateien/Bilder/Stromfunktion.svg)
+
+Letztendlich handelt es sich dabei um eine Koordinatentransformation. Der Vorteil der Stromfunktion besteht darin, dass sie das Vektorfeld der Geschwindigkeit auf ein Skalarfeld reduziert.
+
+
+<!------------------------------------------------------------------------------
+Cauchy-Riemann-Gleichungen
+------------------------------------------------------------------------------->
+## Cauchy-Riemann-Gleichungen
+
+Wie man sich vielleicht denken kann, ist die Definition der Stromfunktion kein Zufall. Wird sie infinitesimal im Ort $\delta P = (\delta x,\delta y)$ variiert, dann entfällt das Integral.
+
+$$
+    \delta \Psi = u\,\delta y - v\,\delta x
+$$
+
+Und wird der so entstehende Ausdruck mit dem exakten Ortsdifferential
+
+$$
+    \delta \Psi = (\partial_x \Psi)\delta x + (\partial_y \Psi)\delta y
+$$
+
+verglichen, dann ist die Stromfunktion die Lösung der Cauchy-Riemann-Gleichungen:
+
+$$
+    \begin{cases} \partial_x \Psi &= -v \\ \partial_y \Psi &= u \end{cases}
+$$
+
+Wohlgemerkt, erfüllt die Stromfunktion nach Konstruktion ebenso die inkompressible Kontinuitätsgleichung. (Hier wird im letzten Schritt der Satz von Schwarz angewendet.)
+
+$$
+    0 = \nabla\cdot\boldsymbol{u} = \partial_x u + \partial_y v = \partial_x(\partial_y\Psi) - \partial_y(\partial_x\Psi) = \partial_x\partial_y\Psi - \partial_x\partial_y\Psi = 0
+$$
+
+
+<!------------------------------------------------------------------------------
+Poisson-Gleichung
+------------------------------------------------------------------------------->
+## Poisson-Gleichung
+
+Auch die Wirbelstärke kann in einen direkten Zusammenhang mit der Stromfunktion gebracht werden, was sich später noch als sehr nützlich erweisen wird. Dafür gehen wir wieder von einer inkompressiblen zweidimensionalen Strömung aus,
+
+$$
+    \omega_z = \partial_x v - \partial_y u = - \partial_x (\partial_x \Psi) - \partial_y (\partial_y \Psi) = - (\partial_x^2 + \partial_y^2) \Psi = - \nabla^2 \Psi
+$$
+
+was uns zur Poisson-Gleichung führt.
+
+$$
+    \omega_z = - \nabla^2 \Psi
+$$
+
+
+<!------------------------------------------------------------------------------
+Enstrophie
+------------------------------------------------------------------------------->
+## Enstrophie
+
+Eine weitere Kenngröße, um Dissipationeffekte in möglicherweise turbulenten Strömungen zu untersuchen, ist die sog. Enstrophie. Bei inkompressiblen Strömungen stellt sie einen integralen Zusammenhang zwischen der Wirbelstärke und kinetischen Energie im Strömungsgebiet $\Omega$ her.
+
+$$
+    \partial_t \underbrace{\left( \frac{\rho}{2} \int_\Omega \|\boldsymbol{u}\|_2^2 \,dV \right)}_{\eqqcolon\,\text{kinetische Energie}\,(E_\mathrm{kin})} = -\mu \underbrace{\left( \int_\Omega \|\boldsymbol{\omega}\|_2^2 \,dV \right)}_{\eqqcolon\,\text{Enstrophie}\,(\mathcal{E})}
+$$
+
+_**Anmerkung:** Das ist ein wirklich sehr beachtliches Resultat. Leider ist es mir bisher nicht gelungen eine Herleitung dafür zu finden. Für weitere Informationen siehe <https://en.wikipedia.org/wiki/Enstrophy>._

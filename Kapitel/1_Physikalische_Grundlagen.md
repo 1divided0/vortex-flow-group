@@ -28,7 +28,7 @@ Außerdem lässt sich eine Fluidströmung auf zwei unterschiedliche Weisen betra
 >
 > ![Betrachtungsweise nach Euler und nach Lagrange](../Dateien/Bilder/Euler_vs_Lagrange.svg)
 
-**Anmerkung:** Da die Euler'sche Betrachtungsweise mit jedem beliebigen Inertialsystem in Einklang steht, ist sie womöglich etwas intuitiver als die Lagrange'sche. Darum wird im Folgenden auf diese Weise formuliert. Um ggf. von der Lagrange'schen zur Euler'schen Betrachtungsweise zu wechsel, wird die sog. substantielle Ableitung berechnet. In diesem Zusammenhang ist damit die totale Ableitung gemeint (der Name illustriert lediglich den Zusammenhang zum Bezugssystem des Fluidpartikels). Für die folgenden Betrachtungen sei außerdem noch erwähnt, dass der Geschwindigkeitsvektor in der numerischen Strömungsmechanik üblicher Weise mit $\boldsymbol{u}$ bezeichnet wird.
+_**Anmerkung:** Da die Euler'sche Betrachtungsweise mit jedem beliebigen Inertialsystem in Einklang steht, ist sie womöglich etwas intuitiver als die Lagrange'sche. Darum wird im Folgenden auf diese Weise formuliert. Um ggf. von der Lagrange'schen zur Euler'schen Betrachtungsweise zu wechsel, wird die sog. substantielle Ableitung berechnet. In diesem Zusammenhang ist damit die totale Ableitung gemeint (der Name illustriert lediglich den Zusammenhang zum Bezugssystem des Fluidpartikels). Für die folgenden Betrachtungen sei außerdem noch erwähnt, dass der Geschwindigkeitsvektor in der numerischen Strömungsmechanik üblicher Weise mit $\boldsymbol{u}$ bezeichnet wird._
 
 
 <!------------------------------------------------------------------------------
@@ -186,7 +186,7 @@ und mit der substantiellen Ableitung
 
 $$
 \begin{align*}
-    D_t\boldsymbol{u} &= (\partial_t{t})(\partial_t\boldsymbol{u}) + \sum_{i=1}^n \underbrace{(\partial_t x_i)}_{u_i}(\partial_{x_i}\boldsymbol{u}) \\
+    D_t\boldsymbol{u} &= (dt/dt)(\partial_t\boldsymbol{u}) + \sum_{i=1}^n \underbrace{(dx_i/dt)}_{u_i}(\partial_{x_i}\boldsymbol{u}) \\
     &= \partial_t\boldsymbol{u} + \left( \sum_{i=1}^n u_i \partial_{x_i} \right) \boldsymbol{u} \\
     &= \partial_t\boldsymbol{u} + (\boldsymbol{u}\cdot\nabla)\boldsymbol{u}
 \end{align*}
@@ -212,9 +212,9 @@ $$
 
 Dabei ist $\boldsymbol{J}$ die Stromdichte, die den Fluss der Größe $\Phi$ durch die Grenzflächen des Kontrollvolumens beschreibt. Die Stromdichte setzt sich aus zwei Anteilen zusammen:
 
-- dem Diffusionsanteil $$\boldsymbol{J}_\mathrm{diff} = -c\nabla\Phi,$$ welcher nach dem 1. Fick'schen Gesetz den Transport durch Diffusion beschreibt (als negativ proportional zum Konzentrationsgradienten, da die Stromdichte in Diffusionsrichtung abnimmt) und
+- Dem Diffusionsanteil $$\boldsymbol{J}_\mathrm{diff} = -c\nabla\Phi,$$ welcher nach dem 1. Fick'schen Gesetz den Transport durch Diffusion beschreibt (als negativ proportional zum Konzentrationsgradienten, da die Stromdichte in Diffusionsrichtung abnimmt).
 
-- dem Konvektionsanteil $$\boldsymbol{J}_\mathrm{konv} = \boldsymbol{u}\Phi,$$ welcher den Transport durch Konvektion beschreibt (als Produkt der Geschwindigkeit mit der Strömungsgröße).
+- Und dem Konvektionsanteil $$\boldsymbol{J}_\mathrm{konv} = \boldsymbol{u}\Phi,$$ welcher den Transport durch Konvektion beschreibt (als Produkt der Geschwindigkeit mit der Strömungsgröße).
 
 Damit setzt sich die Stromdichte folgendermaßen zusammen.
 
@@ -234,6 +234,7 @@ $$
     \underbrace{\partial_t \boldsymbol{\Phi}}_\text{lokale Änderung} = \underbrace{c\nabla^2\boldsymbol{\Phi}}_\text{Diffusion} - \underbrace{(\boldsymbol{u}\cdot\nabla)\boldsymbol{\Phi}}_\text{Konvektion} + \underbrace{\boldsymbol{R}}_\text{Quelle}.
 $$
 
+---
 > **Aufgabe (Zuordnung der Terme)**
 >
 > Schaut euch noch einmal die Navier-Stokes-Gleichung an und vergleicht sie mit der allgemeinen Transportgleichung. Findet ihr die entsprechenden Terme?
