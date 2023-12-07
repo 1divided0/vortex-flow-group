@@ -139,7 +139,7 @@ $$
     \delta \Psi = (\partial_x \Psi)\delta x + (\partial_y \Psi)\delta y
 $$
 
-verglichen, dann ist die Stromfunktion die Lösung der Cauchy-Riemann-Gleichungen:
+verglichen, dann ist die Stromfunktion nun gerade die Lösung der Cauchy-Riemann-Gleichungen:
 
 $$
     \begin{cases} \partial_x \Psi &= -v \\ \partial_y \Psi &= u \end{cases}
