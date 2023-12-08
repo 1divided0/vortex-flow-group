@@ -30,6 +30,12 @@ Vektorisierung des Rechengitters
 
 Auf dem erstellten Gitter werden die strömungsmechanischen Gleichungen numerisch gelöst. Dies geschieht für gewöhnlich in Vektorform, damit sich die Rechenoperationen über Matrizen abwickeln lassen. Dafür müssen die auf dem Gitter abgespeicherten Werte dahingehend überführt werden. Je nachdem werden entweder die Spalten oder Zeilen verkettet.
 
+> **Begleitmaterial (Vektorisierung)**
+>
+> [![Matlab Beispiel](../Dateien/Plaketten/Matlab_Beispiel.svg)](../Begleitmaterial/Vektorisierung_Matlab.ipynb) [![Python Beispiel](../Dateien/Plaketten/Python_Beispiel.svg)](../Begleitmaterial/Vektorisierung_Python.ipynb)
+>
+> ![2d Gitter](../Dateien/Bilder/Verkettung.svg)
+
 
 <!------------------------------------------------------------------------------
 Behandlung dünnbesetzter Matrizen

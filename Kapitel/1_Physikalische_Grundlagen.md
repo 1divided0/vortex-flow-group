@@ -58,7 +58,7 @@ $$
     (\dot m_{\mathrm{aus}})_i = [\rho u_i /dx_i + \partial_{x_i}(\rho u_i) + \mathcal{O}(dx_i)] V
 $$
 
-Der Quellterm soll für hiesige Zwecke ignoriert werden.
+Außerdem seien keine Quellen oder Senken vorhanden.
 
 $$
     \dot m_{\mathrm{quell}} = 0
@@ -106,7 +106,7 @@ Impulserhaltung (alias Navier-Stokes-Gleichung)
 ------------------------------------------------------------------------------->
 ## Impulserhaltung (alias Navier-Stokes-Gleichung)
 
-Die Herleitung der Impulserhaltungsgleichung erfolgt analog. Somit wird hier der Impulsstrom bilanziert, was nach dem 2. Newton'schen Gesetz der Kraft entspricht. Im Gegensatz zur Masse, versteht sich der Impuls jedoch als vektorielle Größe, sodass ein Gleichungssystem von der Dimension des Raumes entsteht. Außerdem ist zu beachten, dass die Kraft nach Isaac Newton mit der Definition einer Punktmasse der Lagrange'schen Betrachtungsweise entspricht und die Geschwindigkeit daher zunächst substantiell abgeleitet werden muss, damit die Kraft im Euler'schen Sinne bilanziert werden kann. Ein- und ausströmende Kräfte sind i. d. R. Oberflächenkräfte, wohingegen Volumenkräfte wie die Schwerkraft in einem Quellterm subsumiert werden.
+Die Herleitung der Impulserhaltungsgleichung erfolgt analog. Somit wird hier der Impulsstrom bilanziert, was nach dem 2. Newton'schen Gesetz der Kraft entspricht. Im Gegensatz zur Masse, versteht sich der Impuls jedoch als vektorielle Größe, sodass ein Gleichungssystem von der Dimension des Raumes entsteht. Außerdem ist zu beachten, dass die Kraft nach Isaac Newton mit der Definition einer Punktmasse der Lagrange'schen Betrachtungsweise entspricht und die Geschwindigkeit daher zunächst substantiell abgeleitet werden muss, damit die Kraft im Euler'schen Sinne bilanziert werden kann. Ein- und austretende Kräfte sind i. d. R. Oberflächenkräfte, wohingegen Volumenkräfte wie die Schwerkraft in einem Quellterm subsumiert werden.
 
 $$
     \boldsymbol{F} = m \boldsymbol{a} = (\rho V) (D_t \boldsymbol{u}) = \left[ \boldsymbol{F}_\mathrm{ein} - \boldsymbol{F}_\mathrm{aus} \right] + \boldsymbol{F}_\mathrm{quell}
@@ -135,7 +135,7 @@ $$
 \end{align*}
 $$
 
-Als Volumenkraft soll hier alleinig die Schwerkraft berücksichtigt werden.
+Als Volumenkraft soll hier die Schwerkraft berücksichtigt werden.
 
 $$
     (F_\mathrm{quell})_i = m g_i
@@ -204,7 +204,7 @@ Allgemeine Transportgleichung (alias Konvektions-Diffusions-Gleichung)
 ------------------------------------------------------------------------------->
 ## Allgemeine Transportgleichung (alias Konvektions-Diffusions-Gleichung)
 
-Aus den beiden Herleitungen gehen gewisse Ähnlichkeiten hervor. Darum stellt sich die Frage, ob es nicht eine Art Blaupause für die Herleitung solcher Erhaltungsgleichungen gibt – und die gibt es in der Tat. Um dem Verständnis für die Erhaltungsgleichungen näher zu kommen, ist es durchaus von Vorteil, das Konzept einer solchen zu generalisieren. Dafür wird die Kontinuitätsgleichung für eine allgemeine Strömungsgröße $\Phi$ mit Quellterm $R$ aufgestellt.
+Aus den beiden Herleitungen gehen gewisse Ähnlichkeiten hervor. Darum stellt sich die Frage, ob es nicht eine Art Blaupause für die Herleitung solcher Erhaltungsgleichungen gibt – und die gibt es in der Tat. Um dem Verständnis für die Erhaltungsgleichungen näher zu kommen, ist es durchaus von Vorteil, das Konzept einer solchen zu verallgemeinern. Dafür wird die Kontinuitätsgleichung für eine allgemeine Strömungsgröße $\Phi$ mit Quellterm $R$ aufgestellt.
 
 $$
     \partial_t \Phi + \nabla\cdot\boldsymbol{J} = R
@@ -225,13 +225,13 @@ $$
 Und es ergibt sich die Konvektions-Diffusions-Gleichung mit ihren unterschiedlichen Termen für skalare
 
 $$
-    \underbrace{\partial_t \Phi}_\text{lokale Änderung} = \underbrace{c\nabla^2\Phi}_\text{Diffusion} - \underbrace{\nabla\cdot(\boldsymbol{u}\Phi)}_\text{Konvektion} + \underbrace{R}_\text{Quelle},
+    \underbrace{\partial_t \Phi}_\text{Instationarität} = \underbrace{c\nabla^2\Phi}_\text{Diffusion} - \underbrace{\nabla\cdot(\boldsymbol{u}\Phi)}_\text{Konvektion} + \underbrace{R}_\text{Quelle},
 $$
 
 bzw. für vektoren
 
 $$
-    \underbrace{\partial_t \boldsymbol{\Phi}}_\text{lokale Änderung} = \underbrace{c\nabla^2\boldsymbol{\Phi}}_\text{Diffusion} - \underbrace{(\boldsymbol{u}\cdot\nabla)\boldsymbol{\Phi}}_\text{Konvektion} + \underbrace{\boldsymbol{R}}_\text{Quelle}.
+    \underbrace{\partial_t \boldsymbol{\Phi}}_\text{Instationarität} = \underbrace{c\nabla^2\boldsymbol{\Phi}}_\text{Diffusion} - \underbrace{(\boldsymbol{u}\cdot\nabla)\boldsymbol{\Phi}}_\text{Konvektion} + \underbrace{\boldsymbol{R}}_\text{Quelle}.
 $$
 
 ---

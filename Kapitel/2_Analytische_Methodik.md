@@ -16,7 +16,7 @@ $$
     \boldsymbol{\omega} \coloneqq \operatorname{rot}(\boldsymbol{u}) = \nabla\times\boldsymbol{u}
 $$
 
-Für zweidimensionale Strömungen in der x-y-Ebene ist die Geschwindigkeit in z-Richtung immer null,
+Für zweidimensionale Strömungen in der x-y-Ebene ist die Geschwindigkeit in z-Richtung null,
 
 $$ u_z=0 $$
 
@@ -109,7 +109,7 @@ Stromfunktion
 ------------------------------------------------------------------------------->
 ## Stromfunktion
 
-Um die Geschwindigkeit anhand der Stromlinien zu vereinfachen, wird eine Stromfunktion $\Psi$ eingeführt, sodass die Stromlinien Niveaulinien dieser Stromfunktion darstellen. Entlang der Stromlinien ist dann die Stromfunktion konstant. Außerdem werden die Niveaustufen so festgelegt, dass ihre Differenz dem dazwischen passierenden Volumenstrom entspricht. Für inkompressible zweidimensionale Strömungen lässt die Stromfunktion als Differenz über ein bestimmtes Integral zwischen zwei Punkten $A$ und $B$ definieren.
+Um die Geschwindigkeit anhand der Stromlinien zu beschreiben, wird eine Stromfunktion $\Psi$ eingeführt, sodass die Stromlinien Niveaulinien dieser Stromfunktion darstellen. Entlang der Stromlinien ist dann die Stromfunktion konstant. Außerdem werden die Niveaustufen so festgelegt, dass ihre Differenz dem dazwischen passierenden Volumenstrom entspricht. Für inkompressible zweidimensionale Strömungen lässt die Stromfunktion als Differenz über ein bestimmtes Integral zwischen zwei Punkten $A$ und $B$ definieren.
 
 $$
     \Psi(B) - \Psi(A) = \int_A^B (d\dot V_x - d\dot V_y) = \int_A^B (u\,dy - v\,dx)
@@ -127,16 +127,16 @@ Cauchy-Riemann-Gleichungen
 ------------------------------------------------------------------------------->
 ## Cauchy-Riemann-Gleichungen
 
-Wie man sich vielleicht denken kann, ist die Definition der Stromfunktion kein Zufall. Wird sie infinitesimal im Ort $\delta P = (\delta x,\delta y)$ variiert, dann entfällt das Integral.
+Wie man sich vielleicht denken kann, ist die Definition der Stromfunktion kein Zufall. Für eine infinitesimale örtliche Differenz $dP = (dx,dy)$ entfällt das Integral.
 
 $$
-    \delta \Psi = u\,\delta y - v\,\delta x
+    d\Psi = u\,dy - v\,dx
 $$
 
 Und wird der so entstehende Ausdruck mit dem exakten Ortsdifferential
 
 $$
-    \delta \Psi = (\partial_x \Psi)\delta x + (\partial_y \Psi)\delta y
+    d\Psi = (\partial_x \Psi)dx + (\partial_y \Psi)dy
 $$
 
 verglichen, dann ist die Stromfunktion nun gerade die Lösung der Cauchy-Riemann-Gleichungen:
