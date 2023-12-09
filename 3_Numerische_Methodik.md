@@ -1,4 +1,4 @@
-# Teil 2: Numerische Methodik
+# Thema 3: Numerische Methodik
 
 ...
 
@@ -18,9 +18,9 @@ $$
 
 > **Begleitmaterial (2d Gitter)**
 >
-> [![Matlab Beispiel](../Dateien/Plaketten/Matlab_Beispiel.svg)](../Begleitmaterial/2d_Gitter_Matlab.ipynb) [![Python Beispiel](../Dateien/Plaketten/Python_Beispiel.svg)](../Begleitmaterial/2d_Gitter_Python.ipynb)
+> [![Matlab Beispiel](.Dateien/Plaketten/Matlab_Beispiel.svg)](Begleitmaterial/2d_Gitter_Matlab.ipynb) [![Python Beispiel](.Dateien/Plaketten/Python_Beispiel.svg)](Begleitmaterial/2d_Gitter_Python.ipynb)
 >
-> ![2d Gitter](../Dateien/Bilder/2d_Gitter.svg)
+> ![2d Gitter](.Dateien/Bilder/2d_Gitter.svg)
 
 
 <!------------------------------------------------------------------------------
@@ -32,9 +32,9 @@ Auf dem erstellten Gitter werden die strömungsmechanischen Gleichungen numerisc
 
 > **Begleitmaterial (Vektorisierung)**
 >
-> [![Matlab Beispiel](../Dateien/Plaketten/Matlab_Beispiel.svg)](../Begleitmaterial/Vektorisierung_Matlab.ipynb) [![Python Beispiel](../Dateien/Plaketten/Python_Beispiel.svg)](../Begleitmaterial/Vektorisierung_Python.ipynb)
+> [![Matlab Beispiel](.Dateien/Plaketten/Matlab_Beispiel.svg)](Begleitmaterial/Vektorisierung_Matlab.ipynb) [![Python Beispiel](.Dateien/Plaketten/Python_Beispiel.svg)](Begleitmaterial/Vektorisierung_Python.ipynb)
 >
-> ![2d Gitter](../Dateien/Bilder/Verkettung.svg)
+> ![2d Gitter](.Dateien/Bilder/Verkettung.svg)
 
 
 <!------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-# Teil 2: Analytische Methodik
+# Thema 2: Analytische Methodik
 
 ...
 
@@ -71,7 +71,7 @@ Ein wichtiges Konzept zur Visualisierung und Vereinfachung sind die Stromlinien.
 
 > **Abbildung (Schlörwagen im Windkanal)**
 >
-> ![Schlörwagen](../Dateien/Bilder/Schloerwagen.jpg)
+> ![Schlörwagen](.Dateien/Bilder/Schloerwagen.jpg)
 >
 > _**Quelle:** Deutsches Zentrum für Luft- und Raumfahrt. Schlörwagen-Strömungsbild. <https://www.dlr.de/de/bilder/verkehr/schloerwagen-stroemungsbild>. (2011)_
 
@@ -117,7 +117,7 @@ $$
 
 > **Abbildung (Definition der Stromfunktion)**
 >
-> ![Definition der Stromfunktion](../Dateien/Bilder/Stromfunktion.svg)
+> ![Definition der Stromfunktion](.Dateien/Bilder/Stromfunktion.svg)
 
 Letztendlich handelt es sich dabei um eine Koordinatentransformation. Der Vorteil der Stromfunktion besteht darin, dass sie das Vektorfeld der Geschwindigkeit auf ein Skalarfeld reduziert.
 

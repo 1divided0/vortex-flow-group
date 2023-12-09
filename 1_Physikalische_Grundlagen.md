@@ -1,4 +1,4 @@
-# Teil 1: Physikalische Grundlagen
+# Thema 1: Physikalische Grundlagen
 
 ...
 
@@ -20,13 +20,13 @@ Für eine Kontinuumsströmung darf die Knudsen-Zahl nicht größer als ein Hunde
 
 > **Tabelle (Strömungsart nach Knudsen-Zahl)**
 >
-> ![Knudsen-Zahl](../Dateien/Tabellen/Knudsen_Zahl.svg)
+> ![Knudsen-Zahl](.Dateien/Tabellen/Knudsen_Zahl.svg)
 
 Außerdem lässt sich eine Fluidströmung auf zwei unterschiedliche Weisen betrachten. Einerseits gibt es die Euler'sche Betrachtungsweise, bei der das Koordinatensystem ortsfest ist, und andererseits die Lagrange'sche Betrachtungsweise, bei der das Koordinatensystem mit der Strömung eines einzelnen Fluidpartikels mitgeführt wird. Nach dem klassischen Relativitätsprinzip kann man sich davon überzeugen, dass beide Betrachtungsweisen äquivalent sind. In der folgenden Abbildung ist links die Euler'sche und rechts die Lagrange'sche Betrachtungsweise mit der zeitlichen Entwicklung des Bezugssystems in schwarz und der des Fluidpartikels in blau dargestellt.
 
 > **Abbildung (Euler'sche und Lagrange'sche Betrachtungsweise)**
 >
-> ![Betrachtungsweise nach Euler und nach Lagrange](../Dateien/Bilder/Euler_vs_Lagrange.svg)
+> ![Betrachtungsweise nach Euler und nach Lagrange](.Dateien/Bilder/Euler_vs_Lagrange.svg)
 
 _**Anmerkung:** Da die Euler'sche Betrachtungsweise mit jedem beliebigen Inertialsystem in Einklang steht, ist sie womöglich etwas intuitiver als die Lagrange'sche. Darum wird im Folgenden auf diese Weise formuliert. Um ggf. von der Lagrange'schen zur Euler'schen Betrachtungsweise zu wechsel, wird die sog. substantielle Ableitung berechnet. In diesem Zusammenhang ist damit die totale Ableitung gemeint (der Name illustriert lediglich den Zusammenhang zum Bezugssystem des Fluidpartikels). Für die folgenden Betrachtungen sei außerdem noch erwähnt, dass der Geschwindigkeitsvektor in der numerischen Strömungsmechanik üblicher Weise mit $\boldsymbol{u}$ bezeichnet wird._
 
@@ -44,7 +44,7 @@ $$
 
 > **Abbildung (Massenstrombilanz)**
 >
-> ![Massenstrombilanz](../Dateien/Bilder/Massenstrombilanz.svg)
+> ![Massenstrombilanz](.Dateien/Bilder/Massenstrombilanz.svg)
 
 Der eintretende Massenstrom ergibt sich durch Multiplikation der Eintrittsfläche mit der senkrecht zu ihr stehenden Geschwindigkeitskomponente und der entsprechenden Fluiddichte.
 
@@ -114,7 +114,7 @@ $$
 
 > **Abbildung (Kraftbilanz)**
 >
-> ![Massenstrombilanz](../Dateien/Bilder/Kraftbilanz.svg)
+> ![Massenstrombilanz](.Dateien/Bilder/Kraftbilanz.svg)
 
 Bei den Oberflächenkräfte wird in Druck- und Spannungskräfte unterschieden. Die Druckkräfte wirken zentrisch auf das Kontrollvolumen und werden somit positiv bilanziert. Die Spannungskräfte hingegen wirken exzentrisch und werden demnach negativ bilanziert. Außerdem greifen die Spannungskräfte von allen Seiten an, wodurch die Gleichung erheblich an Komplexität gewinnt. Unter Berücksichtigung dessen lassen sich die eintretenden Kräfte wie folgt zusammenfassen.
 
