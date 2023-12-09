@@ -1,6 +1,6 @@
 # Thema 2: Analytische Methodik
 
-...
+Hier werden Konzepte vorgestellt, die zur Lösung eines zweidimensionalen Strömungproblems hilfreich sind. Über den Zusammenhang einzelner Strömungsgrößen lässt sich dann ein Lösungsalgorithmus formulieren.
 
 [TOC]
 

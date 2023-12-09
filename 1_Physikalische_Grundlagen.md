@@ -1,6 +1,6 @@
 # Thema 1: Physikalische Grundlagen
 
-...
+Hier werden die für das Projekt relevanten Erhaltungsgleichungen hergeleitet. Außerdem wird die allgemeine Form einer Erhaltungsgleichung beschrieben. Das hier vermittelte Wissen dient dem besseren Verständnis für den Sachverhalt und dessen spätere Anwendung.
 
 [TOC]
 
