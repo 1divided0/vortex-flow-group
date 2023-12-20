@@ -45,7 +45,8 @@ $$
     (\boldsymbol{u}\cdot\nabla)\boldsymbol{u} &=\nabla\boldsymbol{u}^2/2 -\boldsymbol{u}\times\boldsymbol{\omega} \\
     \nabla\times(\boldsymbol{u}\times\boldsymbol{\omega}) &= \boldsymbol{u}(\nabla\cdot\boldsymbol{\omega}) - \boldsymbol{\omega}(\nabla\cdot\boldsymbol{u}) + (\boldsymbol{\omega}\cdot\nabla)\boldsymbol{u} - (\boldsymbol{u}\cdot\nabla)\boldsymbol{\omega} \\
     \nabla\cdot\boldsymbol{\omega} = \nabla\cdot(\nabla\times\boldsymbol{u}) &= 0 \quad\text{(dreidimensionale Rotationsfelder sind divergenzfrei)} \\
-    \nabla\times\nabla\phi &= \boldsymbol{0} \quad\text{(Gradientenfelder sind wirbelfrei)}
+    \nabla\times\nabla\phi &= \boldsymbol{0} \quad\text{(Gradientenfelder sind wirbelfrei)} \\
+    \boldsymbol{F}_\mathrm{grav} &= m\boldsymbol{g} = -\nabla W_\mathrm{pot} \quad\text{(die Schwerkraft ist eine konservative Kraft)}
 \end{align*}
 $$
 
@@ -53,10 +54,6 @@ $$
 > **Aufgabe (Herleitung der Wirbeltransportgleichung)**
 >
 > Leitet die Wirbeltransportgleichung für inkompressible zweidimensionale Strömungen her.
-> 
-> _**Tipp:** Die Schwerkraft ist eine konservative Kraft und lässt sich somit als Gradient der potentiellen Energie schreiben._
->
-> $$ \boldsymbol{F}_\mathrm{grav} = m\boldsymbol{g} = -\nabla W_\mathrm{pot} $$
 
 ---
 > **Aufgabe (Zuordnung der Terme)**
@@ -185,7 +182,7 @@ $$
 
 Das ist ein wirklich sehr beachtliches Resultat. Dadurch wird klar, dass die kinetische Energie über die Wirbelstärke und Viskosität des Fluids abgebaut (bzw. in Wärme umgesetzt) wird. Es eignet sich hervorragend zur physikalischen Validierung des numerischen Lösungsalgorithmus.
 
-Nun zur Herleitung: Dafür gehen wir zunächst von der zeitlichen Änderung der kinetischen Energie aus. Hängt das Strömungsgebiet $\Omega$ nach der Euler'schen Betrachtungsweise nicht von der Zeit ab, dann kann die Ableitung in das Integral gezogen und die Produktregel angewendet werden.
+_Zur Herleitung:_ Dafür gehen wir zunächst von der zeitlichen Änderung der kinetischen Energie aus. Hängt das Strömungsgebiet $\Omega$ nach der Euler'schen Betrachtungsweise nicht von der Zeit ab, dann kann die Ableitung in das Integral gezogen und die Produktregel angewendet werden.
 
 $$
     \partial_t E_\mathrm{kin} = \rho \int_\Omega \boldsymbol{u} \cdot \partial_t \boldsymbol{u} \;dV
@@ -229,10 +226,10 @@ $$
     \partial_t E_\mathrm{kin} + \oint_{\partial\Omega} \left( \frac{\rho}{2}\boldsymbol{u}^2+p+\frac{\rho}{m}W_\mathrm{pot} \right)\boldsymbol{u}\cdot\boldsymbol{n} \,dA = \mu \int_\Omega \boldsymbol{u}\cdot\nabla^2\boldsymbol{u}\,dV.
 $$
 
-Die einzelnen Terme lassen sich nun im Sinne der Gesamtenergie identifizieren.
+Die einzelnen Terme dieser Gleichung lassen sich nun im Sinne der Gesamtenergieerhaltung identifizieren.
 
 $$
-    \partial_t E_\mathrm{kin} + \partial_t E_\mathrm{pot} = \partial_t E_\mathrm{ges}
+    \partial_t E_\mathrm{kin} + \partial_t E_\mathrm{pot} = -\partial_t E_\mathrm{diss}
 $$
 
 Hängt die potentielle Energie nicht von der Zeit ab, dann verschwindet der Potentialstrom über die Grenzflächen und es folgt
@@ -253,4 +250,4 @@ $$
     \nabla^2\boldsymbol{u}^2 = \nabla\cdot\underbrace{(\nabla\cdot\boldsymbol{u})}_{=0}\cdot\boldsymbol{u},
 $$
 
-ergibt sich der besagte Zusammenhang.
+ergibt sich letztendlich der besagte Zusammenhang.
