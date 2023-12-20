@@ -182,7 +182,10 @@ $$
 
 Das ist ein wirklich sehr beachtliches Resultat. Dadurch wird klar, dass die kinetische Energie über die Wirbelstärke und Viskosität des Fluids abgebaut (bzw. in Wärme umgesetzt) wird. Es eignet sich hervorragend zur physikalischen Validierung des numerischen Lösungsalgorithmus.
 
-_Zur Herleitung:_ Dafür gehen wir zunächst von der zeitlichen Änderung der kinetischen Energie aus. Hängt das Strömungsgebiet $\Omega$ nach der Euler'schen Betrachtungsweise nicht von der Zeit ab, dann kann die Ableitung in das Integral gezogen und die Produktregel angewendet werden.
+<details>
+<summary markdown="span">Herleitung</summary>
+
+Wir gehen zunächst von der zeitlichen Änderung der kinetischen Energie aus. Hängt das Strömungsgebiet $\Omega$ nach der Euler'schen Betrachtungsweise nicht von der Zeit ab, dann kann die Ableitung in das Integral gezogen und die Produktregel angewendet werden.
 
 $$
     \partial_t E_\mathrm{kin} = \rho \int_\Omega \boldsymbol{u} \cdot \partial_t \boldsymbol{u} \;dV
@@ -251,3 +254,5 @@ $$
 $$
 
 ergibt sich letztendlich der besagte Zusammenhang.
+
+</details>
