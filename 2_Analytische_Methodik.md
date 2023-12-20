@@ -183,7 +183,8 @@ $$
 Das ist ein wirklich sehr beachtliches Resultat. Dadurch wird klar, dass die kinetische Energie über die Wirbelstärke und Viskosität des Fluids abgebaut (bzw. in Wärme umgesetzt) wird. Es eignet sich hervorragend zur physikalischen Validierung des numerischen Lösungsalgorithmus.
 
 <details>
-<summary markdown="span">Herleitung</summary>
+<summary markdown="span"><b>Herleitung</b></summary>
+<br>
 
 Wir gehen zunächst von der zeitlichen Änderung der kinetischen Energie aus. Hängt das Strömungsgebiet $\Omega$ nach der Euler'schen Betrachtungsweise nicht von der Zeit ab, dann kann die Ableitung in das Integral gezogen und die Produktregel angewendet werden.
 
