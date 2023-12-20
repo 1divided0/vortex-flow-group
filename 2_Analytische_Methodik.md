@@ -254,6 +254,10 @@ $$
     \nabla^2\boldsymbol{u}^2 = \nabla\cdot\underbrace{(\nabla\cdot\boldsymbol{u})}_{=0}\cdot\boldsymbol{u},
 $$
 
-ergibt sich letztendlich der besagte Zusammenhang.
+ergibt sich letztendlich der besagte Zusammenhang
+
+$$
+    \partial_t E_\mathrm{kin} = -\mu \int_\Omega \boldsymbol{\omega}^2\,dV.
+$$
 
 </details>
