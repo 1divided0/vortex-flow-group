@@ -238,3 +238,12 @@ $$
 > **Aufgabe (Zuordnung der Terme)**
 >
 > Schaut euch noch einmal die Navier-Stokes-Gleichung an und vergleicht sie mit der allgemeinen Transportgleichung. Findet ihr die entsprechenden Terme?
+
+---
+> **Begleitmaterial (Transportgleichung 1d)**
+>
+> [![Matlab Beispiel](.Dateien/Plaketten/Matlab_Beispiel.svg)](Begleitmaterial/Transportgleichung_1d_Matlab.ipynb) [![Python Beispiel](.Dateien/Plaketten/Python_Beispiel.svg)](Begleitmaterial/Transportgleichung_1d_Python.ipynb)
+>
+> ![Transportgleichung 1d - Konvektion](.Dateien/Bilder/Transportgleichung_1d/u60_c0_r0_T0.5.gif) ![Transportgleichung 1d - Quelle](.Dateien/Bilder/Transportgleichung_1d/u60_c0_r0.3_T0.5.gif)
+>
+> ![Transportgleichung 1d - schwache Diffusion](.Dateien/Bilder/Transportgleichung_1d/u60_c0.1_r0_T0.5.gif) ![Transportgleichung 1d - starke Diffusion](.Dateien/Bilder/Transportgleichung_1d/u60_c3_r0_T0.5.gif)
