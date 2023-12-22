@@ -10,7 +10,7 @@ Vorbetrachtungen
 ------------------------------------------------------------------------------->
 ## Vorbetrachtungen
 
-Die Formulierung der Gleichungen stützt sich auf der Kontinuumshypothese. Demnach befinden sich in einem hinreichend kleinen Fluidvolumen ausreichend viele Moleküle, sodass von einem Kontinuum ausgegangen werden kann. Etwas genauer lässt sich die Bedingung mit der Knudsen-Zahl $\mathrm{Kn}$ definieren, welche das Verhältnis der mittleren freien molekularen Weglänge $l$ zur charakteristischen Länge des Strömungsfeldes $L$ (z. B. dem Durchmesser eines durchströmten Rohres) beschreibt.
+Die Formulierung der Gleichungen stützt sich auf der Kontinuumshypothese. Demnach befinden sich in einem hinreichend kleinen Fluidvolumen ausreichend viele Moleküle, sodass von einem Kontinuum ausgegangen werden kann. Etwas genauer lässt sich die Bedingung mit der Knudsen-Zahl `Kn` definieren, welche das Verhältnis der mittleren freien molekularen Weglänge _`l`_ zur charakteristischen Länge des Strömungsfeldes _`L`_ (z. B. dem Durchmesser eines durchströmten Rohres) beschreibt.
 
 $$
     \mathrm{Kn} = \frac{l}{L}
@@ -28,7 +28,7 @@ Außerdem lässt sich eine Fluidströmung auf zwei unterschiedliche Weisen betra
 >
 > ![Betrachtungsweise nach Euler und nach Lagrange](.Dateien/Bilder/Euler_vs_Lagrange.svg)
 
-_**Anmerkung:** Da die Euler'sche Betrachtungsweise mit jedem beliebigen Inertialsystem in Einklang steht, ist sie womöglich etwas intuitiver als die Lagrange'sche. Darum wird im Folgenden auf diese Weise formuliert. Um ggf. von der Lagrange'schen zur Euler'schen Betrachtungsweise zu wechsel, wird die sog. substantielle Ableitung berechnet. In diesem Zusammenhang ist damit die totale Ableitung gemeint (der Name illustriert lediglich den Zusammenhang zum Bezugssystem des Fluidpartikels). Für die folgenden Betrachtungen sei außerdem noch erwähnt, dass der Geschwindigkeitsvektor in der numerischen Strömungsmechanik üblicher Weise mit $\boldsymbol{u}$ bezeichnet wird._
+_**Anmerkung:** Da die Euler'sche Betrachtungsweise mit jedem beliebigen Inertialsystem in Einklang steht, ist sie womöglich etwas intuitiver als die Lagrange'sche. Darum wird im Folgenden auf diese Weise formuliert. Um ggf. von der Lagrange'schen zur Euler'schen Betrachtungsweise zu wechsel, wird die sog. substantielle Ableitung berechnet. In diesem Zusammenhang ist damit die totale Ableitung gemeint (der Name illustriert lediglich den Zusammenhang zum Bezugssystem des Fluidpartikels). Für die folgenden Betrachtungen sei außerdem noch erwähnt, dass der Geschwindigkeitsvektor in der numerischen Strömungsmechanik üblicher Weise mit **`u`** bezeichnet wird._
 
 
 <!------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ Massenerhaltung (alias Kontinuitätsgleichung)
 ------------------------------------------------------------------------------->
 ## Massenerhaltung (alias Kontinuitätsgleichung)
 
-Für die Herleitung der Massenerhaltungsgleichung wird von einem infinitesimalen ortsfesten Kontrollvolumen $V$ ausgegangen. Dafür wird zunächst der Massenstrom über die einzelnen Raumachsen $1$ bis $n$ bilanziert und anschließend aufsummiert, da es sich bei der Masse um eine skalare Größe handelt. Die eingeströmte Seite ist dabei diejenige, deren Flächennormale der positiven Achsenrichtung entgegenzeigt und die ausgeströmte Seite ist dementsprechend diejenige, deren Flächennormale in positive Achsenrichtung zeigt. Da der Massenstrom positiv ist, wenn dem Kontrollvolumen Masse zugeführt wird, geht der austretende Massenstrom mit negativem Vorzeichen in die Bilanz ein. Sollte sich der Massenstrom im Inneren des Kontrollvolumens (z. B. durch chemische Prozesse) ändern, dann muss außerdem noch ein Quellterm berücksichtigt werden. Quellen werden darin mit einem positiven Vorzeichen vermerkt und Senken mit einem negativen.
+Für die Herleitung der Massenerhaltungsgleichung wird von einem infinitesimalen ortsfesten Kontrollvolumen _`V`_ ausgegangen. Dafür wird zunächst der Massenstrom über die einzelnen Raumachsen `1` bis _`n`_ bilanziert und anschließend aufsummiert, da es sich bei der Masse um eine skalare Größe handelt. Die eingeströmte Seite ist dabei diejenige, deren Flächennormale der positiven Achsenrichtung entgegenzeigt und die ausgeströmte Seite ist dementsprechend diejenige, deren Flächennormale in positive Achsenrichtung zeigt. Da der Massenstrom positiv ist, wenn dem Kontrollvolumen Masse zugeführt wird, geht der austretende Massenstrom mit negativem Vorzeichen in die Bilanz ein. Sollte sich der Massenstrom im Inneren des Kontrollvolumens (z. B. durch chemische Prozesse) ändern, dann muss außerdem noch ein Quellterm berücksichtigt werden. Quellen werden darin mit einem positiven Vorzeichen vermerkt und Senken mit einem negativen.
 
 $$
     \partial_t m = \partial_t (\rho V) = \left[ \sum_{i=1}^n (\dot m_{\mathrm{ein}} - \dot m_{\mathrm{aus}})_i \right] + \dot m_{\mathrm{quell}} = \dot m
@@ -88,7 +88,7 @@ $$
     \partial_t \rho + \nabla\cdot (\rho \boldsymbol{u}) = 0,
 $$
 
-oder unter der Annahme von Inkompressibilität (wobei sich das Kontrollvolumen nicht mit dem Druck $p$ ändert und die Dichte $\rho$ konstant bleibt), d. h. in diesem Fall
+oder unter der Annahme von Inkompressibilität (wobei sich das Kontrollvolumen nicht mit dem Druck _`p`_ ändert und die Dichte _`ρ`_ konstant bleibt), d. h. in diesem Fall
 
 $$
     \partial_p V = 0 ~\Leftrightarrow~ \rho = \text{konstant}
@@ -204,13 +204,13 @@ Allgemeine Transportgleichung (alias Konvektions-Diffusions-Gleichung)
 ------------------------------------------------------------------------------->
 ## Allgemeine Transportgleichung (alias Konvektions-Diffusions-Gleichung)
 
-Aus den beiden Herleitungen gehen gewisse Ähnlichkeiten hervor. Darum stellt sich die Frage, ob es nicht eine Art Blaupause für die Herleitung solcher Erhaltungsgleichungen gibt – und die gibt es in der Tat. Um dem Verständnis für die Erhaltungsgleichungen näher zu kommen, ist es durchaus von Vorteil, das Konzept einer solchen zu verallgemeinern. Dafür wird die Kontinuitätsgleichung für eine allgemeine Strömungsgröße $\Phi$ mit Quellterm $R$ aufgestellt.
+Aus den beiden Herleitungen gehen gewisse Ähnlichkeiten hervor. Darum stellt sich die Frage, ob es nicht eine Art Blaupause für die Herleitung solcher Erhaltungsgleichungen gibt – und die gibt es in der Tat. Um dem Verständnis für die Erhaltungsgleichungen näher zu kommen, ist es durchaus von Vorteil, das Konzept einer solchen zu verallgemeinern. Dafür wird die Kontinuitätsgleichung für eine allgemeine Strömungsgröße _`Φ`_ mit Quellterm _`R`_ aufgestellt.
 
 $$
     \partial_t \Phi + \nabla\cdot\boldsymbol{J} = R
 $$
 
-Dabei ist $\boldsymbol{J}$ die Stromdichte, die den Fluss der Größe $\Phi$ durch die Grenzflächen des Kontrollvolumens beschreibt. Die Stromdichte setzt sich aus zwei Anteilen zusammen:
+Dabei ist _**`J`**_ die Stromdichte, die den Fluss der Größe _`Φ`_ durch die Grenzflächen des Kontrollvolumens beschreibt. Die Stromdichte setzt sich aus zwei Anteilen zusammen:
 
 - Dem Diffusionsanteil $$\boldsymbol{J}_\mathrm{diff} = -c\nabla\Phi,$$ welcher nach dem 1. Fick'schen Gesetz den Transport durch Diffusion beschreibt (als negativ proportional zum Konzentrationsgradienten, da die Stromdichte in Diffusionsrichtung abnimmt).
 
@@ -222,13 +222,13 @@ $$
     \boldsymbol{J} = \boldsymbol{J}_\mathrm{diff} + \boldsymbol{J}_\mathrm{konv} = -c\nabla\Phi + \boldsymbol{u}\Phi
 $$
 
-Und es ergibt sich die Konvektions-Diffusions-Gleichung mit ihren unterschiedlichen Termen für skalare
+Und es ergibt sich die Konvektions-Diffusions-Gleichung mit ihren unterschiedlichen Termen für Skalare
 
 $$
     \underbrace{\partial_t \Phi}_\text{Instationarität} = \underbrace{c\nabla^2\Phi}_\text{Diffusion} - \underbrace{\nabla\cdot(\boldsymbol{u}\Phi)}_\text{Konvektion} + \underbrace{R}_\text{Quelle},
 $$
 
-bzw. für vektoren
+bzw. für Vektoren
 
 $$
     \underbrace{\partial_t \boldsymbol{\Phi}}_\text{Instationarität} = \underbrace{c\nabla^2\boldsymbol{\Phi}}_\text{Diffusion} - \underbrace{(\boldsymbol{u}\cdot\nabla)\boldsymbol{\Phi}}_\text{Konvektion} + \underbrace{\boldsymbol{R}}_\text{Quelle}.

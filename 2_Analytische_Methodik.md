@@ -10,7 +10,7 @@ Wirbeltransportgleichung
 ------------------------------------------------------------------------------->
 ## Wirbeltransportgleichung
 
-Um Wirbelströmungen adäquat untersuchen zu können, wird der Transport einer ganz bestimmten Strömungsgröße betrachtet – nämlich der Wirbelstärke $\boldsymbol{\omega}$. Sie ist wie folgt definiert:
+Um Wirbelströmungen adäquat untersuchen zu können, wird der Transport einer ganz bestimmten Strömungsgröße betrachtet – nämlich der Wirbelstärke _**`ω`**_. Sie ist wie folgt definiert:
 
 $$
     \boldsymbol{\omega} \coloneqq \operatorname{rot}(\boldsymbol{u}) = \nabla\times\boldsymbol{u}
@@ -108,7 +108,7 @@ Stromfunktion
 ------------------------------------------------------------------------------->
 ## Stromfunktion
 
-Um die Geschwindigkeit anhand der Stromlinien zu beschreiben, wird eine Stromfunktion $\Psi$ eingeführt, sodass die Stromlinien Niveaulinien dieser Stromfunktion darstellen. Entlang der Stromlinien ist dann die Stromfunktion konstant. Außerdem werden die Niveaustufen so festgelegt, dass ihre Differenz dem dazwischen passierenden Volumenstrom entspricht. Für inkompressible zweidimensionale Strömungen lässt die Stromfunktion als Differenz über ein bestimmtes Integral zwischen zwei Punkten $A$ und $B$ definieren.
+Um die Geschwindigkeit anhand der Stromlinien zu beschreiben, wird eine Stromfunktion _`Ψ`_ eingeführt, sodass die Stromlinien Niveaulinien dieser Stromfunktion darstellen. Entlang der Stromlinien ist dann die Stromfunktion konstant. Außerdem werden die Niveaustufen so festgelegt, dass ihre Differenz dem dazwischen passierenden Volumenstrom entspricht. Für inkompressible zweidimensionale Strömungen lässt die Stromfunktion als Differenz über ein bestimmtes Integral zwischen zwei Punkten _`A`_ und _`B`_ definieren.
 
 $$
     \Psi(B) - \Psi(A) = \int_A^B (d\dot V_x - d\dot V_y) = \int_A^B (u\,dy - v\,dx)
@@ -174,7 +174,7 @@ Enstrophie
 ------------------------------------------------------------------------------->
 ## Enstrophie
 
-Eine weitere Kenngröße, um Dissipationeffekte in möglicherweise turbulenten Strömungen zu untersuchen, ist die sog. Enstrophie. Bei inkompressiblen Strömungen stellt sie einen integralen Zusammenhang zwischen der Wirbelstärke und kinetischen Energie im Strömungsgebiet $\Omega$ her.
+Eine weitere Kenngröße, um Dissipationeffekte in möglicherweise turbulenten Strömungen zu untersuchen, ist die sog. Enstrophie. Bei inkompressiblen Strömungen stellt sie einen integralen Zusammenhang zwischen der Wirbelstärke und kinetischen Energie im Strömungsgebiet _`Ω`_ her.
 
 $$
     \partial_t \underbrace{\left( \frac{\rho}{2} \int_\Omega \boldsymbol{u}^2 \,dV \right)}_{\eqqcolon\,\text{kinetische Energie}\,(E_\mathrm{kin})} = -\mu \underbrace{\left( \int_\Omega \boldsymbol{\omega}^2 \,dV \right)}_{\eqqcolon\,\text{Enstrophie}\,(\mathcal{E})}
@@ -186,7 +186,7 @@ Das ist ein wirklich sehr beachtliches Resultat. Dadurch wird klar, dass die kin
 <summary markdown="span"><b>Herleitung</b></summary>
 <br>
 
-Wir gehen zunächst von der zeitlichen Änderung der kinetischen Energie aus. Hängt das Strömungsgebiet $\Omega$ nach der Euler'schen Betrachtungsweise nicht von der Zeit ab, dann kann die Ableitung in das Integral gezogen und die Produktregel angewendet werden.
+Wir gehen zunächst von der zeitlichen Änderung der kinetischen Energie aus. Hängt das Strömungsgebiet _`Ω`_ nach der Euler'schen Betrachtungsweise nicht von der Zeit ab, dann kann die Ableitung in das Integral gezogen und die Produktregel angewendet werden.
 
 $$
     \partial_t E_\mathrm{kin} = \rho \int_\Omega \boldsymbol{u} \cdot \partial_t \boldsymbol{u} \;dV
