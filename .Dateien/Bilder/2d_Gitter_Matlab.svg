@@ -3,11 +3,11 @@
 
 <svg
    width="81.537514mm"
-   height="69.181992mm"
-   viewBox="0 0 81.537514 69.181992"
+   height="55.95282mm"
+   viewBox="0 0 81.537514 55.95282"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25, custom)"
    sodipodi:docname="2d_Gitter_Matlab.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -24,15 +24,15 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.71179153"
-     inkscape:cx="-191.76963"
-     inkscape:cy="151.02737"
+     inkscape:zoom="1.4235831"
+     inkscape:cx="279.22501"
+     inkscape:cy="175.26199"
      inkscape:window-width="1920"
      inkscape:window-height="1005"
      inkscape:window-x="0"
-     inkscape:window-y="38"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g49" />
+     inkscape:current-layer="layer1" />
   <defs
      id="defs1">
     <path
@@ -54,9 +54,6 @@
        id="MJX-22-TEX-N-29"
        d="m 60,749 4,1 q 5,0 10,0 h 12 l 28,-24 q 94,-85 137,-212 43,-127 43,-264 0,-68 -10,-131 -10,-63 -23,-107 -13,-44 -37,-88 -24,-44 -38,-67 -14,-23 -41,-51 -27,-28 -32,-33 -5,-5 -23,-19 -3,-3 -4,-4 H 74 q -8,0 -11,0 -3,0 -5,3 -2,3 -3,9 1,1 11,13 155,161 155,475 0,314 -155,475 -10,12 -11,13 0,8 5,11 z" />
     <path
-       id="MJX-22-TEX-N-A0"
-       d="" />
-    <path
        id="MJX-22-TEX-I-1D45A"
        d="m 21,287 q 1,6 3,16 2,10 12,38 10,28 20,47 10,19 32,37 22,18 44,17 22,-1 43,-7 21,-6 30,-18 9,-12 16,-22 7,-10 8,-19 l 2,-7 q 0,-2 1,-2 l 11,11 q 60,64 141,64 17,0 31,-2 14,-2 26,-7 12,-5 19,-10 7,-5 15,-12 8,-7 10,-13 2,-6 8,-13 6,-7 4,-12 -2,-5 3,-9 5,-4 2,-7 l 8,10 q 63,75 149,75 54,0 87,-27 33,-27 34,-79 0,-51 -38,-158 -38,-107 -38,-128 1,-14 5,-19 4,-5 15,-5 28,0 52,30 24,30 39,82 3,11 6,13 3,2 16,2 20,0 20,-8 0,-1 -4,-15 -8,-29 -22,-57 -14,-28 -46,-56 -32,-28 -69,-27 -47,0 -68,27 -21,27 -21,56 0,19 36,120 36,101 37,152 0,59 -44,59 h -5 Q 565,404 506,303 L 499,291 466,157 Q 433,26 428,16 q -13,-27 -43,-27 -13,0 -21,7 -8,7 -11,12 -3,5 -3,10 0,11 34,143 l 36,146 q 3,15 3,38 0,59 -44,59 h -5 Q 288,404 229,303 L 222,291 189,157 Q 156,26 151,16 138,-11 108,-11 95,-11 87,-5 79,1 76,7 q -3,6 -2,10 0,13 38,164 39,154 39,161 3,15 3,27 0,36 -25,36 -22,0 -37,-28 Q 77,349 69,316 61,283 57,280 55,278 41,278 H 27 q -6,6 -6,9 z" />
     <path
@@ -70,76 +67,61 @@
      transform="translate(-58.005497,-57.049194)">
     <path
        style="color:#000000;fill:#000000;-inkscape-stroke:none"
-       d="m 79.369141,79.369141 v 0.177734 39.521485 H 132.29687 V 79.369141 Z m 0.353515,0.353515 H 131.94531 V 118.71484 H 79.722656 Z"
-       id="rect1" />
+       d="M 79.369141,79.369141 V 79.546875 106.0585 H 132.29687 V 79.369141 Z m 0.353515,0.353515 H 131.94531 V 105.70498 H 79.722656 Z"
+       id="rect1"
+       sodipodi:nodetypes="ccccccccccc" />
     <path
        style="color:#000000;fill:#000000;-inkscape-stroke:none"
-       d="m 105.92188,79.53125 v 39.21289 h 0.17578 V 79.53125 Z"
-       id="path1" />
+       d="m 105.92188,79.53125 v 26.51289 h 0.17578 V 79.53125 Z"
+       id="path1"
+       sodipodi:nodetypes="ccccc" />
     <path
        style="color:#000000;fill:#000000;-inkscape-stroke:none"
-       d="m 119.15039,79.53125 v 39.21289 h 0.17578 V 79.53125 Z"
-       id="path2" />
+       d="m 119.15039,79.53125 v 26.51289 h 0.17578 V 79.53125 Z"
+       id="path2"
+       sodipodi:nodetypes="ccccc" />
     <path
        style="color:#000000;fill:#000000;-inkscape-stroke:none"
-       d="m 92.691406,79.53125 v 39.21289 h 0.177735 V 79.53125 Z"
-       id="path5" />
+       d="m 92.691406,79.53125 v 26.51289 h 0.177735 V 79.53125 Z"
+       id="path5"
+       sodipodi:nodetypes="ccccc" />
     <path
        style="color:#000000;fill:#000000;-inkscape-stroke:none"
        d="m 79.615234,92.691406 v 0.177735 h 52.675786 v -0.177735 z"
        id="path6" />
     <path
-       style="color:#000000;fill:#000000;-inkscape-stroke:none"
-       d="m 79.615234,105.92188 v 0.17578 h 52.675786 v -0.17578 z"
-       id="path7" />
-    <path
        id="path8"
-       style="fill:#ff0000;stroke-width:0.176389"
+       style="fill:#d62728;fill-opacity:1;stroke-width:0.176389"
        d="m 80.312301,79.659966 a 0.73650247,0.73650247 0 0 1 -0.736503,0.736502 0.73650247,0.73650247 0 0 1 -0.736502,-0.736502 0.73650247,0.73650247 0 0 1 0.736502,-0.736503 0.73650247,0.73650247 0 0 1 0.736503,0.736503 z" />
     <path
        id="path8-5"
        style="stroke-width:0.176389"
        d="m 80.318839,92.811501 a 0.73650247,0.73650247 0 0 1 -0.736503,0.736502 0.73650247,0.73650247 0 0 1 -0.736502,-0.736502 0.73650247,0.73650247 0 0 1 0.736502,-0.736503 0.73650247,0.73650247 0 0 1 0.736503,0.736503 z" />
     <path
-       id="path8-2"
-       style="stroke-width:0.176389"
-       d="m 80.318839,106.04066 a 0.73650247,0.73650247 0 0 1 -0.736503,0.7365 0.73650247,0.73650247 0 0 1 -0.736502,-0.7365 0.73650247,0.73650247 0 0 1 0.736502,-0.73651 0.73650247,0.73650247 0 0 1 0.736503,0.73651 z" />
-    <path
        id="path8-7"
-       style="fill:#ff0000;stroke-width:0.176389"
-       d="m 80.318839,118.74067 a 0.73650247,0.73650247 0 0 1 -0.736503,0.7365 0.73650247,0.73650247 0 0 1 -0.736502,-0.7365 0.73650247,0.73650247 0 0 1 0.736502,-0.7365 0.73650247,0.73650247 0 0 1 0.736503,0.7365 z" />
+       style="fill:#d62728;fill-opacity:1;stroke-width:0.176389"
+       d="m 80.318839,105.73081 c -10e-7,0.40676 -0.329745,0.7365 -0.736503,0.7365 -0.406758,0 -0.736501,-0.32974 -0.736502,-0.7365 10e-7,-0.40676 0.329744,-0.7365 0.736502,-0.7365 0.406758,0 0.736502,0.32974 0.736503,0.7365 z"
+       sodipodi:nodetypes="sssss" />
     <path
        id="path8-6"
        style="stroke-width:0.176389"
-       d="m 93.452254,118.89656 a 0.73650247,0.73650247 0 0 1 -0.736502,0.7365 0.73650247,0.73650247 0 0 1 -0.736503,-0.7365 0.73650247,0.73650247 0 0 1 0.736503,-0.7365 0.73650247,0.73650247 0 0 1 0.736502,0.7365 z" />
+       d="m 93.452254,105.8867 c -10e-7,0.40676 -0.329744,0.7365 -0.736502,0.7365 -0.406758,0 -0.736502,-0.32974 -0.736503,-0.7365 10e-7,-0.40676 0.329745,-0.7365 0.736503,-0.7365 0.406758,0 0.736501,0.32974 0.736502,0.7365 z"
+       sodipodi:nodetypes="sssss" />
     <path
        id="path8-61"
        style="stroke-width:0.176389"
-       d="m 106.69921,118.88033 a 0.73650247,0.73650247 0 0 1 -0.7365,0.73651 0.73650247,0.73650247 0 0 1 -0.7365,-0.73651 0.73650247,0.73650247 0 0 1 0.7365,-0.7365 0.73650247,0.73650247 0 0 1 0.7365,0.7365 z" />
+       d="m 106.69921,105.87047 c 0,0.40676 -0.32974,0.73651 -0.7365,0.73651 -0.40676,0 -0.7365,-0.32975 -0.7365,-0.73651 0,-0.40676 0.32974,-0.7365 0.7365,-0.7365 0.40676,0 0.7365,0.32974 0.7365,0.7365 z"
+       sodipodi:nodetypes="sssss" />
     <path
        id="path8-20"
        style="stroke-width:0.176389"
-       d="m 119.92807,118.89944 a 0.73650247,0.73650247 0 0 1 -0.7365,0.7365 0.73650247,0.73650247 0 0 1 -0.73651,-0.7365 0.73650247,0.73650247 0 0 1 0.73651,-0.73651 0.73650247,0.73650247 0 0 1 0.7365,0.73651 z" />
+       d="m 119.92807,105.88958 c 0,0.40676 -0.32974,0.7365 -0.7365,0.7365 -0.40676,0 -0.73651,-0.32974 -0.73651,-0.7365 0,-0.40677 0.32975,-0.73652 0.73651,-0.73651 0.40676,0 0.7365,0.32975 0.7365,0.73651 z"
+       sodipodi:nodetypes="sssss" />
     <path
        id="path8-1"
-       style="fill:#ff0000;stroke-width:0.176389"
-       d="m 132.83863,118.77352 a 0.73650247,0.73650247 0 0 1 -0.7365,0.7365 0.73650247,0.73650247 0 0 1 -0.73651,-0.7365 0.73650247,0.73650247 0 0 1 0.73651,-0.7365 0.73650247,0.73650247 0 0 1 0.7365,0.7365 z" />
-    <path
-       id="circle8"
-       style="stroke-width:0.176389"
-       d="m 93.452254,106.01134 a 0.73650247,0.73650247 0 0 1 -0.736502,0.7365 0.73650247,0.73650247 0 0 1 -0.736503,-0.7365 0.73650247,0.73650247 0 0 1 0.736503,-0.73651 0.73650247,0.73650247 0 0 1 0.736502,0.73651 z" />
-    <path
-       id="circle9"
-       style="stroke-width:0.176389"
-       d="m 106.69921,105.9951 a 0.73650247,0.73650247 0 0 1 -0.7365,0.7365 0.73650247,0.73650247 0 0 1 -0.7365,-0.7365 0.73650247,0.73650247 0 0 1 0.7365,-0.7365 0.73650247,0.73650247 0 0 1 0.7365,0.7365 z" />
-    <path
-       id="circle10"
-       style="stroke-width:0.176389"
-       d="m 119.92807,106.01419 a 0.73650247,0.73650247 0 0 1 -0.7365,0.7365 0.73650247,0.73650247 0 0 1 -0.73651,-0.7365 0.73650247,0.73650247 0 0 1 0.73651,-0.7365 0.73650247,0.73650247 0 0 1 0.7365,0.7365 z" />
-    <path
-       id="circle13"
-       style="stroke-width:0.176389"
-       d="m 132.83863,105.88827 a 0.73650247,0.73650247 0 0 1 -0.7365,0.7365 0.73650247,0.73650247 0 0 1 -0.73651,-0.7365 0.73650247,0.73650247 0 0 1 0.73651,-0.7365 0.73650247,0.73650247 0 0 1 0.7365,0.7365 z" />
+       style="fill:#d62728;fill-opacity:1;stroke-width:0.176389"
+       d="m 132.83863,105.76366 c 0,0.40676 -0.32974,0.7365 -0.7365,0.7365 -0.40676,0 -0.73651,-0.32974 -0.73651,-0.7365 0,-0.40676 0.32975,-0.73651 0.73651,-0.7365 0.40676,0 0.7365,0.32974 0.7365,0.7365 z"
+       sodipodi:nodetypes="sssss" />
     <path
        id="circle14"
        style="stroke-width:0.176389"
@@ -170,7 +152,7 @@
        d="m 119.92807,79.555847 a 0.73650247,0.73650247 0 0 1 -0.7365,0.736503 0.73650247,0.73650247 0 0 1 -0.73651,-0.736503 0.73650247,0.73650247 0 0 1 0.73651,-0.736502 0.73650247,0.73650247 0 0 1 0.7365,0.736502 z" />
     <path
        id="circle25"
-       style="fill:#ff0000;stroke-width:0.176389"
+       style="fill:#d62728;fill-opacity:1;stroke-width:0.176389"
        d="m 132.83863,79.429924 a 0.73650247,0.73650247 0 0 1 -0.7365,0.736502 0.73650247,0.73650247 0 0 1 -0.73651,-0.736502 0.73650247,0.73650247 0 0 1 0.73651,-0.736502 0.73650247,0.73650247 0 0 1 0.7365,0.736502 z" />
     <g
        id="path25">
@@ -241,43 +223,43 @@
       <g
          data-mml-node="mo"
          id="g1-8"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <use
            data-c="28"
            xlink:href="#MJX-22-TEX-N-28"
            id="use1-4"
-           style="fill:#ff0000" />
+           style="fill:#d62728;fill-opacity:1" />
       </g>
       <g
          data-mml-node="msub"
          transform="translate(389)"
          id="g5-5"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <g
            data-mml-node="mi"
            id="g2-0"
-           style="fill:#ff0000">
+           style="fill:#d62728;fill-opacity:1">
           <use
              data-c="1D466"
              xlink:href="#MJX-22-TEX-I-1D466"
              id="use2-3"
-             style="fill:#ff0000" />
+             style="fill:#d62728;fill-opacity:1" />
         </g>
         <g
            data-mml-node="TeXAtom"
            transform="matrix(0.707,0,0,0.707,523,-150)"
            data-mjx-texclass="ORD"
            id="g4-6"
-           style="fill:#ff0000">
+           style="fill:#d62728;fill-opacity:1">
           <g
              data-mml-node="mn"
              id="g3-1"
-             style="fill:#ff0000">
+             style="fill:#d62728;fill-opacity:1">
             <use
                data-c="31"
                xlink:href="#MJX-22-TEX-N-31"
                id="use3-0"
-               style="fill:#ff0000" />
+               style="fill:#d62728;fill-opacity:1" />
           </g>
         </g>
       </g>
@@ -285,43 +267,43 @@
          data-mml-node="mo"
          transform="translate(1315.6)"
          id="g6"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <use
            data-c="2C"
            xlink:href="#MJX-22-TEX-N-2C"
            id="use5"
-           style="fill:#ff0000" />
+           style="fill:#d62728;fill-opacity:1" />
       </g>
       <g
          data-mml-node="msub"
          transform="translate(1760.2)"
          id="g10"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <g
            data-mml-node="mi"
            id="g7"
-           style="fill:#ff0000">
+           style="fill:#d62728;fill-opacity:1">
           <use
              data-c="1D465"
              xlink:href="#MJX-22-TEX-I-1D465"
              id="use6"
-             style="fill:#ff0000" />
+             style="fill:#d62728;fill-opacity:1" />
         </g>
         <g
            data-mml-node="TeXAtom"
            transform="matrix(0.707,0,0,0.707,605,-150)"
            data-mjx-texclass="ORD"
            id="g9"
-           style="fill:#ff0000">
+           style="fill:#d62728;fill-opacity:1">
           <g
              data-mml-node="mn"
              id="g8"
-             style="fill:#ff0000">
+             style="fill:#d62728;fill-opacity:1">
             <use
                data-c="31"
                xlink:href="#MJX-22-TEX-N-31"
                id="use7"
-               style="fill:#ff0000" />
+               style="fill:#d62728;fill-opacity:1" />
           </g>
         </g>
       </g>
@@ -329,54 +311,54 @@
          data-mml-node="mo"
          transform="translate(2768.8)"
          id="g11"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <use
            data-c="29"
            xlink:href="#MJX-22-TEX-N-29"
            id="use10"
-           style="fill:#ff0000" />
+           style="fill:#d62728;fill-opacity:1" />
       </g>
       <g
          data-mml-node="mo"
          transform="translate(11575.694,130.54415)"
          id="g13"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <use
            data-c="28"
            xlink:href="#MJX-22-TEX-N-28"
            id="use12"
-           style="fill:#ff0000" />
+           style="fill:#d62728;fill-opacity:1" />
       </g>
       <g
          data-mml-node="msub"
          transform="translate(11964.694,130.54415)"
          id="g17"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <g
            data-mml-node="mi"
            id="g14"
-           style="fill:#ff0000">
+           style="fill:#d62728;fill-opacity:1">
           <use
              data-c="1D466"
              xlink:href="#MJX-22-TEX-I-1D466"
              id="use13"
-             style="fill:#ff0000" />
+             style="fill:#d62728;fill-opacity:1" />
         </g>
         <g
            data-mml-node="TeXAtom"
            transform="matrix(0.707,0,0,0.707,523,-150)"
            data-mjx-texclass="ORD"
            id="g16"
-           style="fill:#ff0000">
+           style="fill:#d62728;fill-opacity:1">
           <g
              data-mml-node="mn"
              id="g15"
-             style="fill:#ff0000">
+             style="fill:#d62728;fill-opacity:1">
             <use
                data-c="31"
                xlink:href="#MJX-22-TEX-N-31"
                id="use14"
-               style="fill:#ff0000" />
+               style="fill:#d62728;fill-opacity:1" />
           </g>
         </g>
       </g>
@@ -384,43 +366,43 @@
          data-mml-node="mo"
          transform="translate(12891.194,130.54415)"
          id="g18"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <use
            data-c="2C"
            xlink:href="#MJX-22-TEX-N-2C"
            id="use17"
-           style="fill:#ff0000" />
+           style="fill:#d62728;fill-opacity:1" />
       </g>
       <g
          data-mml-node="msub"
          transform="translate(13335.894,130.54415)"
          id="g22"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <g
            data-mml-node="mi"
            id="g19"
-           style="fill:#ff0000">
+           style="fill:#d62728;fill-opacity:1">
           <use
              data-c="1D465"
              xlink:href="#MJX-22-TEX-I-1D465"
              id="use18"
-             style="fill:#ff0000" />
+             style="fill:#d62728;fill-opacity:1" />
         </g>
         <g
            data-mml-node="TeXAtom"
            transform="matrix(0.707,0,0,0.707,605,-150)"
            data-mjx-texclass="ORD"
            id="g21"
-           style="fill:#ff0000">
+           style="fill:#d62728;fill-opacity:1">
           <g
              data-mml-node="mi"
              id="g20"
-             style="fill:#ff0000">
+             style="fill:#d62728;fill-opacity:1">
             <use
                data-c="1D45A"
                xlink:href="#MJX-22-TEX-I-1D45A"
                id="use19"
-               style="fill:#ff0000" />
+               style="fill:#d62728;fill-opacity:1" />
           </g>
         </g>
       </g>
@@ -428,54 +410,57 @@
          data-mml-node="mo"
          transform="translate(14611.694,130.54415)"
          id="g23"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <use
            data-c="29"
            xlink:href="#MJX-22-TEX-N-29"
            id="use22"
-           style="fill:#ff0000" />
+           style="fill:#d62728;fill-opacity:1" />
       </g>
       <g
          data-mml-node="mo"
          transform="translate(-319.78748,-11081.562)"
          id="g25"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <use
            data-c="28"
            xlink:href="#MJX-22-TEX-N-28"
            id="use24"
-           style="fill:#ff0000" />
+           style="fill:#d62728;fill-opacity:1"
+           transform="translate(0,2958.5596)" />
       </g>
       <g
          data-mml-node="msub"
          transform="translate(69.21252,-11081.562)"
          id="g29"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <g
            data-mml-node="mi"
            id="g26"
-           style="fill:#ff0000">
+           style="fill:#d62728;fill-opacity:1">
           <use
              data-c="1D466"
              xlink:href="#MJX-22-TEX-I-1D466"
              id="use25"
-             style="fill:#ff0000" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(0,2958.5596)" />
         </g>
         <g
            data-mml-node="TeXAtom"
            transform="matrix(0.707,0,0,0.707,523,-150)"
            data-mjx-texclass="ORD"
            id="g28"
-           style="fill:#ff0000">
+           style="fill:#d62728;fill-opacity:1">
           <g
              data-mml-node="mi"
              id="g27"
-             style="fill:#ff0000">
+             style="fill:#d62728;fill-opacity:1">
             <use
                data-c="1D45B"
                xlink:href="#MJX-22-TEX-I-1D45B"
                id="use26"
-               style="fill:#ff0000" />
+               style="fill:#d62728;fill-opacity:1"
+               transform="translate(0,4184.6652)" />
           </g>
         </g>
       </g>
@@ -483,43 +468,46 @@
          data-mml-node="mo"
          transform="translate(1066.5125,-11081.562)"
          id="g30-6"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <use
            data-c="2C"
            xlink:href="#MJX-22-TEX-N-2C"
            id="use29"
-           style="fill:#ff0000" />
+           style="fill:#d62728;fill-opacity:1"
+           transform="translate(0,2958.5596)" />
       </g>
       <g
          data-mml-node="msub"
          transform="translate(1511.2125,-11081.562)"
          id="g34"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <g
            data-mml-node="mi"
            id="g31"
-           style="fill:#ff0000">
+           style="fill:#d62728;fill-opacity:1">
           <use
              data-c="1D465"
              xlink:href="#MJX-22-TEX-I-1D465"
              id="use30"
-             style="fill:#ff0000" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(0,2958.5596)" />
         </g>
         <g
            data-mml-node="TeXAtom"
            transform="matrix(0.707,0,0,0.707,605,-150)"
            data-mjx-texclass="ORD"
            id="g33"
-           style="fill:#ff0000">
+           style="fill:#d62728;fill-opacity:1">
           <g
              data-mml-node="mn"
              id="g32"
-             style="fill:#ff0000">
+             style="fill:#d62728;fill-opacity:1">
             <use
                data-c="31"
                xlink:href="#MJX-22-TEX-N-31"
                id="use31"
-               style="fill:#ff0000" />
+               style="fill:#d62728;fill-opacity:1"
+               transform="translate(0,4184.6652)" />
           </g>
         </g>
       </g>
@@ -527,54 +515,58 @@
          data-mml-node="mo"
          transform="translate(2519.7125,-11081.562)"
          id="g35"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <use
            data-c="29"
            xlink:href="#MJX-22-TEX-N-29"
            id="use34"
-           style="fill:#ff0000" />
+           style="fill:#d62728;fill-opacity:1"
+           transform="translate(0,2958.5596)" />
       </g>
       <g
          data-mml-node="mo"
          transform="translate(11603.159,-10994.626)"
          id="g37"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <use
            data-c="28"
            xlink:href="#MJX-22-TEX-N-28"
            id="use36"
-           style="fill:#ff0000" />
+           style="fill:#d62728;fill-opacity:1"
+           transform="translate(0,2958.5596)" />
       </g>
       <g
          data-mml-node="msub"
          transform="translate(11992.159,-10994.626)"
          id="g41"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <g
            data-mml-node="mi"
            id="g38"
-           style="fill:#ff0000">
+           style="fill:#d62728;fill-opacity:1">
           <use
              data-c="1D466"
              xlink:href="#MJX-22-TEX-I-1D466"
              id="use37"
-             style="fill:#ff0000" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(0,2958.5596)" />
         </g>
         <g
            data-mml-node="TeXAtom"
            transform="matrix(0.707,0,0,0.707,523,-150)"
            data-mjx-texclass="ORD"
            id="g40"
-           style="fill:#ff0000">
+           style="fill:#d62728;fill-opacity:1">
           <g
              data-mml-node="mi"
              id="g39"
-             style="fill:#ff0000">
+             style="fill:#d62728;fill-opacity:1">
             <use
                data-c="1D45B"
                xlink:href="#MJX-22-TEX-I-1D45B"
                id="use38"
-               style="fill:#ff0000" />
+               style="fill:#d62728;fill-opacity:1"
+               transform="translate(0,4184.6652)" />
           </g>
         </g>
       </g>
@@ -582,43 +574,46 @@
          data-mml-node="mo"
          transform="translate(12989.459,-10994.626)"
          id="g42"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <use
            data-c="2C"
            xlink:href="#MJX-22-TEX-N-2C"
            id="use41"
-           style="fill:#ff0000" />
+           style="fill:#d62728;fill-opacity:1"
+           transform="translate(0,2958.5596)" />
       </g>
       <g
          data-mml-node="msub"
          transform="translate(13434.059,-10994.626)"
          id="g46"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <g
            data-mml-node="mi"
            id="g43"
-           style="fill:#ff0000">
+           style="fill:#d62728;fill-opacity:1">
           <use
              data-c="1D465"
              xlink:href="#MJX-22-TEX-I-1D465"
              id="use42"
-             style="fill:#ff0000" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(0,2958.5596)" />
         </g>
         <g
            data-mml-node="TeXAtom"
            transform="matrix(0.707,0,0,0.707,605,-150)"
            data-mjx-texclass="ORD"
            id="g45"
-           style="fill:#ff0000">
+           style="fill:#d62728;fill-opacity:1">
           <g
              data-mml-node="mi"
              id="g44"
-             style="fill:#ff0000">
+             style="fill:#d62728;fill-opacity:1">
             <use
                data-c="1D45A"
                xlink:href="#MJX-22-TEX-I-1D45A"
                id="use43"
-               style="fill:#ff0000" />
+               style="fill:#d62728;fill-opacity:1"
+               transform="translate(0,4184.6652)" />
           </g>
         </g>
       </g>
@@ -626,12 +621,13 @@
          data-mml-node="mo"
          transform="translate(14709.959,-10994.626)"
          id="g47"
-         style="fill:#ff0000">
+         style="fill:#d62728;fill-opacity:1">
         <use
            data-c="29"
            xlink:href="#MJX-22-TEX-N-29"
            id="use46"
-           style="fill:#ff0000" />
+           style="fill:#d62728;fill-opacity:1"
+           transform="translate(0,2958.5596)" />
       </g>
     </g>
   </g>

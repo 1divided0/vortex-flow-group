@@ -42,7 +42,7 @@ Behandlung dünnbesetzter Matrizen
 ------------------------------------------------------------------------------->
 ## Behandlung dünnbesetzter Matrizen
 
-Nach der Vektorisierung eines _`n × m`_-Gitters werden dessen Werte über _`nm × nm`_-Matrizen abgebildet. Diese Matrizen sind also sehr Groß und i. d. R. dünnbesetzt. Um die Laufzeit des Lösungsalgorithmus zu verbessern, macht es durchaus Sinn, freie Speicherstellen auszunutzen. Standardbibliotheken stellen dafür spezielle Datenstrukturen bereit.
+Nach der Vektorisierung eines _`n×m`_-Gitters werden dessen Werte über _`nm×nm`_-Matrizen abgebildet. Diese Matrizen sind also sehr Groß und i. d. R. dünnbesetzt. Um die Laufzeit des Lösungsalgorithmus zu verbessern, macht es durchaus Sinn, freie Speicherstellen auszunutzen. Standardbibliotheken stellen dafür spezielle Datenstrukturen bereit.
 
 
 <!------------------------------------------------------------------------------
