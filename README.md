@@ -17,3 +17,12 @@ In diesem Projekt wird ein numerischer Lösungsalgorithmus für zweidimensionale
 4. Lösungsverfahren
 5. Ergänzungen
 6. Anwendungsbeispiele
+
+## Literatur Empfehlungen
+Die folgende Literatur ist für diejenigen zu empfehlen, die sich über diese Projektarbeit hinaus mit dem Thema im Selbststudium beschäftigen möchten.
+- Jeffrey Chasnov. Flow Around a Cylinder. Hong Kong University of Science and Technology.
+  - [Kursunterlagen](https://www.math.hkust.edu.hk/~machas/flow-around-a-cylinder.pdf)
+  - [YouTube-Playlist](https://youtube.com/playlist?list=PLkZjai-2Jcxk4qNx393VcKfCCwe7YTaWn&si=iPwT-5spRPapJUY4)
+- Steven Brunton, Nathan Kutz. Data-Driven Science and Engineering. University of Washington.
+  - [Buch](https://faculty.washington.edu/sbrunton/DataBookV2.pdf)
+  - Siehe auch YouTube-Kanal der Autoren
