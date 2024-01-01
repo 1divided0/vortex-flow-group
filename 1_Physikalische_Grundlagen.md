@@ -159,7 +159,7 @@ $$
     D_t \boldsymbol{u} = -\nabla{p}/\rho + (\nabla\cdot\boldsymbol{\tau})/\rho + \boldsymbol{g}
 $$
 
-Um diese Gleichung für inkompressibile Fluide zu vereinfachen, kann der Stokes'sche Spannungsansatz
+Um diese Gleichung für inkompressibile Newton'sche Fluide zu vereinfachen, kann der Stokes'sche Spannungsansatz
 
 $$
     \boldsymbol{\tau} = \mu [ \nabla\boldsymbol{u} + (\nabla\boldsymbol{u})^\top ]

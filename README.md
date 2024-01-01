@@ -26,3 +26,6 @@ Die folgende Literatur ist für diejenigen zu empfehlen, die sich über diese Pr
 - Steven Brunton, Nathan Kutz. Data-Driven Science and Engineering. University of Washington.
   - [Buch](https://faculty.washington.edu/sbrunton/DataBookV2.pdf)
   - Siehe auch YouTube-Kanal der Autoren
+- Steven Strogatz. Nonlinear Dynamics and Chaos. Cornell University.
+  - [Buch](https://www.biodyn.ro/course/literatura/Nonlinear_Dynamics_and_Chaos_2018_Steven_H._Strogatz.pdf)
+  - [YouTube-Playlist](https://youtube.com/playlist?list=PLbN57C5Zdl6j_qJA-pARJnKsmROzPnO9V)
