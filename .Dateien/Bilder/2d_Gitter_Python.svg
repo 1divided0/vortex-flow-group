@@ -24,13 +24,13 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="1.4235832"
-     inkscape:cx="15.805188"
-     inkscape:cy="145.75896"
+     inkscape:zoom="2.8471664"
+     inkscape:cx="219.16527"
+     inkscape:cy="130.83183"
      inkscape:window-width="1920"
-     inkscape:window-height="1005"
+     inkscape:window-height="1003"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="40"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
@@ -244,7 +244,8 @@
            data-c="1D466"
            xlink:href="#MJX-30-TEX-I-1D466"
            id="use2-5"
-           style="fill:#d62728;fill-opacity:1" />
+           style="fill:#d62728;fill-opacity:1"
+           transform="translate(1505.2287)" />
       </g>
       <g
          data-mml-node="TeXAtom"
@@ -260,7 +261,8 @@
              data-c="30"
              xlink:href="#MJX-30-TEX-N-30"
              id="use3-9"
-             style="fill:#d62728;fill-opacity:1" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(2129.0363)" />
         </g>
       </g>
     </g>
@@ -288,7 +290,8 @@
            data-c="1D465"
            xlink:href="#MJX-30-TEX-I-1D465"
            id="use6"
-           style="fill:#d62728;fill-opacity:1" />
+           style="fill:#d62728;fill-opacity:1"
+           transform="translate(-1461.4952)" />
       </g>
       <g
          data-mml-node="TeXAtom"
@@ -304,7 +307,8 @@
              data-c="30"
              xlink:href="#MJX-30-TEX-N-30"
              id="use7"
-             style="fill:#d62728;fill-opacity:1" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(-2067.1785)" />
         </g>
       </g>
     </g>
@@ -343,7 +347,8 @@
            data-c="1D466"
            xlink:href="#MJX-30-TEX-I-1D466"
            id="use13"
-           style="fill:#d62728;fill-opacity:1" />
+           style="fill:#d62728;fill-opacity:1"
+           transform="translate(2663.0967)" />
       </g>
       <g
          data-mml-node="TeXAtom"
@@ -359,7 +364,8 @@
              data-c="30"
              xlink:href="#MJX-30-TEX-N-30"
              id="use14"
-             style="fill:#d62728;fill-opacity:1" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(3766.7563)" />
         </g>
       </g>
     </g>
@@ -372,7 +378,8 @@
          data-c="2C"
          xlink:href="#MJX-30-TEX-N-2C"
          id="use17"
-         style="fill:#d62728;fill-opacity:1" />
+         style="fill:#d62728;fill-opacity:1"
+         transform="translate(1157.8683)" />
     </g>
     <g
        data-mml-node="msub"
@@ -387,7 +394,8 @@
            data-c="1D465"
            xlink:href="#MJX-30-TEX-I-1D465"
            id="use18"
-           style="fill:#d62728;fill-opacity:1" />
+           style="fill:#d62728;fill-opacity:1"
+           transform="translate(-1433.2585)" />
       </g>
       <g
          data-mml-node="TeXAtom"
@@ -403,7 +411,8 @@
              data-c="1D45A"
              xlink:href="#MJX-30-TEX-I-1D45A"
              id="use19"
-             style="fill:#d62728;fill-opacity:1" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(-2027.2397)" />
         </g>
         <g
            data-mml-node="mo"
@@ -414,7 +423,8 @@
              data-c="2212"
              xlink:href="#MJX-30-TEX-N-2212"
              id="use20"
-             style="fill:#d62728;fill-opacity:1" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(-2027.2397)" />
         </g>
         <g
            data-mml-node="mn"
@@ -425,7 +435,8 @@
              data-c="31"
              xlink:href="#MJX-30-TEX-N-31"
              id="use21"
-             style="fill:#d62728;fill-opacity:1" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(-2027.2397)" />
         </g>
       </g>
     </g>
@@ -464,7 +475,8 @@
            data-c="1D466"
            xlink:href="#MJX-30-TEX-I-1D466"
            id="use27"
-           style="fill:#d62728;fill-opacity:1" />
+           style="fill:#d62728;fill-opacity:1"
+           transform="translate(1548.9771)" />
       </g>
       <g
          data-mml-node="TeXAtom"
@@ -480,7 +492,8 @@
              data-c="1D45B"
              xlink:href="#MJX-30-TEX-I-1D45B"
              id="use28"
-             style="fill:#d62728;fill-opacity:1" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(2190.9153)" />
         </g>
         <g
            data-mml-node="mo"
@@ -491,7 +504,8 @@
              data-c="2212"
              xlink:href="#MJX-30-TEX-N-2212"
              id="use29"
-             style="fill:#d62728;fill-opacity:1" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(2190.9153)" />
         </g>
         <g
            data-mml-node="mn"
@@ -502,7 +516,8 @@
              data-c="31"
              xlink:href="#MJX-30-TEX-N-31"
              id="use30"
-             style="fill:#d62728;fill-opacity:1" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(2190.9153)" />
         </g>
       </g>
     </g>
@@ -515,7 +530,8 @@
          data-c="2C"
          xlink:href="#MJX-30-TEX-N-2C"
          id="use33"
-         style="fill:#d62728;fill-opacity:1" />
+         style="fill:#d62728;fill-opacity:1"
+         transform="translate(-882.52892)" />
     </g>
     <g
        data-mml-node="msub"
@@ -530,7 +546,8 @@
            data-c="1D465"
            xlink:href="#MJX-30-TEX-I-1D465"
            id="use34"
-           style="fill:#d62728;fill-opacity:1" />
+           style="fill:#d62728;fill-opacity:1"
+           transform="translate(-2387.8049)" />
       </g>
       <g
          data-mml-node="TeXAtom"
@@ -546,7 +563,8 @@
              data-c="30"
              xlink:href="#MJX-30-TEX-N-30"
              id="use35"
-             style="fill:#d62728;fill-opacity:1" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(-3377.3762)" />
         </g>
       </g>
     </g>
@@ -585,7 +603,8 @@
            data-c="1D466"
            xlink:href="#MJX-30-TEX-I-1D466"
            id="use41"
-           style="fill:#d62728;fill-opacity:1" />
+           style="fill:#d62728;fill-opacity:1"
+           transform="translate(2706.8547)" />
       </g>
       <g
          data-mml-node="TeXAtom"
@@ -601,7 +620,8 @@
              data-c="1D45B"
              xlink:href="#MJX-30-TEX-I-1D45B"
              id="use42"
-             style="fill:#d62728;fill-opacity:1" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(3828.6489)" />
         </g>
         <g
            data-mml-node="mo"
@@ -612,7 +632,8 @@
              data-c="2212"
              xlink:href="#MJX-30-TEX-N-2212"
              id="use43"
-             style="fill:#d62728;fill-opacity:1" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(3828.6489)" />
         </g>
         <g
            data-mml-node="mn"
@@ -623,7 +644,8 @@
              data-c="31"
              xlink:href="#MJX-30-TEX-N-31"
              id="use44"
-             style="fill:#d62728;fill-opacity:1" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(3828.6489)" />
         </g>
       </g>
     </g>
@@ -636,7 +658,8 @@
          data-c="2C"
          xlink:href="#MJX-30-TEX-N-2C"
          id="use47"
-         style="fill:#d62728;fill-opacity:1" />
+         style="fill:#d62728;fill-opacity:1"
+         transform="translate(231.57366)" />
     </g>
     <g
        data-mml-node="msub"
@@ -651,7 +674,8 @@
            data-c="1D465"
            xlink:href="#MJX-30-TEX-I-1D465"
            id="use48"
-           style="fill:#d62728;fill-opacity:1" />
+           style="fill:#d62728;fill-opacity:1"
+           transform="translate(-2431.6305)" />
       </g>
       <g
          data-mml-node="TeXAtom"
@@ -667,7 +691,8 @@
              data-c="1D45A"
              xlink:href="#MJX-30-TEX-I-1D45A"
              id="use49"
-             style="fill:#d62728;fill-opacity:1" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(-3439.3642)" />
         </g>
         <g
            data-mml-node="mo"
@@ -678,7 +703,8 @@
              data-c="2212"
              xlink:href="#MJX-30-TEX-N-2212"
              id="use50"
-             style="fill:#d62728;fill-opacity:1" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(-3439.3642)" />
         </g>
         <g
            data-mml-node="mn"
@@ -689,7 +715,8 @@
              data-c="31"
              xlink:href="#MJX-30-TEX-N-31"
              id="use51"
-             style="fill:#d62728;fill-opacity:1" />
+             style="fill:#d62728;fill-opacity:1"
+             transform="translate(-3439.3642)" />
         </g>
       </g>
     </g>
