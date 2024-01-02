@@ -186,6 +186,7 @@ Das ist ein wirklich sehr beachtliches Resultat. Dadurch wird klar, dass die kin
 <details>
 <summary markdown="span"><b>Herleitung</b></summary>
 <br>
+
 Wir gehen zunächst von der zeitlichen Änderung der kinetischen Energie aus. Hängt das Strömungsgebiet _`Ω`_ nach der Euler'schen Betrachtungsweise nicht von der Zeit ab, dann kann die Ableitung in das Integral gezogen und die Produktregel angewendet werden.
 
 $$
@@ -259,4 +260,5 @@ ergibt sich letztendlich der besagte Zusammenhang
 $$
     \partial_t E_\mathrm{kin} = -\mu \int_\Omega \boldsymbol{\omega}^2\,dV.
 $$
+
 </details>

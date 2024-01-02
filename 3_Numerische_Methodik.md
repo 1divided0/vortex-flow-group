@@ -65,6 +65,7 @@ Weitere Informationen über die möglichen Formate dünnbesetzter Matrizen finde
 <details>
 <summary markdown="span"><b>Vergleich der Laufzeit</b></summary>
 <br>
+
 Hier lässt sich ein Vergleich der Laufzeit anstellen. Dafür können zwei Verfahren verwendet werden, die auch bei der algorithmischen Auslegung von Computerclustern eingesetzt werden:
 - Bei dem sog. Strong-Scaling wird die Laufzeit für eine fixe Problemgröße mit zunehmender Anzahl von Prozessorkernen gemessen. Dieser Zusammenhang wird durch das Gesetz von Amdahl beschrieben.
 - Bei dem sog. Weak-Scaling wird die Laufzeit für eine fixe Anzahl von Prozessorkernen mit zunehmender Problemgröße gemessen. Dieser Zusammenhang wird durch das Gesetz von Gustafson beschrieben.
@@ -76,6 +77,7 @@ Als Beispiel für das Weak-Scaling wird hier die Laufzeit bei der Multiplikation
 $$
 \underbrace{\mathbf{I}_{N \times N}\cdot\mathbf{1}_{N \times 1}}_\text{Rechenoperation mit Nullen} = \underbrace{\mathbf{1}_{N \times 1}\odot\mathbf{1}_{N \times 1}}_\text{Rechenoperation ohne Nullen} = \mathbf{1}_{N \times 1}
 $$
+
 </details>
 
 ---
@@ -136,7 +138,7 @@ $$
 Daraus lässt sich ein beliebiges Differenzenschema für die _`k`_-te Ableitung mit der Fehlerordnung _`l+r+1-k`_ konstruieren. Die Ableitungsordnung muss dabei nur kleiner sein als die Anzahl von Stützstellen.
 
 ---
-> **Aufgabe (Allgemeines Differenzenschema)**
+> **Aufgabe (Differenzenschema)**
 >
 > Schreibt ein Programm, welches mit _`l≥0`_, _`r≥0`_ und _`0<k≤l+r`_ die Koeffizienten des Differenzenschemas für die _`k`_-te Ableitung berechnet.
 
