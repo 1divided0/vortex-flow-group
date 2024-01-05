@@ -1,6 +1,6 @@
 # Thema 3: Numerische Methodik
 
-Hier werden die Konzepte besprochen, welche bei der Finiten-Differenzen-Methode zum Einsatz kommen. Mit dieser Methode kann die örtliche Auflösung der Strömungsgleichungen bewerkstelligt werden.
+Hier werden die Konzepte besprochen, welche bei der Finiten-Differenzen-Methode zum Einsatz kommen. Mit dieser Methode kann die örtliche Auflösung der strömungsmechanischen Gleichungen bewerkstelligt werden, wobei bei der Implementierung auf die Indizierung geachtet werden muss, da sich diese von Programmiersprache zu Programmiersprache unterscheidet.
 
 [TOC]
 
@@ -92,7 +92,7 @@ Allgemeine Finite-Differenzen-Methode
 ------------------------------------------------------------------------------->
 ## Allgemeine Finite-Differenzen-Methode
 
-Das Ziel einer jeden finiten Differenz ist es – basiert auf einem Schema, welches auf bestimmte Stützstellen vor- und zurückgreift – eine Ableitung zu approximieren. Dafür wird der Wert der abzuleitenden Funktion _`Φ`_ an der jeweiligen Stelle, sowie den _`l`_ Stellen links und den _`r`_ Stellen rechts davon durch Koeffizienten _`α`_ gewichtet und anschließend aufsummiert. Die Koeffizienten des Differenzenschemas leiten sich dabei aus der Taylor-Reihenentwicklung ab. Ist die Schrittweite _`h`_ äquidistant, dann lässt sich ihre entsprechende Potenz als Reziproke aus dem Differenzenschema faktorisieren.
+Das Ziel einer jeden finiten Differenz ist es – basiert auf einem Schema, welches auf bestimmte Stützstellen vor- und zurückgreift – eine Ableitung zu approximieren. Dafür wird der Wert der abzuleitenden Funktion _`Φ`_ an der jeweiligen Stelle, sowie den _`l`_ Stellen links und den _`r`_ Stellen rechts davon durch Koeffizienten _`α`_ gewichtet und anschließend aufsummiert. Die Koeffizienten des Differenzenschemas leiten sich dabei aus der Taylor-Reihenentwicklung ab. Ist die Schrittweite _`h`_ äquidistant, dann lässt sich durch die entsprechende Schrittweitenpotenz dividieren.
 
 $$
 \partial_x^k \Phi_i = \frac{1}{h_x^k} \sum_{j=-l}^{r} \alpha_j \Phi_{i+j}
@@ -114,7 +114,7 @@ $$
 \partial_x^k \Phi_i = \frac{1}{h_x^k} \sum_{j=-l}^{r} \alpha_j \left\{ \left[ \sum_{p=0}^{l+r} (\partial_x^p \Phi_i) (j h_x)^p / p! \right] + \mathcal{O}(h_x^{l+r+1}) \right\}
 $$
 
-Die Summen können vertauscht werden und der Ordnungsterm reduziert sich durch das Reziproke der Schrittweitenpotenz.
+Die Summen können vertauscht werden und der Ordnungsterm wird durch die Schrittweitenpotenz dividiert.
 
 $$
 \partial_x^k \Phi_i = \frac{1}{h_x^k} \left[ \sum_{p=0}^{l+r} \sum_{j=-l}^{r} \alpha_j (\partial_x^p \Phi_i) (j h_x)^p / p! \right] + \mathcal{O}(h_x^{l+r+1-k})
@@ -147,22 +147,63 @@ Erstellung eindimensionaler Ableitungsmatrizen
 ------------------------------------------------------------------------------->
 ## Erstellung eindimensionaler Ableitungsmatrizen
 
-Sind die Werte der Funktion und die Koeffizienten des Differenzenschemas an den Stützstellen bekannt, so kann die _`k`_-te Ableitung der Funktion approximiert werden. Im Eindimensionalen entspricht diese Ableitung ebenjenen Differenzenschema, angewendet auf die einzelnen Stützstellen.
+Die Erstellung eindimensionaler Ableitungsmatrizen hängt von der Indizierung ab.
+
+---
+<details>
+<summary markdown="span"><b>à la Matlab</b></summary>
+<br>
+
+Sind die Werte der Funktion und die Koeffizienten des Differenzenschemas an den Stützstellen bekannt, so kann die _`k`_-te Ableitung der Funktion an diesen Stützstellen approximiert werden. Dafür lässt sich ein Koeffizientenvektor definieren, welcher bereits durch die Schrittweitenpotenz dividiert ist.
+
+$$
+\forall i\in\{1,\ldots,N\}\colon\quad (\boldsymbol{d}_{x_i}^{(k)})_{1\times{N}} \coloneqq \frac{1}{h_x^k} \begin{bmatrix}\boldsymbol{0}_{1\times{i-l-1}} & \boldsymbol{\alpha}_{1\times{l+r+1}}^{(k)} & \boldsymbol{0}_{1\times{N-i-r}}\end{bmatrix}_{x_i}
+$$
+
+Im Eindimensionalen entspricht dann die Approximation der Ableitung ebenjenen Differenzenschema, angewendet auf die einzelnen Stützstellen.
 
 $$
 \partial_x^k \boldsymbol{\Phi}_{N\times{1}} \approx \begin{bmatrix}\rule[.5ex]{2.5ex}{0.5pt}&(\boldsymbol{d}_{x_1}^{(k)})_{1\times{N}}&\rule[.5ex]{2.5ex}{0.5pt}\\&\vdots&\\\rule[.5ex]{2.5ex}{0.5pt}&(\boldsymbol{d}_{x_N}^{(k)})_{1\times{N}}&\rule[.5ex]{2.5ex}{0.5pt}\end{bmatrix} \cdot \begin{bmatrix}\Phi_{x_1}\\\vdots\\\Phi_{x_N}\end{bmatrix} \eqqcolon (\boldsymbol{D}_x^{(k)})_{N\times{N}} \cdot \boldsymbol{\Phi}_{N\times{1}}
 $$
 
+</details>
+
+---
+<details>
+<summary markdown="span"><b>à la Python</b></summary>
+<br>
+
+Sind die Werte der Funktion und die Koeffizienten des Differenzenschemas an den Stützstellen bekannt, so kann die _`k`_-te Ableitung der Funktion an diesen Stützstellen approximiert werden. Dafür lässt sich ein Koeffizientenvektor definieren, welcher bereits durch die Schrittweitenpotenz dividiert ist.
+
+$$
+\forall i\in\{0,\ldots,N-1\}\colon\quad (\boldsymbol{d}_{x_i}^{(k)})_{1\times{N}} \coloneqq \frac{1}{h_x^k} \begin{bmatrix}\boldsymbol{0}_{1\times{i-l}} & \boldsymbol{\alpha}_{1\times{l+r+1}}^{(k)} & \boldsymbol{0}_{1\times{N-i-r-1}}\end{bmatrix}_{x_i}
+$$
+
+Im Eindimensionalen entspricht dann die Approximation der Ableitung ebenjenen Differenzenschema, angewendet auf die einzelnen Stützstellen.
+
+$$
+\partial_x^k \boldsymbol{\Phi}_{N\times{1}} \approx \begin{bmatrix}\rule[.5ex]{2.5ex}{0.5pt}&(\boldsymbol{d}_{x_0}^{(k)})_{1\times{N}}&\rule[.5ex]{2.5ex}{0.5pt}\\&\vdots&\\\rule[.5ex]{2.5ex}{0.5pt}&(\boldsymbol{d}_{x_{N-1}}^{(k)})_{1\times{N}}&\rule[.5ex]{2.5ex}{0.5pt}\end{bmatrix} \cdot \begin{bmatrix}\Phi_{x_0}\\\vdots\\\Phi_{x_{N-1}}\end{bmatrix} \eqqcolon (\boldsymbol{D}_x^{(k)})_{N\times{N}} \cdot \boldsymbol{\Phi}_{N\times{1}}
+$$
+
+</details>
+
 ---
 > **Aufgabe (Ableitung 1d)**
 >
-> Schreibt ein Programm, welches die erste Ableitung von `sin(x)` mit der Zentraldifferenz _`l=r=1`_ berechnet und vergleicht das Ergebnis mit der analytischen Lösung. Welche Fehlerordnung hat dieses Ableitungsverfahren?
+> Schreibt ein Programm, welches die erste Ableitung von `sin(x)` für _`0≤x≤2π`_ und _`N=100`_ in der Mitte mit der Zentraldifferenz _`l=r=1`_, am linken Rand mit der Vorwärtsdifferenz  _`l=0,r=2`_ und am rechten Rand mit der Rückwärtsdifferenz  _`l=2,r=0`_ berechnet und vergleicht das Ergebnis mit der analytischen Lösung. Welche Fehlerordnung hat dieses Ableitungsverfahren und warum macht es Sinn, das Differenzenschema jeweils an den beiden Rändern zu unterscheiden?
 
 
 <!------------------------------------------------------------------------------
 Erstellung zweidimensionaler Ableitungsmatrizen
 ------------------------------------------------------------------------------->
 ## Erstellung zweidimensionaler Ableitungsmatrizen
+
+Die Erstellung zweidimensionaler Ableitungsmatrizen hängt von der Indizierung und Vektorisierung ab.
+
+---
+<details>
+<summary markdown="span"><b>à la Matlab</b></summary>
+<br>
 
 Im Zweidimensionalen wird das Skalarfeld ebenso über ein Gitter diskretisiert, nur dass diesmal die Werte zunächst eine Matrix und keinen Vektor bilden. Für die Handhabung mittels Finiter-Differenzen-Methode ist das jedoch etwas unpraktisch, da so für die partiellen Ableitungen zwei unterschiedliche Dualräume entstehen.
 
@@ -178,14 +219,9 @@ $$
 \partial_y^k \boldsymbol{\Phi}_{n\times{m}} \approx \begin{bmatrix}\rule[.5ex]{2.5ex}{0.5pt}&(\boldsymbol{d}_{y_1}^{(k)})_{1\times{n}}&\rule[.5ex]{2.5ex}{0.5pt}\\&\vdots&\\\rule[.5ex]{2.5ex}{0.5pt}&(\boldsymbol{d}_{y_n}^{(k)})_{1\times{n}}&\rule[.5ex]{2.5ex}{0.5pt}\end{bmatrix} \cdot \begin{bmatrix}\rule[-1ex]{0.5pt}{2.5ex}&&\rule[-1ex]{0.5pt}{2.5ex}\\(\boldsymbol{\Phi}_{x_1})_{n\times{1}}&\cdots&(\boldsymbol{\Phi}_{x_m})_{n\times{1}}\\\rule[-1ex]{0.5pt}{2.5ex}&&\rule[-1ex]{0.5pt}{2.5ex}\end{bmatrix} \eqqcolon (\boldsymbol{D}_y^{(k)})_{n\times{n}} \cdot \boldsymbol{\Phi}_{n\times{m}}
 $$
 
-Es ist anzumerken, dass bei dieser Approximation der partiellen Ableitungen immer das selbe Differenzenschema auf alle Stützstellen angewendet wird. Außerdem stellt sich heraus, dass die Rechnung sehr viel übersichtlicher wird, wenn das zweidimensionale Gitter vektorisiert ist. So können die beiden partiellen Ableitungen in ein und denselben Vektorraum abgebildet werden.
+Es ist anzumerken, dass bei dieser Approximation der partiellen Ableitungen immer die selbe Differenzenmatrix auf alle Stützstellen angewendet wird. Außerdem stellt sich heraus, dass die Rechnung sehr viel übersichtlicher wird, wenn das zweidimensionale Gitter vektorisiert ist. So können die beiden partiellen Ableitungen in ein und denselben Vektorraum abgebildet werden.
 
----
-<details>
-<summary markdown="span"><b>Ableitung bei Spaltenverkettung [Matlab]</b></summary>
-<br>
-
-Werden bei der Vektorisierung die Spalten verkettet – so wie in Matlab üblich – dann lassen sich die partiellen Ableitungen mittels Kronecker-Produkt ([`kron`](https://de.mathworks.com/help/matlab/ref/kron.html)) wie folgt schreiben:
+Werden nun also bei der Vektorisierung die Spalten verkettet – so wie in Matlab üblich – dann lassen sich die partiellen Ableitungen mittels Kronecker-Produkt ([`kron`](https://de.mathworks.com/help/matlab/ref/kron.html)) wie folgt schreiben:
 
 $$
 \begin{align*}
@@ -194,7 +230,7 @@ $$
 \end{align*}
 $$
 
-Die partiellen Ableitungen werden dabei, wie zuvor, jeweils über die Stützstellen berechnet, an denen sich die andere Koordinate nicht verändert, und es wird immer das selbe Differenzenschema angewendet. Wenn die Topologie des Strömungsgebiets jedoch komplizierter ist, dann reicht es womöglich nicht mehr aus alle Stützstellen gleich zu behandeln, sodass der Ausdruck mit dem Kronecker-Produkt individuell auf das Strömungsgebiet angepasst werden muss, damit das Differenzenschema auch auf den Rändern des Strömungsgebiets konsistent ist.
+Die partiellen Ableitungen werden dabei, wie zuvor, jeweils über die Stützstellen berechnet, an denen sich die andere Koordinate nicht verändert, und es wird immer die selbe Differenzenmatrix angewendet. Wenn die Topologie des Strömungsgebiets jedoch komplizierter ist, dann reicht es womöglich nicht mehr aus alle Stützstellen gleich zu behandeln, sodass der Ausdruck mit dem Kronecker-Produkt individuell auf das Strömungsgebiet angepasst werden muss, damit das Differenzenschema auch auf den Rändern des Strömungsgebiets konsistent ist.
 
 Unter Umständen ist das Strömungsgebiet nicht einfach zusammenhängend und enthält beispielsweise ein Hindernis. Die nachfolgende Abbildung soll diesen Sachverhalt veranschaulichen, wobei die Auflösung für den Demonstrationszweck reduziert ist und für eine praktikable Anwendung eigentlich erhöht werden müsste, damit zwischen den Rändern des Strömungsgebiets genügend Platz für konsistente Differenzenschema vorhanden ist.
 
@@ -216,10 +252,26 @@ $$
 
 ---
 <details>
-<summary markdown="span"><b>Ableitung bei Zeilenverkettung [Python]</b></summary>
+<summary markdown="span"><b>à la Python</b></summary>
 <br>
 
-Werden bei der Vektorisierung die Zeilen verkettet – so wie in Python üblich – dann lassen sich die partiellen Ableitungen mittels Kronecker-Produkt ([`numpy.kron`](https://numpy.org/doc/stable/reference/generated/numpy.kron.html)) wie folgt schreiben:
+Im Zweidimensionalen wird das Skalarfeld ebenso über ein Gitter diskretisiert, nur dass diesmal die Werte zunächst eine Matrix und keinen Vektor bilden. Für die Handhabung mittels Finiter-Differenzen-Methode ist das jedoch etwas unpraktisch, da so für die partiellen Ableitungen zwei unterschiedliche Dualräume entstehen.
+
+Wenn die Zeilen den diskreten _`y`_-Werten und die Spalten den diskreten _`x`_-Werten entsprechen, dann wird das Skalarfeld für die _`k`_-te partielle Ableitung nach _`x`_ in den Zeilenraum der Differenzenmatrix abgebildet. Dabei ist zu beachten, dass diese Matrix im Vergleich zum Eindimensionalen transponiert ist.
+
+$$
+\partial_x^k \boldsymbol{\Phi}_{n\times{m}} \approx \begin{bmatrix}\rule[.5ex]{2.5ex}{0.5pt}&(\boldsymbol{\Phi}_{y_0})_{1\times{m}}&\rule[.5ex]{2.5ex}{0.5pt}\\&\vdots&\\\rule[.5ex]{2.5ex}{0.5pt}&(\boldsymbol{\Phi}_{y_{n-1}})_{1\times{m}}&\rule[.5ex]{2.5ex}{0.5pt}\end{bmatrix} \cdot \begin{bmatrix}\rule[-1ex]{0.5pt}{2.5ex}&&\rule[-1ex]{0.5pt}{2.5ex}\\(\boldsymbol{d}_{x_0}^{(k)})_{m\times{1}}&\cdots&(\boldsymbol{d}_{x_{m-1}}^{(k)})_{m\times{1}}\\\rule[-1ex]{0.5pt}{2.5ex}&&\rule[-1ex]{0.5pt}{2.5ex}\end{bmatrix} \eqqcolon \boldsymbol{\Phi}_{n\times{m}} \cdot (\boldsymbol{D}_x^{(k)})_{m\times{m}}^\top
+$$
+
+Für die _`k`_-te partielle Ableitung nach _`y`_ erfolgt die Abbildung dementsprechend in den Spaltenraum der Differenzenmatrix, so wie es auch im Eindimensionalen bewerkstelligt wurde.
+
+$$
+\partial_y^k \boldsymbol{\Phi}_{n\times{m}} \approx \begin{bmatrix}\rule[.5ex]{2.5ex}{0.5pt}&(\boldsymbol{d}_{y_0}^{(k)})_{1\times{n}}&\rule[.5ex]{2.5ex}{0.5pt}\\&\vdots&\\\rule[.5ex]{2.5ex}{0.5pt}&(\boldsymbol{d}_{y_{n-1}}^{(k)})_{1\times{n}}&\rule[.5ex]{2.5ex}{0.5pt}\end{bmatrix} \cdot \begin{bmatrix}\rule[-1ex]{0.5pt}{2.5ex}&&\rule[-1ex]{0.5pt}{2.5ex}\\(\boldsymbol{\Phi}_{x_0})_{n\times{1}}&\cdots&(\boldsymbol{\Phi}_{x_{m-1}})_{n\times{1}}\\\rule[-1ex]{0.5pt}{2.5ex}&&\rule[-1ex]{0.5pt}{2.5ex}\end{bmatrix} \eqqcolon (\boldsymbol{D}_y^{(k)})_{n\times{n}} \cdot \boldsymbol{\Phi}_{n\times{m}}
+$$
+
+Es ist anzumerken, dass bei dieser Approximation der partiellen Ableitungen immer die selbe Differenzenmatrix auf alle Stützstellen angewendet wird. Außerdem stellt sich heraus, dass die Rechnung sehr viel übersichtlicher wird, wenn das zweidimensionale Gitter vektorisiert ist. So können die beiden partiellen Ableitungen in ein und denselben Vektorraum abgebildet werden.
+
+Werden nun also bei der Vektorisierung die Zeilen verkettet – so wie in Python üblich – dann lassen sich die partiellen Ableitungen mittels Kronecker-Produkt ([`numpy.kron`](https://numpy.org/doc/stable/reference/generated/numpy.kron.html)) wie folgt schreiben:
 
 $$
 \begin{align*}
@@ -228,7 +280,7 @@ $$
 \end{align*}
 $$
 
-Die partiellen Ableitungen werden dabei, wie zuvor, jeweils über die Stützstellen berechnet, an denen sich die andere Koordinate nicht verändert, und es wird immer das selbe Differenzenschema angewendet. Wenn die Topologie des Strömungsgebiets jedoch komplizierter ist, dann reicht es womöglich nicht mehr aus alle Stützstellen gleich zu behandeln, sodass der Ausdruck mit dem Kronecker-Produkt individuell auf das Strömungsgebiet angepasst werden muss, damit das Differenzenschema auch auf den Rändern des Strömungsgebiets konsistent ist.
+Die partiellen Ableitungen werden dabei, wie zuvor, jeweils über die Stützstellen berechnet, an denen sich die andere Koordinate nicht verändert, und es wird immer die selbe Differenzenmatrix angewendet. Wenn die Topologie des Strömungsgebiets jedoch komplizierter ist, dann reicht es womöglich nicht mehr aus alle Stützstellen gleich zu behandeln, sodass der Ausdruck mit dem Kronecker-Produkt individuell auf das Strömungsgebiet angepasst werden muss, damit das Differenzenschema auch auf den Rändern des Strömungsgebiets konsistent ist.
 
 Unter Umständen ist das Strömungsgebiet nicht einfach zusammenhängend und enthält beispielsweise ein Hindernis. Die nachfolgende Abbildung soll diesen Sachverhalt veranschaulichen, wobei die Auflösung für den Demonstrationszweck reduziert ist und für eine praktikable Anwendung eigentlich erhöht werden müsste, damit zwischen den Rändern des Strömungsgebiets genügend Platz für konsistente Differenzenschema vorhanden ist.
 
