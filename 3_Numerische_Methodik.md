@@ -292,9 +292,9 @@ In diesem Fall müssen die Ableitungsmatrizen aus individuellen Blöcken zusamme
 
 $$
 \begin{gather*}
-\forall{i,j}\in\{1,\ldots,3\}\colon\quad (\boldsymbol{D}_{y}^{(k)})_{ij} \coloneqq \begin{bmatrix}(\boldsymbol{D}_{y_1}^{(k)})_{ij}&&&&\\&(\boldsymbol{D}_{y_2}^{(k)})_{ij}&&&\\&&(\boldsymbol{D}_{y_3}^{(k)})_{ij}&&\\&&&(\boldsymbol{D}_{y_4}^{(k)})_{ij}&\\&&&&(\boldsymbol{D}_{y_5}^{(k)})_{ij}\end{bmatrix} \\\\
-\boldsymbol{D}_x^{(k)} \coloneqq \begin{bmatrix}\boldsymbol{D}_{x_1}^{(k)}&&\\&\boldsymbol{D}_{x_2}^{(k)}&\\&&\boldsymbol{D}_{x_3}^{(k)}\end{bmatrix},\quad
-\boldsymbol{D}_y^{(k)} \coloneqq \begin{bmatrix}(\boldsymbol{D}_{y}^{(k)})_{11}&(\boldsymbol{D}_{y}^{(k)})_{12}&(\boldsymbol{D}_{y}^{(k)})_{13}\\(\boldsymbol{D}_{y}^{(k)})_{21}&(\boldsymbol{D}_{y}^{(k)})_{22}&(\boldsymbol{D}_{y}^{(k)})_{23}\\(\boldsymbol{D}_{y}^{(k)})_{31}&(\boldsymbol{D}_{y}^{(k)})_{32}&(\boldsymbol{D}_{y}^{(k)})_{33}\end{bmatrix}
+\forall{i,j}\in\{0,\ldots,2\}\colon\quad (\boldsymbol{D}_{y}^{(k)})_{ij} \coloneqq \begin{bmatrix}(\boldsymbol{D}_{y_0}^{(k)})_{ij}&&&&\\&(\boldsymbol{D}_{y_1}^{(k)})_{ij}&&&\\&&(\boldsymbol{D}_{y_2}^{(k)})_{ij}&&\\&&&(\boldsymbol{D}_{y_3}^{(k)})_{ij}&\\&&&&(\boldsymbol{D}_{y_4}^{(k)})_{ij}\end{bmatrix} \\\\
+\boldsymbol{D}_x^{(k)} \coloneqq \begin{bmatrix}\boldsymbol{D}_{x_0}^{(k)}&&\\&\boldsymbol{D}_{x_1}^{(k)}&\\&&\boldsymbol{D}_{x_2}^{(k)}\end{bmatrix},\quad
+\boldsymbol{D}_y^{(k)} \coloneqq \begin{bmatrix}(\boldsymbol{D}_{y}^{(k)})_{00}&(\boldsymbol{D}_{y}^{(k)})_{01}&(\boldsymbol{D}_{y}^{(k)})_{02}\\(\boldsymbol{D}_{y}^{(k)})_{10}&(\boldsymbol{D}_{y}^{(k)})_{11}&(\boldsymbol{D}_{y}^{(k)})_{12}\\(\boldsymbol{D}_{y}^{(k)})_{20}&(\boldsymbol{D}_{y}^{(k)})_{21}&(\boldsymbol{D}_{y}^{(k)})_{22}\end{bmatrix}
 \end{gather*}
 $$
 
