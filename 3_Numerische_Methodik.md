@@ -42,7 +42,7 @@ Auf dem erstellten Gitter werden die strömungsmechanischen Gleichungen numerisc
 >
 > [![Matlab Beispiel](.Dateien/Plaketten/Matlab_Beispiel.svg)](Begleitmaterial/Vektorisierung_Matlab.ipynb) [![Python Beispiel](.Dateien/Plaketten/Python_Beispiel.svg)](Begleitmaterial/Vektorisierung_Python.ipynb)
 >
-> ![2d Gitter](.Dateien/Bilder/Verkettung.svg)
+> ![Verkettung](.Dateien/Bilder/Verkettung.svg)
 
 
 <!------------------------------------------------------------------------------
@@ -154,7 +154,7 @@ Die Erstellung eindimensionaler Ableitungsmatrizen hängt von der Indizierung ab
 <summary markdown="span"><b>à la Matlab</b></summary>
 <br>
 
-Sind die Werte der Funktion und die Koeffizienten des Differenzenschemas an den Stützstellen bekannt, so kann die _`k`_-te Ableitung der Funktion an diesen Stützstellen approximiert werden. Dafür lässt sich ein Koeffizientenvektor definieren, welcher bereits durch die Schrittweitenpotenz dividiert ist.
+Sind die Werte der Funktion und die Koeffizienten des Differenzenschemas an den _`N`_ Stützstellen bekannt, so kann die _`k`_-te Ableitung der Funktion an diesen Stützstellen approximiert werden. Dafür lässt sich ein Koeffizientenvektor definieren, welcher bereits durch die Schrittweitenpotenz dividiert ist.
 
 $$
 \forall i\in\{1,\ldots,N\}\colon\quad (\boldsymbol{d}_{x_i}^{(k)})_{1\times{N}} \coloneqq \frac{1}{h_x^k} \begin{bmatrix}\boldsymbol{0}_{1\times{i-l-1}} & \boldsymbol{\alpha}_{1\times{l+r+1}}^{(k)} & \boldsymbol{0}_{1\times{N-i-r}}\end{bmatrix}_{x_i}
@@ -173,7 +173,7 @@ $$
 <summary markdown="span"><b>à la Python</b></summary>
 <br>
 
-Sind die Werte der Funktion und die Koeffizienten des Differenzenschemas an den Stützstellen bekannt, so kann die _`k`_-te Ableitung der Funktion an diesen Stützstellen approximiert werden. Dafür lässt sich ein Koeffizientenvektor definieren, welcher bereits durch die Schrittweitenpotenz dividiert ist.
+Sind die Werte der Funktion und die Koeffizienten des Differenzenschemas an den _`N`_ Stützstellen bekannt, so kann die _`k`_-te Ableitung der Funktion an diesen Stützstellen approximiert werden. Dafür lässt sich ein Koeffizientenvektor definieren, welcher bereits durch die Schrittweitenpotenz dividiert ist.
 
 $$
 \forall i\in\{0,\ldots,N-1\}\colon\quad (\boldsymbol{d}_{x_i}^{(k)})_{1\times{N}} \coloneqq \frac{1}{h_x^k} \begin{bmatrix}\boldsymbol{0}_{1\times{i-l}} & \boldsymbol{\alpha}_{1\times{l+r+1}}^{(k)} & \boldsymbol{0}_{1\times{N-i-r-1}}\end{bmatrix}_{x_i}
@@ -236,7 +236,7 @@ Unter Umständen ist das Strömungsgebiet nicht einfach zusammenhängend und ent
 
 > **Abbildung (2d Ableitung mit Hindernis)**
 >
-> ![2d Ableitung mit Hindernis](.Dateien/Bilder/2d_Ableitung_mit_Hindernis.svg)
+> ![2d Ableitung mit Hindernis](.Dateien/Bilder/2d_Ableitung_mit_Hindernis_Matlab.svg)
 
 In diesem Fall müssen die Ableitungsmatrizen aus individuellen Blöcken zusammengesetzt werden.
 
@@ -286,7 +286,7 @@ Unter Umständen ist das Strömungsgebiet nicht einfach zusammenhängend und ent
 
 > **Abbildung (2d Ableitung mit Hindernis)**
 >
-> ![2d Ableitung mit Hindernis](.Dateien/Bilder/2d_Ableitung_mit_Hindernis.svg)
+> ![2d Ableitung mit Hindernis](.Dateien/Bilder/2d_Ableitung_mit_Hindernis_Python.svg)
 
 In diesem Fall müssen die Ableitungsmatrizen aus individuellen Blöcken zusammengesetzt werden.
 

@@ -114,7 +114,7 @@ $$
 
 > **Abbildung (Kraftbilanz)**
 >
-> ![Massenstrombilanz](.Dateien/Bilder/Kraftbilanz.svg)
+> ![Kraftbilanz](.Dateien/Bilder/Kraftbilanz.svg)
 
 Bei den Oberflächenkräfte wird in Druck- und Spannungskräfte unterschieden. Die Druckkräfte wirken zentrisch auf das Kontrollvolumen und werden somit positiv bilanziert. Die Spannungskräfte hingegen wirken exzentrisch und werden demnach negativ bilanziert. Außerdem greifen die Spannungskräfte von allen Seiten an, wodurch die Gleichung erheblich an Komplexität gewinnt. Unter Berücksichtigung dessen lassen sich die eintretenden Kräfte wie folgt zusammenfassen.
 
