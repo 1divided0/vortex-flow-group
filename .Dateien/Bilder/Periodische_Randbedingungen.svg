@@ -24,9 +24,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="2"
-     inkscape:cx="52.75"
-     inkscape:cy="73.25"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="69.650018"
+     inkscape:cy="82.37794"
      inkscape:window-width="1920"
      inkscape:window-height="1005"
      inkscape:window-x="0"
@@ -169,13 +169,13 @@
        data-c="21D2"
        xlink:href="#MJX-92-TEX-N-21D2"
        id="use1"
-       transform="matrix(0.00760482,0,0,-0.00760482,79.59513,106.35909)"
+       transform="matrix(0.00683549,0,0,-0.00683549,79.979794,106.39896)"
        style="fill:#000000;stroke:#000000;stroke-width:0" />
     <use
        data-c="21D2"
        xlink:href="#MJX-92-TEX-N-21D2"
        id="use29"
-       transform="matrix(0.00760482,0,0,-0.00760482,79.59513,142.34244)"
+       transform="matrix(0.00683549,0,0,-0.00683549,79.979794,141.91714)"
        style="fill:#000000;stroke:#000000;stroke-width:0" />
   </g>
 </svg>

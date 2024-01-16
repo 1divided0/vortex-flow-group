@@ -1,6 +1,6 @@
 # Thema 3: Lösungsverfahren
 
-...
+In dem hier beschriebenen Verfahren wird die Finite-Differenzen-Methode angewendet, um ein Rand- und Anfangswertproblem zu lösen.
 
 [TOC]
 
@@ -153,8 +153,8 @@ Bei der Berechnung der Geschwindigkeitskomponenten bietet es sich an, die Neuman
 
 $$
 \begin{align*}
-\boldsymbol{u} = \underbrace{\lnot\boldsymbol{B}\odot(\boldsymbol{D}_y^{(1)}\boldsymbol{\Psi}) + \boldsymbol{B}\odot\boldsymbol{u}_\Gamma}_{\partial_y\Psi\text{ für }\Omega^\circ\text{ bzw. }u_\Gamma\text{ für }\Gamma_\Omega} \\[10pt]
-\boldsymbol{v} = \underbrace{\lnot\boldsymbol{B}\odot(-\boldsymbol{D}_x^{(1)}\boldsymbol{\Psi}) + \boldsymbol{B}\odot\boldsymbol{v}_\Gamma}_{-\partial_x\Psi\text{ für }\Omega^\circ\text{ bzw. }v_\Gamma\text{ für }\Gamma_\Omega}
+\boldsymbol{u} &= \underbrace{\lnot\boldsymbol{B}\odot(\boldsymbol{D}_y^{(1)}\boldsymbol{\Psi}) + \boldsymbol{B}\odot\boldsymbol{u}_\Gamma}_{\partial_y\Psi\text{ für }\Omega^\circ\text{ bzw. }u_\Gamma\text{ für }\Gamma_\Omega} \\\\
+\boldsymbol{v} &= \underbrace{\lnot\boldsymbol{B}\odot(-\boldsymbol{D}_x^{(1)}\boldsymbol{\Psi}) + \boldsymbol{B}\odot\boldsymbol{v}_\Gamma}_{-\partial_x\Psi\text{ für }\Omega^\circ\text{ bzw. }v_\Gamma\text{ für }\Gamma_\Omega}
 \end{align*}
 $$
 
