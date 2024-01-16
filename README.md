@@ -14,7 +14,7 @@ In diesem Projekt wird ein numerischer Lösungsalgorithmus für zweidimensionale
 1. [Physikalische Grundlagen](1_Physikalische_Grundlagen.md)
 2. [Analytische Methodik](2_Analytische_Methodik.md)
 3. [Numerische Methodik](3_Numerische_Methodik.md)
-4. Lösungsverfahren
+4. [Lösungsverfahren](4_Loesungsverfahren.md)
 5. Ergänzungen
 6. Anwendungsbeispiele
 
