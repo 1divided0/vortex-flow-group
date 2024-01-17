@@ -1,6 +1,6 @@
 # Thema 3: Lösungsverfahren
 
-In dem hier beschriebenen Verfahren wird die Finite-Differenzen-Methode angewendet, um ein Rand- und Anfangswertproblem zu lösen.
+In dem hier beschriebenen Verfahren wird die Finite-Differenzen-Methode angewendet, um das zweidimensionale Rand- und Anfangswertproblem zu lösen.
 
 [TOC]
 
