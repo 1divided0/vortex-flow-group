@@ -164,7 +164,7 @@ $$
 Die Randbedingungen sind in dem zuvor berechneten Geschwindigkeitsfeld enthalten, sodass die örtliche Auflösung bereits abgeschlossen ist und die Wirbelstärke zum nächsten Zeitpunkt berechnet werden kann. Damit die Randbedingungen korrekt in die bevorstehende Berechnung einfließen, muss unbedingt darauf geachtet werden, dass das Differenzenschema auch für den Randbereich konsistent ist.
 
 $$
-\dot{\boldsymbol{\omega}} = \left[ \nu(\boldsymbol{D}_x^{(2)} + \boldsymbol{D}_y^{(2)}) - (\boldsymbol{u}^\top\odot\boldsymbol{D}_x^{(1)} + \boldsymbol{v}^\top\odot\boldsymbol{D}_y^{(1)}) \right] \boldsymbol{\omega}
+\dot{\boldsymbol{\omega}} = \left[ \nu(\boldsymbol{D}_x^{(2)} + \boldsymbol{D}_y^{(2)}) - (\operatorname{diag}(\boldsymbol{u})\cdot\boldsymbol{D}_x^{(1)} + \operatorname{diag}(\boldsymbol{v})\cdot\boldsymbol{D}_y^{(1)}) \right] \boldsymbol{\omega}
 $$
 
 Der Zeitschritt wird dabei durch die CFL-Zahl bestimmt, da die Stabilität in Abhängigkeit von dem gewählten Zeitschrittverfahren nur bis zu einer bestimmten CFL-Zahl gewährleistet ist.
