@@ -131,7 +131,7 @@ Außerdem wird zunächst das Rechengitter vektorisiert.
 Bei der Lösung der Poisson-Gleichung fließen die Dirichlet-Randbedingungen ein, wodurch die Geschwindigkeit senkrecht zum Rand unter Berücksichtigung der Kontinuitätsgleichung festgelegt wird. Dafür wird ein Boole'scher Vektor _**`B`**_ definiert, welcher den Rand angibt.
 
 $$
-\boldsymbol{B}
+\boldsymbol{B}\colon
 \begin{cases}
 = 0 & \text{für }\Omega^\circ \\
 = 1 & \text{für }\Gamma_\Omega
@@ -171,7 +171,7 @@ Der Zeitschritt wird dabei durch die CFL-Zahl bestimmt, da die Stabilität in Ab
 
 $$
 \begin{align*}
-\mathrm{CFL} &= \left(\frac{u}{h_x} + \frac{v}{h_y}\right) h_t \overset{!}{<} \mathrm{CFL}_\mathrm{max} \\\\
-\Rightarrow\quad h_t &\overset{!}{<} \mathrm{CFL}_\mathrm{max} \left(\frac{u_\mathrm{max}}{h_x} + \frac{v_\mathrm{max}}{h_y}\right)^{-1}
+\mathrm{CFL} &= \left(\frac{u}{h_x} + \frac{v}{h_y}\right) h_t \overset{!}{\leq} \mathrm{CFL}_\mathrm{max} \\\\
+\Rightarrow\quad h_t &\overset{!}{\leq} \mathrm{CFL}_\mathrm{max} \left(\frac{u_\mathrm{max}}{h_x} + \frac{v_\mathrm{max}}{h_y}\right)^{-1}
 \end{align*}
 $$
