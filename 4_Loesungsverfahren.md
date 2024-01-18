@@ -102,7 +102,7 @@ Das Anfangswertproblem besteht darin, die Begebenheiten zu einer bestimmten Zeit
 Durch den Fluss einer Strömungsgröße ergibt sich ein Zusammenhang zwischen örtlicher und zeitlicher Auflösung. Die CFL-Zahl (benannt nach R. Courant, K. Friedrichs und H. Lewy – 1928) gibt an, um wie viele Gitterzellen sich eine Strömungsgröße pro Zeitschritt maximal fortbewegt. Für eine einzige Gitterzelle ist die Transportgeschwindigkeit durch das Verhältnis zwischen der örtlichen und zeitlichen Schrittweite gegeben. Die CFL-Zahl entspricht somit der Summe aller Geschwindigkeitskomponenten bezogen auf ebendiese Einheitsgeschwindigkeit.
 
 $$
-\mathrm{CFL} = u\frac{h_t}{h_x} + v\frac{h_t}{h_y}
+\mathrm{CFL} \coloneqq u\frac{h_t}{h_x} + v\frac{h_t}{h_y}
 $$
 
 > **Abbildung (CFL-Zahl)**
@@ -164,7 +164,14 @@ $$
 Die Randbedingungen sind in dem zuvor berechneten Geschwindigkeitsfeld enthalten, sodass die örtliche Auflösung bereits abgeschlossen ist und die Wirbelstärke zum nächsten Zeitpunkt berechnet werden kann. Damit die Randbedingungen korrekt in die bevorstehende Berechnung einfließen, muss unbedingt darauf geachtet werden, dass das Differenzenschema auch für den Randbereich konsistent ist.
 
 $$
-\dot{\boldsymbol{\omega}} = \left[ \nu(\boldsymbol{D}_x^{(2)} + \boldsymbol{D}_y^{(2)}) - (\boldsymbol{u}^\top\cdot\boldsymbol{D}_x^{(1)} + \boldsymbol{v}^\top\cdot\boldsymbol{D}_y^{(1)}) \right] \boldsymbol{\omega}
+\dot{\boldsymbol{\omega}} = \left[ \nu(\boldsymbol{D}_x^{(2)} + \boldsymbol{D}_y^{(2)}) - (\boldsymbol{u}^\top\odot\boldsymbol{D}_x^{(1)} + \boldsymbol{v}^\top\odot\boldsymbol{D}_y^{(1)}) \right] \boldsymbol{\omega}
 $$
 
 Der Zeitschritt wird dabei durch die CFL-Zahl bestimmt, da die Stabilität in Abhängigkeit von dem gewählten Zeitschrittverfahren nur bis zu einer bestimmten CFL-Zahl gewährleistet ist.
+
+$$
+\begin{align*}
+\mathrm{CFL} &= \left(\frac{u}{h_x} + \frac{v}{h_y}\right) h_t \overset{!}{<} \mathrm{CFL}_\mathrm{max} \\\\
+\Rightarrow\quad h_t &\overset{!}{<} \mathrm{CFL}_\mathrm{max} \left(\frac{u_\mathrm{max}}{h_x} + \frac{v_\mathrm{max}}{h_y}\right)^{-1}
+\end{align*}
+$$

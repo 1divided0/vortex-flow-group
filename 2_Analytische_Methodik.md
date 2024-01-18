@@ -108,10 +108,10 @@ Stromfunktion
 ------------------------------------------------------------------------------->
 ## Stromfunktion
 
-Um die Geschwindigkeit anhand der Stromlinien zu beschreiben, wird eine Stromfunktion _`Ψ`_ eingeführt, sodass die Stromlinien Niveaulinien dieser Stromfunktion darstellen. Entlang der Stromlinien ist dann die Stromfunktion konstant. Außerdem werden die Niveaustufen so festgelegt, dass ihre Differenz dem dazwischen passierenden Volumenstrom entspricht. Für inkompressible zweidimensionale Strömungen lässt die Stromfunktion als Differenz über ein bestimmtes Integral zwischen zwei Punkten _`A`_ und _`B`_ definieren.
+Um die Geschwindigkeit anhand der Stromlinien zu beschreiben, wird eine Stromfunktion _`Ψ`_ eingeführt, sodass die Stromlinien Niveaulinien dieser Stromfunktion darstellen. Entlang der Stromlinien ist dann die Stromfunktion konstant. Außerdem werden die Niveaustufen so festgelegt, dass ihre Differenz dem dazwischen passierenden orthogonalen Volumenstrom entspricht. Für inkompressible zweidimensionale Strömungen lässt die Stromfunktion als Differenz über ein bestimmtes Integral zwischen zwei Punkten _`A`_ und _`B`_ definieren.
 
 $$
-    \Psi(B) - \Psi(A) = \int_A^B (d\dot V_x - d\dot V_y) = \int_A^B (u\,dy - v\,dx)
+    \Psi(B) - \Psi(A) \coloneqq \int_A^B \underbrace{(d\dot V_x - d\dot V_y)}_{d\dot V_\perp} = \int_A^B (u\,dy - v\,dx)
 $$
 
 > **Abbildung (Definition der Stromfunktion)**
