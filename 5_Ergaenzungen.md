@@ -49,10 +49,10 @@ $$
 Über die analytische Ansatzfunktion lässt sich das sog. Übertragungsverhalten der numerischen Auflösung ausfindig machen. Dafür wird die analytische Lösung der Transportgleichung mit _`t=0`_, _`ξ=1`_ und _`c=0`_ in das entsprechende Differenzenschema eingesetzt und die so approximierte Ableitung mit dem analytischen Ergebnis verglichen:
 
 $$
-\begin{alignat}{5}
+\begin{alignat*}{5}
 \partial_x \Phi &= ~~~~~(\mathrm{i}\lambda) \Phi &&\eqqcolon \Lambda_x \Phi \quad&&\approx\quad~~~~~ (\mathrm{i}\lambda^\prime) \Phi &&= ~(-\operatorname{Im}\lambda^\prime + \mathrm{i}\operatorname{Re}\lambda^\prime) \Phi &&\eqqcolon \Lambda_x^\prime \Phi \\
 \partial_t \Phi &= (-\mathrm{i}u\lambda) \Phi &&\eqqcolon \Lambda_t \Phi \quad&&\approx\quad (-\mathrm{i}u\lambda^\prime) \Phi &&= (u\operatorname{Im}\lambda^\prime - \mathrm{i}u\operatorname{Re}\lambda^\prime) \Phi &&\eqqcolon \Lambda_t^\prime \Phi
-\end{alignat}
+\end{alignat*}
 $$
 
 Dass sich dabei der Zusammenhang über die modifizierte Wellenzahl _`λ'`_ des Differenzenschemas auch auf die zeitliche Ableitung überträgt, ist als eine heuristische Schlussfolgerung zu verstehen. Denn wie konkret dieser Zusammenhang besteht, ist von dem gewählten Zeitschrittverfahren abhängig. Dennoch lässt diese Überlegung mit den modifizierten Eigenwerten _`Λ'`_ Rückschlüsse auf numerische Diffusion zu, da die physikalische Diffusion mit _`c=0`_ anfangs ausgeschlossen wurde:
