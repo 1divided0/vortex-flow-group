@@ -15,7 +15,7 @@ In diesem Projekt wird ein numerischer Lösungsalgorithmus für zweidimensionale
 2. [Analytische Methodik](2_Analytische_Methodik.md)
 3. [Numerische Methodik](3_Numerische_Methodik.md)
 4. [Lösungsverfahren](4_Loesungsverfahren.md)
-5. Ergänzungen
+5. [Ergänzungen](5_Ergaenzungen.md)
 6. Anwendungsbeispiele
 
 ## Literatur Empfehlungen

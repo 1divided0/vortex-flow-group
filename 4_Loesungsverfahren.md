@@ -1,4 +1,4 @@
-# Thema 3: Lösungsverfahren
+# Thema 4: Lösungsverfahren
 
 In dem hier beschriebenen Verfahren wird die Finite-Differenzen-Methode angewendet, um das zweidimensionale Rand- und Anfangswertproblem zu lösen.
 
@@ -99,10 +99,10 @@ Periodische Randbedingungen charakterisieren in gewisser Weise die Topologie des
 
 Das Anfangswertproblem besteht darin, die Begebenheiten zu einer bestimmten Zeit zu extrapolieren. Dabei wird die Annahme getroffen, dass das System zu diesem Zeitpunkt vollständig bestimmt ist und einer chronologischen Kausalität unterliegt. Es gibt also demzufolge keine zeitliche Rückwirkung. Von dieser Warte aus stellt das Anfangswertproblem so etwas wie eine einseitige Randbedingung, nur eben in der Zeit.
 
-Durch den Fluss einer Strömungsgröße ergibt sich ein Zusammenhang zwischen örtlicher und zeitlicher Auflösung. Die CFL-Zahl (benannt nach R. Courant, K. Friedrichs und H. Lewy – 1928) gibt an, um wie viele Gitterzellen sich eine Strömungsgröße pro Zeitschritt maximal fortbewegt. Für eine einzige Gitterzelle ist die Transportgeschwindigkeit durch das Verhältnis zwischen der örtlichen und zeitlichen Schrittweite gegeben. Die CFL-Zahl entspricht somit der Summe aller Geschwindigkeitskomponenten bezogen auf ebendiese Einheitsgeschwindigkeit.
+Durch den Fluss einer Strömungsgröße ergibt sich ein Zusammenhang zwischen örtlicher und zeitlicher Auflösung. Die CFL-Zahl (benannt nach R. Courant, K. Friedrichs und H. Lewy – 1928) gibt an, um wie viele Gitterzellen sich eine Strömungsgröße pro Zeitschritt maximal fortbewegt. Für eine einzige Gitterzelle ist die Transportgeschwindigkeit durch das Verhältnis zwischen der örtlichen und zeitlichen Schrittweite gegeben. Die CFL-Zahl entspricht somit der Summe aller Geschwindigkeitsbeträge bezogen auf ebendiese Einheitsgeschwindigkeit.
 
 $$
-\mathrm{CFL} \coloneqq u\frac{h_t}{h_x} + v\frac{h_t}{h_y}
+\mathrm{CFL} \coloneqq |u|\frac{h_t}{h_x} + |v|\frac{h_t}{h_y}
 $$
 
 > **Abbildung (CFL-Zahl)**
@@ -171,7 +171,7 @@ Der Zeitschritt wird dabei durch die CFL-Zahl bestimmt, da die Stabilität in Ab
 
 $$
 \begin{align*}
-\mathrm{CFL} &= \left(\frac{u}{h_x} + \frac{v}{h_y}\right) h_t \overset{!}{\leq} \mathrm{CFL}_\mathrm{max} \\\\
-\Rightarrow\quad h_t &\overset{!}{\leq} \mathrm{CFL}_\mathrm{max} \left(\frac{u_\mathrm{max}}{h_x} + \frac{v_\mathrm{max}}{h_y}\right)^{-1}
+\mathrm{CFL} &= \left(\frac{|u|}{h_x} + \frac{|v|}{h_y}\right) h_t \overset{!}{\leq} \mathrm{CFL}_\mathrm{max} \\\\
+\Rightarrow\quad h_t &\overset{!}{\leq} \mathrm{CFL}_\mathrm{max} \left(\frac{|u|_\mathrm{max}}{h_x} + \frac{|v|_\mathrm{max}}{h_y}\right)^{-1}
 \end{align*}
 $$
