@@ -91,6 +91,8 @@ $$
 \end{align*}
 $$
 
+Die modifizierte Wellenzahl hat keinen Imaginäranteil und es wird somit auch keine numerische Diffusion verursacht.
+
 > **Abbildung (Modifizierte Wellenzahl)**
 >
 > ![Modifizierte Wellenzahl Realanteil](.Dateien/Bilder/Modifizierte_Wellenzahl_Zentraldifferenz_Realanteil.svg) ![Modifizierte Wellenzahl Imaginäranteil](.Dateien/Bilder/Modifizierte_Wellenzahl_Zentraldifferenz_Imaginaeranteil.svg)
@@ -111,6 +113,8 @@ $$
 &\approx \mathrm{i}\underbrace{\left[ \frac{\sin(\lambda h_x)}{h_x}+\mathrm{i}\frac{\cos(\lambda h_x)-1}{h_x} \right]}_{\eqqcolon \lambda^\prime} \mathrm{e}^{\mathrm{i}\lambda j h_x} \\
 \end{align*}
 $$
+
+Die modifizierte Wellenzahl hat einen Imaginäranteil und es wird somit numerische Diffusion verursacht.
 
 > **Abbildung (Modifizierte Wellenzahl)**
 >
