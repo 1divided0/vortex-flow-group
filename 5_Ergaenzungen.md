@@ -59,8 +59,8 @@ Dass sich dabei der Zusammenhang über die modifizierte Wellenzahl _`λ'`_ des D
 
 $$
 \begin{align*}
-\operatorname{sgn}(\operatorname{Re}\Lambda_x) &\approx -\operatorname{sgn}(\operatorname{Im} \lambda^\prime) \\
-\operatorname{sgn}(\operatorname{Re}\Lambda_t) &\approx \operatorname{sgn}(u \operatorname{Im} \lambda^\prime)
+\operatorname{sgn}(\operatorname{Re}\Lambda_x^\prime) &= -\operatorname{sgn}(\operatorname{Im} \lambda^\prime) \\
+\operatorname{sgn}(\operatorname{Re}\Lambda_t^\prime) &= \operatorname{sgn}(u \operatorname{Im} \lambda^\prime)
 \end{align*}
 $$
 
@@ -72,8 +72,8 @@ Da der Realanteil beider Eigenwerte nach dem analytischen Ergebnis nicht vorhand
 
 $$
 \begin{align*}
-\operatorname{sgn}(\operatorname{Re}\Lambda_x) &\approx \operatorname{sgn}(u) \\
-\operatorname{sgn}(\operatorname{Re}\Lambda_t) &\approx -1
+\operatorname{sgn}(\operatorname{Re}\Lambda_x^\prime) &= \operatorname{sgn}(u) \\
+\operatorname{sgn}(\operatorname{Re}\Lambda_t^\prime) &= -1
 \end{align*}
 $$
 
