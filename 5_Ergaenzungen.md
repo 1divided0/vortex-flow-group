@@ -257,4 +257,9 @@ Das Verfahren ist in Abhängigkeit von der Strömungsrichtung bedingt stabil.
 ---
 > **Aufgabe (CFL-Kriterium des Runge-Kutta-Verfahrens)**
 >
-> Wie lautet das CFL-Kriterium für das klassische Runge-Kutta-Verfahren unter Verwendung der Zentraldifferenz 2. Ordnung?
+> Wie lautet das CFL-Kriterium für das klassische Runge-Kutta-Verfahren unter Verwendung der Zentraldifferenz 2. Ordnung und Rückwärtsdifferenz 1. Ordnung?
+
+---
+> **Aufgabe (CFL-Kriterium für die Wirbeltransportgleichung)**
+>
+> Ist das CFL-Kriterium bei der Simulation der Wirbeltransportgleichung anwendbar? Testet eure Implementierung für unterschiedliche CFL-Zahlen.
