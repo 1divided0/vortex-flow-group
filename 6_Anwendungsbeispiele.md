@@ -91,4 +91,4 @@ $$
 ---
 > **Aufgabe (Vergleich der Laufzeit)**
 >
-> Wie verändert sich die Laufzeit eures Lösungsalgorithmus mit der Ordnung der gewählten Differenzenschemata?
+> Wie verändert sich die Laufzeit eures Lösungsalgorithmus mit der Fehlerordnung der gewählten Differenzenschemata?
