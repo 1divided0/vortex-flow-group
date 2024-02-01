@@ -20,7 +20,9 @@ In dem [Begleitmaterial](Begleitmaterial) befinden sich bereits Beispiele für b
 
 4. **Typisierung:** Durch das sog. Type-Hinting kann bei Programmiersprachen mit impliziter Typisierung explizit auf den Datentyp hingewiesen werden. Dies ist gerade bei Funktionsargumenten und Rückgabewerten sehr nützlich, da so Missverständnisse vermieden werden.
 
+<!--
 5. **Handhabung von großen Datenmengen:** Bei Skriptsprachen wie Matlab oder Python erfolgt der Funktionsaufruf meistens durch sog. Wertparameter (call by value) und nicht durch sog. Referenzparameter (call by reference), wodurch das gesamte Funktionsargument bei dem Funktionsaufruf kopiert wird. Da Speicheroperationen aber in der Regel sehr langsam sind, ist es in diesem Fall günstiger, große Objekte – wie z. B. die Differenzenmatrizen – global zu definieren, um sie nicht ständig neu zu initialisieren.
+-->
 
 
 <!------------------------------------------------------------------------------
