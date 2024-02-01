@@ -38,7 +38,7 @@ $$
 \partial_t \omega_z + \boldsymbol{u} \cdot \nabla\omega_z = \nu\nabla^2\omega_z
 $$
 
-wird die Annahme einer allgemeinen Beltrami-Strömung getroffen, dass sich die Wirbelstärke entlang von Stromlinien konstant verhält, also in diesem Fall ein _`η`_-Faches der Stromfunktion darstellt:
+wird die Annahme einer allgemeinen Beltrami-Strömung getroffen, dass sich die Wirbelstärke entlang von Stromlinien konstant verhält, also in diesem Fall ein $\eta$-Faches der Stromfunktion darstellt:
 
 $$
 \omega_z = \eta\Psi
@@ -53,7 +53,7 @@ $$
 \end{alignat*}
 $$
 
-lassen sich kombiniert einsetzten, was zu einem bestimmten Wert für _`η`_ und somit zur analytischen Lösung führt.
+lassen sich kombiniert einsetzten, was zu einem bestimmten Wert für $\eta$ und somit zur analytischen Lösung führt.
 
 ---
 > **Aufgabe (Herleitung der analytischen Lösung des Taylor-Green-Wirbels)**
