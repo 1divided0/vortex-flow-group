@@ -1,22 +1,22 @@
 # Thema 5: Ergänzungen
 
-Hier wird zunächst eine analytische Ansatzfunktion für die eindimensionale Transportgleichung vorgestellt, um damit anschließend numerische Diffusion und Stabilität zu erläutern. Auf-/Abwind-Differenzenschemata können dabei helfen, die Simulation numerisch zu stabilisieren, gehen aber mit einer numerischen Diffusion einher.
+Es wird zunächst eine analytische Lösung der eindimensionalen Transportgleichung hergeleitet, wie sie hier zum Einsatz kommt und damit als Ansatz dient, um die numerische Einflussnahme auf das Systemverhalten hinsichtlich der Stabilität zu untersuchen. Daraus ergeben sich diverse Möglichkeiten, die Approximationsverfahren zu kombinieren und auf die Problemstellung anzupassen, sodass die numerische Berechnung sicher und stabil vonstattengeht.
 
 [TOC]
 
 
 <!------------------------------------------------------------------------------
-Analytische Ansatzfunktion
+Analytische Lösung der eindimensionalen Transportgleichung
 ------------------------------------------------------------------------------->
-## Analytische Ansatzfunktion
+## Analytische Lösung der eindimensionalen Transportgleichung
 
-Für die eindimensionale Transportgleichung ohne Quellterm, lässt sich eine analytische Lösung herleiten, damit das numerische Diskretisierungsverfahren auf die Probe gestellt werden kann. Diese Gleichung ist gegeben durch
+Für die eindimensionale Transportgleichung ohne Quellterm, lässt sich zu Vergleichszwecken eine analytische Lösung herleiten. Diese Gleichung ist gegeben durch
 
 $$
 \partial_t \Phi(x,t) = c\partial_x^2 \Phi(x,t) - u\partial_x \Phi(x,t),
 $$
 
-wobei _`c`_ die Dämpfungskonstante, _`u`_ die Transportgeschwindigkeit und _`Φ`_ die Strömungsgröße geschreibt. Mit der Wellenzahl _`λ:=2π/L`_, Kreisfrequenz _`f:=2π/T`_ und imaginären Einheit `i` lässt sich der folgende Ansatz wählen:
+wobei _`c`_ die Dämpfungskonstante, _`u`_ die Transportgeschwindigkeit und _`Φ`_ die Strömungsgröße geschreibt. Mit der Wellenzahl _`λ:=2π/L`_, Frequenz _`f:=2π/T`_ und imaginären Einheit `i` lässt sich der folgende Ansatz wählen:
 
 $$
 \Phi(x,t) \sim \mathrm{e}^{\mathrm{i}(\lambda x - f t)}
@@ -34,7 +34,7 @@ $$
 f = -\mathrm{i}c\lambda^2 + u\lambda,
 $$
 
-sodass die Kreisfrequenz in dem Ansatz substituiert werden kann, was durch Multiplikation mit einem Vorfaktor _`ξ`_ zur allgemeinen Lösung führt.
+sodass die Frequenz in dem Ansatz substituiert werden kann, was durch Multiplikation mit einem Vorfaktor _`ξ`_ zur allgemeinen Lösung führt.
 
 $$
 \Phi(x,t) = \xi \mathrm{e}^{\mathrm{i}\lambda(x - u t)}\mathrm{e}^{-c\lambda^2 t}
@@ -42,224 +42,506 @@ $$
 
 
 <!------------------------------------------------------------------------------
-Übertragungsverhalten und numerische Diffusion
+Numerisches Übertragungsverhalten
 ------------------------------------------------------------------------------->
-## Übertragungsverhalten und numerische Diffusion
+## Numerisches Übertragungsverhalten
 
-Über die analytische Ansatzfunktion lässt sich das sog. Übertragungsverhalten der numerischen Auflösung ausfindig machen. Dafür wird die analytische Lösung der Transportgleichung mit _`t=0`_, _`ξ=1`_ und _`c=0`_ in das entsprechende Differenzenschema eingesetzt und die so approximierte Ableitung mit dem analytischen Ergebnis verglichen:
+Das numerische Übertragungsverhalten gibt an, wie sich das gewählte Approximationsverfahren auf die Systemdynamik auswirkt. Wird die Transportgleichung zunächst ohne Diffusion (_`c=0`_) betrachtet, dann ergibt sich die Lösung durch die Exponentialfunktion mit komplexem Argument ohne Realteil
 
 $$
-\begin{alignat*}{5}
-\partial_x \Phi &= ~~~~~(\mathrm{i}\lambda) \Phi &&\eqqcolon \Lambda_x \Phi \quad&&\approx\quad~~~~~ (\mathrm{i}\lambda^\prime) \Phi &&= ~(-\operatorname{Im}\lambda^\prime + \mathrm{i}\operatorname{Re}\lambda^\prime) \Phi &&\eqqcolon \Lambda_x^\prime \Phi \\
-\partial_t \Phi &= (-\mathrm{i}u\lambda) \Phi &&\eqqcolon \Lambda_t \Phi \quad&&\approx\quad (-\mathrm{i}u\lambda^\prime) \Phi &&= (u\operatorname{Im}\lambda^\prime - \mathrm{i}u\operatorname{Re}\lambda^\prime) \Phi &&\eqqcolon \Lambda_t^\prime \Phi
+\Phi(x,t) = \xi \mathrm{e}^{\mathrm{i}(\lambda x - f t)},
+$$
+
+sodass
+
+$$
+|\Phi(x,t)| = |\xi|.
+$$
+
+Wenn jedoch die Approximation der Ableitung die Wellenzahl im Raum bzw. die Frequenz in der Zeit derart modifiziert, dass im Argument der Exponentialfunktion ein Realteil entsteht, dann schlägt sich dies auf die Konvektion und Diffusion nieder, sodass
+
+$$
+|\Phi(x,t)| \approx |\xi\mathrm{e}^{\mathrm{i}(\lambda^\prime x - f^\prime t)}| \neq |\xi|.
+$$
+
+Da die Form der Lösung bekannt ist, kann in diesem Fall heuristisch davon ausgegangen werden, dass durch
+
+$$
+f = u\lambda \quad\Rightarrow\quad f^\prime \approx u\lambda^\prime
+$$
+
+ein Zusammenhang zwischen der räumlichen (konvektiven) und zeitlichen (diffusiven) Konzentrationsänderung besteht. So sollte die Wahl des Approximationsverfahrens mit Bedacht dieser Auswirkungen getroffen werden.
+
+### Numerische Konvektion
+
+Wenn sich die Approximation der Ableitung auf die räumliche Änderung der Konzentration auswirkt, dann ist von numerischer Konvektion die Rede. Um diesen Effekt zu untersuchen wird für die räumliche Ableitung
+
+$$
+t = 0
+$$
+
+gesetzt und für die zeitliche Ableitung mit der Heuristik
+
+$$
+\lambda = f / u \quad\Rightarrow\quad \lambda^\prime \approx f^\prime / u
+$$
+
+substituiert.
+
+$$
+\begin{alignat*}{3}
+& \partial_x \Phi &&= \mathrm{i}\lambda\Phi &&\approx \mathrm{i}\lambda^\prime\Phi \\
+\Rightarrow\quad& &&= \mathrm{i}(f / u)\Phi &&\approx \mathrm{i}(f^\prime / u)\Phi
 \end{alignat*}
 $$
 
-Dass sich dabei der Zusammenhang über die modifizierte Wellenzahl _`λ'`_ des Differenzenschemas auch auf die zeitliche Ableitung überträgt, ist als eine heuristische Schlussfolgerung zu verstehen. Denn wie konkret dieser Zusammenhang besteht, ist von dem gewählten Zeitschrittverfahren abhängig. Dennoch lässt diese Überlegung mit den modifizierten Eigenwerten _`Λ'`_ Rückschlüsse auf numerische Diffusion zu, da die physikalische Diffusion mit _`c=0`_ anfangs ausgeschlossen wurde:
+Für die Konzentration folgt somit:
 
 $$
-\begin{align*}
-\operatorname{sgn}(\operatorname{Re}\Lambda_x^\prime) &= -\operatorname{sgn}(\operatorname{Im} \lambda^\prime) \\
-\operatorname{sgn}(\operatorname{Re}\Lambda_t^\prime) &= \operatorname{sgn}(u \operatorname{Im} \lambda^\prime)
-\end{align*}
+\begin{alignat*}{5}
+& |\Phi| &&= |\xi\mathrm{e}^{\mathrm{i}\lambda x}| &&\approx |\xi\mathrm{e}^{\mathrm{i}\lambda^\prime x}| &&= |\xi\mathrm{e}^{(-\Im(\lambda^\prime) + \mathrm{i}\Re(\lambda^\prime))x}| &&= |\xi\mathrm{e}^{-\Im(\lambda^\prime)x}| \\
+\Rightarrow\quad& &&= |\xi\mathrm{e}^{\mathrm{i}(f / u)x}| &&\approx |\xi\mathrm{e}^{\mathrm{i}(f^\prime / u)x}| &&= |\xi\mathrm{e}^{(-\Im(f^\prime / u) + \mathrm{i}\Re(f^\prime / u))x}| &&= |\xi\mathrm{e}^{-\Im(f^\prime / u)x}|
+\end{alignat*}
 $$
 
-- Hat die räumliche Ableitung einen Eigenwert mit negativem Realanteil, dann begünstigt sie Konvektion in positiver Strömungsrichtung und wirkt ihr in negativer Strömungsrichtung entgegen. Hat sie hingegen einen Eigenwert mit positivem Realanteil, dann begünstigt sie Konvektion in negativer Strömungsrichtung und wirkt ihr in positiver Strömungsrichtung entgegen – also genau andersherum. Die physikalische Begründung besagt in jedem Fall, dass die räumliche Änderung der Strömungsgröße ein Konzentrationsgefälle beschreibt, was es je nach Strömungsrichtung entweder auszugleichen oder zu überwinden gilt. Der Realanteil von diesem Eigenwert gibt also den räumlichen Konzentrationszuwachs an.
+> **Abbildung (Numerische Konvektion)**
+>
+> ![negative numerische Konvektion](.Dateien/Bilder/Uebertragungsverhalten_exp_pos_x.svg) ![null numerische Konvektion](.Dateien/Bilder/Uebertragungsverhalten_exp_zero_x.svg) ![positive numerische Konvektion](.Dateien/Bilder/Uebertragungsverhalten_exp_neg_x.svg)
 
-- Hat die zeitliche Ableitung einen Eigenwert mit negativem Realanteil, dann nimmt die Konzentration der Strömungsgröße mit der Zeit ab. Hat sie hingegen einen Eigenwert mit positivem Realanteil, dann nimmt die Konzentration mit der Zeit zu. Dementsprechend gibt der Realanteil von diesem Eigenwert den zeitlichen Konzentrationszuwachs an.
+Dabei bestimmt der Imaginärteil der modifizierten Wellenzahl bzw. modifizierten Frequenz das numerische Konvektionsverhalten, wobei die räumliche Konzentrationsänderung (als Ursache) der Konvektion ebenjener Strömungsgröße entgegenwirkt.
 
-Da der Realanteil beider Eigenwerte nach dem analytischen Ergebnis nicht vorhanden sein sollte, ist er als ein numerisches Artefakt zu deuten, was den Diffusionsprozess beeinflusst. Es stellt sich heraus, dass es gerade die asymmetrischen Differenzenschemata sind, welche diesen Effekt herbeiführen. Dieser Effekt lässt sich im Sinne der numerischen Stabilität ausnutzen, indem sog. Auf-/Abwind-Differenzenschemata genau entgegen der Strömungsrichtung angelegt werden:
+### Numerische Diffusion
+
+Wenn sich die Approximation der Ableitung auf die zeitliche Änderung der Konzentration auswirkt, dann ist von numerischer Diffusion die Rede. Um diesen Effekt zu untersuchen wird für die zeitliche Ableitung
 
 $$
-\begin{align*}
-\operatorname{sgn}(\operatorname{Re}\Lambda_x^\prime) &= \operatorname{sgn}(u) \\
-\operatorname{sgn}(\operatorname{Re}\Lambda_t^\prime) &= -1
-\end{align*}
+x = 0
 $$
+
+gesetzt und für die räumliche Ableitung mit der Heuristik
+
+$$
+f = u\lambda \quad\Rightarrow\quad f^\prime \approx u\lambda^\prime
+$$
+
+substituiert.
+
+$$
+\begin{alignat*}{3}
+& \partial_t \Phi &&= -\mathrm{i}f\Phi &&\approx -\mathrm{i}f^\prime\Phi \\
+\Rightarrow\quad& &&= -\mathrm{i}(u\lambda)\Phi &&\approx -\mathrm{i}(u\lambda^\prime)\Phi
+\end{alignat*}
+$$
+
+Für die Konzentration folgt somit:
+
+$$
+\begin{alignat*}{5}
+& |\Phi| &&= |\xi\mathrm{e}^{-\mathrm{i}f t}| &&\approx |\xi\mathrm{e}^{-\mathrm{i}f^\prime t}| &&= |\xi\mathrm{e}^{(\Im(f^\prime) - \mathrm{i}\Re(f^\prime))t}| &&= |\xi\mathrm{e}^{\Im(f^\prime)t}| \\
+\Rightarrow\quad& &&= |\xi\mathrm{e}^{-\mathrm{i}(u\lambda)t}| &&\approx |\xi\mathrm{e}^{-\mathrm{i}(u\lambda^\prime)t}| &&= |\xi\mathrm{e}^{(\Im(u\lambda^\prime) - \mathrm{i}\Re(u\lambda^\prime))t}| &&= |\xi\mathrm{e}^{\Im(u\lambda^\prime)t}|
+\end{alignat*}
+$$
+
+> **Abbildung (Numerische Diffusion)**
+>
+> ![positive numerische Diffusion](.Dateien/Bilder/Uebertragungsverhalten_exp_neg_t.svg) ![null numerische Diffusion](.Dateien/Bilder/Uebertragungsverhalten_exp_zero_t.svg) ![negative numerische Diffusion](.Dateien/Bilder/Uebertragungsverhalten_exp_pos_t.svg)
+
+Dabei bestimmt der Imaginärteil der modifizierten Frequenz bzw. modifizierten Wellenzahl das numerische Diffusionsverhalten, wobei die zeitliche Konzentrationsänderung (als Ursache) der Diffusion ebenjener Strömungsgröße entgegenwirkt.
+
+### Beispiele
 
 ---
 <details>
-<summary markdown="span"><b>Beispiel: Zentraldifferenz 2. Ordnung</b></summary>
+<summary markdown="span"><b>Räumliche Ableitung: Zentraldifferenz 2. Ordnung</b></summary>
 <br>
 
 $$
 \begin{align*}
 \partial_x \Phi(x_j,0) &\approx \frac{1}{2 h_x}\left[ \Phi(x_{j+1},0)-\Phi(x_{j-1},0) \right] \\
-\mathrm{i}\lambda \mathrm{e}^{\mathrm{i}\lambda j h_x} &\approx \frac{1}{2 h_x}\left[ \mathrm{e}^{\mathrm{i}\lambda (j+1) h_x}-\mathrm{e}^{\mathrm{i}\lambda (j-1) h_x} \right] \\
+{\color{blue}\mathrm{i}{\color{red}\lambda} \mathrm{e}^{\mathrm{i}\lambda j h_x}} &\approx \frac{1}{2 h_x}\left[ \mathrm{e}^{\mathrm{i}\lambda (j+1) h_x}-\mathrm{e}^{\mathrm{i}\lambda (j-1) h_x} \right] \\
 &\approx \frac{1}{2 h_x}\left[ \mathrm{e}^{\mathrm{i}\lambda h_x}-\mathrm{e}^{-\mathrm{i}\lambda h_x} \right] \mathrm{e}^{\mathrm{i}\lambda j h_x} \\
-&\approx \mathrm{i}\underbrace{\left[\frac{\sin(\lambda h_x)}{h_x}\right]}_{\eqqcolon \lambda^\prime} \mathrm{e}^{\mathrm{i}\lambda j h_x}
+&\approx {\color{blue}\mathrm{i}{\color{red}\underbrace{\left[\frac{\sin(\lambda h_x)}{h_x}\right]}_{\eqqcolon \lambda^\prime}} \mathrm{e}^{\mathrm{i}\lambda j h_x}}
 \end{align*}
 $$
 
-Die modifizierte Wellenzahl hat keinen Imaginäranteil und es wird somit auch keine numerische Diffusion verursacht.
+Die modifizierte Wellenzahl hat keinen Imaginärteil. Es wird somit keine numerische Konvektion und auch keine numerische Diffusion verursacht.
 
 > **Abbildung (Modifizierte Wellenzahl)**
 >
-> ![Modifizierte Wellenzahl Realanteil](.Dateien/Bilder/Modifizierte_Wellenzahl_Zentraldifferenz_Realanteil.svg) ![Modifizierte Wellenzahl Imaginäranteil](.Dateien/Bilder/Modifizierte_Wellenzahl_Zentraldifferenz_Imaginaeranteil.svg)
+> ![Modifizierte Wellenzahl](.Dateien/Bilder/Modifizierte_Wellenzahl_Zentraldifferenz_O2.svg)
 
 </details>
 
 ---
 <details>
-<summary markdown="span"><b>Beispiel: Rückwärtsdifferenz 1. Ordnung</b></summary>
+<summary markdown="span"><b>Räumliche Ableitung: Rückwärtsdifferenz 1. Ordnung</b></summary>
 <br>
 
 $$
 \begin{align*}
 \partial_x \Phi(x_j,0) &\approx \frac{1}{h_x}\left[ \Phi(x_{j},0)-\Phi(x_{j-1},0) \right] \\
-\mathrm{i}\lambda \mathrm{e}^{\mathrm{i}\lambda j h_x} &\approx \frac{1}{h_x}\left[ \mathrm{e}^{\mathrm{i}\lambda j h_x}-\mathrm{e}^{\mathrm{i}\lambda (j-1) h_x} \right] \\
+{\color{blue}\mathrm{i}{\color{red}\lambda} \mathrm{e}^{\mathrm{i}\lambda j h_x}} &\approx \frac{1}{h_x}\left[ \mathrm{e}^{\mathrm{i}\lambda j h_x}-\mathrm{e}^{\mathrm{i}\lambda (j-1) h_x} \right] \\
 &\approx \frac{1}{h_x}\left[ 1-\mathrm{e}^{-\mathrm{i}\lambda h_x} \right] \mathrm{e}^{\mathrm{i}\lambda j h_x} \\
 &\approx \frac{1}{h_x}\left[ 1-\cos(\lambda h_x)+\mathrm{i}\sin(\lambda h_x) \right] \mathrm{e}^{\mathrm{i}\lambda j h_x} \\
-&\approx \mathrm{i}\underbrace{\left[ \frac{\sin(\lambda h_x)}{h_x}+\mathrm{i}\frac{\cos(\lambda h_x)-1}{h_x} \right]}_{\eqqcolon \lambda^\prime} \mathrm{e}^{\mathrm{i}\lambda j h_x} \\
+&\approx {\color{blue}\mathrm{i}{\color{red}\underbrace{\left[ \frac{\sin(\lambda h_x)}{h_x}+\mathrm{i}\frac{\cos(\lambda h_x)-1}{h_x} \right]}_{\eqqcolon \lambda^\prime}} \mathrm{e}^{\mathrm{i}\lambda j h_x}}
 \end{align*}
 $$
 
-Die modifizierte Wellenzahl hat einen Imaginäranteil und es wird somit numerische Diffusion verursacht.
+Die modifizierte Wellenzahl hat einen negativen Imaginärteil. Die numerische Konvektion erfolgt mit negativer Richtung im Raum und die numerische Diffusion mit dem Vorzeichen der Geschwindigkeit in der Zeit.
 
 > **Abbildung (Modifizierte Wellenzahl)**
 >
-> ![Modifizierte Wellenzahl Realanteil](.Dateien/Bilder/Modifizierte_Wellenzahl_Rueckwaertsdifferenz_Realanteil.svg) ![Modifizierte Wellenzahl Imaginäranteil](.Dateien/Bilder/Modifizierte_Wellenzahl_Rueckwaertsdifferenz_Imaginaeranteil.svg)
+> ![Modifizierte Wellenzahl](.Dateien/Bilder/Modifizierte_Wellenzahl_Rueckwaertsdifferenz_O1.svg)
 
 </details>
 
 ---
-> **Aufgabe (Implementierung des Auf-/Abwind-Differenzenschemas)**
+<details>
+<summary markdown="span"><b>Zeitliche Ableitung: explizites Euler-Verfahren</b></summary>
+<br>
+
+$$
+\begin{align*}
+\partial_t \Phi(0,t_l) &\approx \frac{1}{h_t}\left[ \Phi(0,t_{l+1})-\Phi(0,t_l) \right] \\
+{\color{blue}-\mathrm{i}{\color{red}f} \mathrm{e}^{-\mathrm{i}f l h_t}} &\approx \frac{1}{h_t}\left[ \mathrm{e}^{-\mathrm{i}f (l+1) h_t}-\mathrm{e}^{-\mathrm{i}f l h_t} \right] \\
+&\approx \frac{1}{h_t}\left[ \mathrm{e}^{-\mathrm{i}f h_t}-1 \right] \mathrm{e}^{-\mathrm{i}f l h_t} \\
+&\approx -\mathrm{i}\left[ \frac{\mathrm{i}\mathrm{e}^{-\mathrm{i}f h_t}-\mathrm{i}}{h_t} \right] \mathrm{e}^{-\mathrm{i}f l h_t} \\
+&\approx {\color{blue}-\mathrm{i}{\color{red}\underbrace{\left[ \frac{\sin(f h_t)}{h_t} + \frac{\mathrm{i}}{h_t}\left(\cos(f h_t)-1\right) \right]}_{\eqqcolon f^\prime}} \mathrm{e}^{-\mathrm{i}f l h_t}}
+\end{align*}
+$$
+
+Die modifizierte Frequenz hat einen negativen Imaginärteil. Die numerische Diffusion erfolgt mit positiver Richtung in der Zeit und die numerische Konvektion entgegen dem Vorzeichen der Geschwindigkeit im Raum.
+
+> **Abbildung (Modifizierte Frequenz)**
 >
-> Implementiert das Auf-/Abwind-Differenzenschema für die erste Ableitung in der Wirbeltransportgleichung.
+> ![Modifizierte Frequenz](.Dateien/Bilder/Modifizierte_Frequenz_Euler_explizit.svg)
+
+</details>
 
 ---
-> **Aufgabe (Modifizierte Wellenzahlen höherer Ordnung)**
+<details>
+<summary markdown="span"><b>Zeitliche Ableitung: implizites Euler-Verfahren</b></summary>
+<br>
+
+$$
+\begin{align*}
+\partial_t \Phi(0,t_l) &\approx \frac{1}{h_t}\left[ \Phi(0,t_l)-\Phi(0,t_{l-1}) \right] \\
+{\color{blue}-\mathrm{i}{\color{red}f} \mathrm{e}^{-\mathrm{i}f l h_t}} &\approx \frac{1}{h_t}\left[ \mathrm{e}^{-\mathrm{i}f l h_t}-\mathrm{e}^{-\mathrm{i}f (l-1) h_t} \right] \\
+&\approx \frac{1}{h_t}\left[ 1-\mathrm{e}^{\mathrm{i}f h_t} \right] \mathrm{e}^{-\mathrm{i}f l h_t} \\
+&\approx -\mathrm{i}\left[ \frac{\mathrm{i}-\mathrm{i}\mathrm{e}^{\mathrm{i}f h_t}}{h_t} \right] \mathrm{e}^{-\mathrm{i}f l h_t} \\
+&\approx {\color{blue}-\mathrm{i}{\color{red}\underbrace{\left[ \frac{\sin(f h_t)}{h_t} + \frac{\mathrm{i}}{h_t}\left(1-\cos(f h_t)\right) \right]}_{\eqqcolon f^\prime}} \mathrm{e}^{-\mathrm{i}f l h_t}}
+\end{align*}
+$$
+
+Die modifizierte Frequenz hat einen positiven Imaginärteil. Die numerische Diffusion erfolgt mit negativer Richtung in der Zeit und die numerische Konvektion mit dem Vorzeichen der Geschwindigkeit im Raum.
+
+> **Abbildung (Modifizierte Frequenz)**
 >
-> Welche modifizierten Wellenzahlen haben Differenzenschemata höherer Ordnung und wie lassen sich diese hinsichtlich der numerischen Genauigkeit beurteilen?
+> ![Modifizierte Frequenz](.Dateien/Bilder/Modifizierte_Frequenz_Euler_implizit.svg)
+
+</details>
 
 
 <!------------------------------------------------------------------------------
-Von-Neumann-Stabilitätsanalyse
+Stabilitätsanalyse nach John von Neumann
 ------------------------------------------------------------------------------->
-## Von-Neumann-Stabilitätsanalyse
+## Stabilitätsanalyse nach John von Neumann
 
-Auch wenn ein analytischer Zusammenhang zwischen der räumlichen und zeitlichen Auflösung besteht, ist es im Allgemeinen nicht so einfach einen numerischen Stabilitätsnachweis zu führen. Eine gute erste Näherung für das CFL-Kriterium bietet die Stabilitätsanalyse nach J. von Neumann, bei der die Transportgleichung ohne Quell- und Diffusionsterm, also nur mit Konvektionsterm herangezogen wird.
+Numerische und physikalische Stabilität sind zweierlei. Erstere muss unabhängig von letzterer gewährleistet sein, sonst läuft die numerische Berechnung unter Umständen Gefahr ins Unermessliche zu entfachen, wobei das Ergebnis mit der Zeit divergiert. Als während des 2. Weltkrieges die erste Rechnertechnik zur Verfügung stand und numerische Berechnungen dadurch an Bedeutung gewannen, war die numerische Stabilität mit das erste zu bewerkstelligende Problem. Eine Stabilitätsanalyse ist von daher als Sicherheitsvorkehrung einer jeden numerischen Berechnung nach wie vor unabdingbar.
 
-$$
-\partial_t \Phi(x,t) = - u\partial_x \Phi(x,t)
-$$
-
-Für die numerisch stabile Simulation von allgemeinen Transportprozessen bietet diese Analyse somit immerhin eine notwendige, aber noch keine hinreichende Bedingung. Numerische Stabilität bedeutet dabei in erster Linie, dass sich die betrachtete Größe über die Zeit nicht weiter vergrößert und ist somit eine arithmetische Sicherheitsvorkehrung.
+Eine numerisch stabile Simulation zeichnet sich durch Approximationsverfahren aus, welche die Konvektion (in positiver Strömungsrichtung) und die Diffusion (im positiven Zeitverlauf) begünstigen. Um diese Eigenschaft messbar zu machen, wird die eindimensionale Transportgleichung ohne Quellterm in ihre Bestandteile zerlegt und separat auf Stabilität untersucht. Dafür wird eine räumliche Fourier-Mode als Ansatz verwendet,
 
 $$
-|\Phi(x_j,h_t)| \overset{!}{\leq} |\Phi(x_j,0)|
+\Phi(x_j,t_l) = \xi^l \mathrm{e}^{\mathrm{i}\lambda j h_x},
 $$
 
-Unter dem Gesichtspunkt von Quell- und Diffusionsfreiheit stellt diese Annahme keinen physikalischen Widerspruch dar – was jedoch nicht bedeutet, dass numerische Diffusion physikalisch ist. Dabei wird die Beziehung oft als ein Verhältnis angegeben:
+sodass, nach der Stabilitätsbedingung,
 
 $$
-\frac{\Phi(x_j,h_t)}{\Phi(x_j,0)} = \xi,\quad |\xi|\overset{!}{\leq} 1
+\left| \frac{\Phi(x_j,t_{l+1})}{\Phi(x_j,t_l)} \right| = \left| \xi \right| \overset{!}{\leq} 1,
 $$
 
-Sodass wieder der vorherige Ansatz verwendet werden kann, nur dass die Strömungsgröße zum nächsten Zeitpunkt einem Vielfachen entspricht.
+die absoluten Funktionswerte in der Zeit monoton fallen. Außerdem lässt sich nach Richard Courant, Kurt Friedrichs und Hans Lewy für jede partikuläre Gleichung eine dimensionslose Zahl definieren, welche die notwendigen Modellparameter substituiert und dadurch die Angabe einer Stabilitätsbedingung ermöglicht.
+
+### Konvektionsgleichung
+
+Die Konvektionsgleichung entspricht der diffusions- und quellfreien Transportgleichung. Im Eindimensionalen ist sie somit gegeben durch
 
 $$
-\Phi(x_j,0)=\mathrm{e}^{\mathrm{i}\lambda j h_x},\quad \Phi(x_j,h_t)=\xi\Phi(x_j,0)=\xi\mathrm{e}^{\mathrm{i}\lambda j h_x}
+\partial_t \Phi(x,t) = -u\partial_x \Phi(x,t).
 $$
+
+Die CFL-Zahl für den Konvektionsterm mit der 1. räumlichen Ableitung nach _`x`_ wird wie folgt definiert:
+
+$$
+\mathrm{CFL}_x \coloneqq |u|\frac{h_t}{h_x}
+$$
+
+### Diffusionsgleichung
+
+Die Diffusionsgleichung entspricht der konvektions- und quellfreien Transportgleichung. Im Eindimensionalen ist sie somit gegeben durch
+
+$$
+\partial_t \Phi(x,t) = c\partial_x^2 \Phi(x,t).
+$$
+
+Die CFL-Zahl für den Diffusionsterm mit der 2. räumlichen Ableitung nach _`x`_ wird wie folgt definiert:
+
+$$
+\mathrm{CFL}_{xx} \coloneqq |c|\frac{h_t}{h_x^2}
+$$
+
+### Beispiele
 
 ---
 <details>
-<summary markdown="span"><b>Beispiel: Euler explizit mit Zentraldifferenz 2. Ordnung</b></summary>
+<summary markdown="span"><b>Konvektionsgleichung: explizites Euler-Verfahren mit Zentraldifferenz 2. Ordnung</b></summary>
 <br>
 
 $$
 \begin{align*}
-\Phi(x_j,h_t) &\approx \Phi(x_j,0) + h_t \partial_t \Phi(x_j,0) \\
-&\approx \Phi(x_j,0) + h_t \left[-u \partial_x \Phi(x_j,0) \right] \\
-&\approx \Phi(x_j,0) - \frac{u h_t}{2 h_x} \left[ \Phi(x_{j+1},0)-\Phi(x_{j-1},0) \right] \\
-\xi \mathrm{e}^{\mathrm{i}\lambda j h_x} &\approx \mathrm{e}^{\mathrm{i}\lambda j h_x} - \frac{u h_t}{2 h_x} \left[ \mathrm{e}^{\mathrm{i}\lambda (j+1) h_x}-\mathrm{e}^{\mathrm{i}\lambda (j-1) h_x} \right] \\
+\Phi(x_j,t_{l+1}) &\approx \Phi(x_j,t_l) + h_t \partial_t \Phi(x_j,t_l) \\
+&\approx \Phi(x_j,t_l) + h_t \left[-u \partial_x \Phi(x_j,t_l) \right] \\
+&\approx \Phi(x_j,t_l) - \frac{u h_t}{2 h_x} \left[ \Phi(x_{j+1},t_l)-\Phi(x_{j-1},t_l) \right] \\
+\xi^{l+1} \mathrm{e}^{\mathrm{i}\lambda j h_x} &\approx \xi^l \mathrm{e}^{\mathrm{i}\lambda j h_x} - \frac{u h_t}{2 h_x} \left[ \xi^l \mathrm{e}^{\mathrm{i}\lambda (j+1) h_x}- \xi^l \mathrm{e}^{\mathrm{i}\lambda (j-1) h_x} \right] \\
 \xi &\approx 1 - \frac{u h_t}{2 h_x} \left[ \mathrm{e}^{\mathrm{i}\lambda h_x}-\mathrm{e}^{-\mathrm{i}\lambda h_x} \right] \\
-&\approx 1 - \operatorname{sgn}(u)\cdot \mathrm{CFL} \cdot\mathrm{i}\sin(\lambda h_x) \\\\
-\Rightarrow\qquad 1 &\geq \left|1 - \operatorname{sgn}(u)\cdot \mathrm{CFL} \cdot\mathrm{i}\sin(\lambda h_x)\right| \\
-\mathrm{CFL} &= 0
+&\approx 1 - \operatorname{sgn}(u)\cdot \mathrm{CFL}_x \cdot\mathrm{i}\sin(\lambda h_x) \\\\
+\forall(\lambda h_x)\in\mathbb{R}\colon\quad 1 &\geq \left|1 - \operatorname{sgn}(u)\cdot \mathrm{CFL}_x \cdot\mathrm{i}\sin(\lambda h_x)\right| \\
+\mathrm{CFL}_x &= 0
 \end{align*}
 $$
 
-Das Verfahren ist ausnahmslos instabil.
+Die Kombination der Approximationsverfahren ist ausnahmslos instabil, da das explizite Euler-Verfahren die Konvektion entgegen der Strömungsrichtung entfacht, während die Zentraldifferenz keinen Einfluss hat.
 
 </details>
 
 ---
 <details>
-<summary markdown="span"><b>Beispiel: Euler explizit mit Rückwärtsdifferenz 1. Ordnung</b></summary>
+<summary markdown="span"><b>Konvektionsgleichung: explizites Euler-Verfahren mit Rückwärtsdifferenz 1. Ordnung</b></summary>
 <br>
 
 $$
 \begin{align*}
-\Phi(x_j,h_t) &\approx \Phi(x_j,0) + h_t \partial_t \Phi(x_j,0) \\
-&\approx \Phi(x_j,0) + h_t \left[-u \partial_x \Phi(x_j,0) \right] \\
-&\approx \Phi(x_j,0) - \frac{u h_t}{h_x} \left[ \Phi(x_{j},0)-\Phi(x_{j-1},0) \right] \\
-\xi \mathrm{e}^{\mathrm{i}\lambda j h_x} &\approx \mathrm{e}^{\mathrm{i}\lambda j h_x} - \frac{u h_t}{h_x} \left[ \mathrm{e}^{\mathrm{i}\lambda j h_x}-\mathrm{e}^{\mathrm{i}\lambda (j-1) h_x} \right] \\
+\Phi(x_j,t_{l+1}) &\approx \Phi(x_j,t_l) + h_t \partial_t \Phi(x_j,t_l) \\
+&\approx \Phi(x_j,t_l) + h_t \left[-u \partial_x \Phi(x_j,t_l) \right] \\
+&\approx \Phi(x_j,t_l) - \frac{u h_t}{h_x} \left[ \Phi(x_{j},t_l)-\Phi(x_{j-1},t_l) \right] \\
+\xi^{l+1} \mathrm{e}^{\mathrm{i}\lambda j h_x} &\approx \xi^l \mathrm{e}^{\mathrm{i}\lambda j h_x} - \frac{u h_t}{h_x} \left[ \xi^l \mathrm{e}^{\mathrm{i}\lambda j h_x}- \xi^l \mathrm{e}^{\mathrm{i}\lambda (j-1) h_x} \right] \\
 \xi &\approx 1 - \frac{u h_t}{h_x} \left[ 1-\mathrm{e}^{-\mathrm{i}\lambda h_x} \right] \\
-&\approx 1 - \operatorname{sgn}(u)\cdot \mathrm{CFL} \cdot \left[ 1-\cos(\lambda h_x)+\mathrm{i}\sin(\lambda h_x) \right] \\\\
-\Rightarrow\qquad 1 &\geq \left|1 - \operatorname{sgn}(u)\cdot \mathrm{CFL} \cdot \left[ 1-\cos(\lambda h_x)+\mathrm{i}\sin(\lambda h_x) \right]\right| \\
-&\geq \left[ 1 - \operatorname{sgn}(u)\cdot \mathrm{CFL} \cdot \left[ 1-\cos(\lambda h_x) \right] \right]^2 +\left[\mathrm{CFL}\cdot \sin(\lambda h_x) \right]^2 \\
+&\approx 1 - \operatorname{sgn}(u)\cdot \mathrm{CFL}_x \cdot \left[ 1-\cos(\lambda h_x)+\mathrm{i}\sin(\lambda h_x) \right] \\\\
+\forall(\lambda h_x)\in\mathbb{R}\colon\quad 1 &\geq \left|1 - \operatorname{sgn}(u)\cdot \mathrm{CFL}_x \cdot \left[ 1-\cos(\lambda h_x)+\mathrm{i}\sin(\lambda h_x) \right]\right| \\
+&\geq \left[ 1 - \operatorname{sgn}(u)\cdot \mathrm{CFL}_x \cdot \left[ 1-\cos(\lambda h_x) \right] \right]^2 +\left[\mathrm{CFL}_x\cdot \sin(\lambda h_x) \right]^2 \\
 &\geq \ldots \\
-&\geq 1 + 2\left[ 1-\cos(\lambda h_x) \right] \left[ \mathrm{CFL} \left[ \mathrm{CFL} - \operatorname{sgn}(u) \right] \right] \\
-&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\mathrm{CFL} \begin{cases}\leq 1, &\operatorname{sgn}(u)=1 \\ =0, &\operatorname{sgn}(u)<1 \end{cases}
+&\geq 1 + 2\left[ 1-\cos(\lambda h_x) \right] \left[ \mathrm{CFL}_x \left[ \mathrm{CFL}_x - \operatorname{sgn}(u) \right] \right] \\
+&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\mathrm{CFL}_x \begin{cases}\leq 1, &\operatorname{sgn}(u)=1 \\ =0, &\operatorname{sgn}(u)<1 \end{cases}
 \end{align*}
 $$
 
-Das Verfahren ist in Abhängigkeit von der Strömungsrichtung bedingt stabil.
+Die Kombination der Approximationsverfahren ist in Abhängigkeit von der Strömungsrichtung bedingt stabil, da die Rückwärtsdifferenz in positiver Strömungsrichtung dämpft und dabei die fehlgerichtete numerische Konvektion des expliziten Euler-Verfahrens gegenläufig kompensiert.
 
 </details>
 
 ---
 <details>
-<summary markdown="span"><b>Beispiel: Euler implizit mit Zentraldifferenz 2. Ordnung</b></summary>
+<summary markdown="span"><b>Konvektionsgleichung: implizites Euler-Verfahren mit Zentraldifferenz 2. Ordnung</b></summary>
 <br>
 
 $$
 \begin{align*}
-\Phi(x_j,h_t) &\approx \Phi(x_j,0) + h_t \partial_t \Phi(x_j,h_t) \\
-&\approx \Phi(x_j,0) + h_t \left[-u \partial_x \Phi(x_j,h_t) \right] \\
-&\approx \Phi(x_j,0) - \frac{u h_t}{2 h_x} \left[ \Phi(x_{j+1},h_t)-\Phi(x_{j-1},h_t) \right] \\
-\xi \mathrm{e}^{\mathrm{i}\lambda j h_x} &\approx \mathrm{e}^{\mathrm{i}\lambda j h_x} - \frac{u h_t}{2 h_x} \left[ \xi\mathrm{e}^{\mathrm{i}\lambda (j+1) h_x}-\xi\mathrm{e}^{\mathrm{i}\lambda (j-1) h_x} \right] \\
-\xi &\approx \left[ 1 + \operatorname{sgn}(u)\cdot \mathrm{CFL} \cdot\mathrm{i}\sin(\lambda h_x) \right]^{-1} \\\\
-\Rightarrow\qquad 1 &\geq \left|1 + \operatorname{sgn}(u)\cdot \mathrm{CFL} \cdot\mathrm{i}\sin(\lambda h_x)\right|^{-1} \\
-\mathrm{CFL} &\geq 0
+\Phi(x_j,t_{l+1}) &\approx \Phi(x_j,t_l) + h_t \partial_t \Phi(x_j,t_{l+1}) \\
+&\approx \Phi(x_j,t_l) + h_t \left[-u \partial_x \Phi(x_j,t_{l+1}) \right] \\
+&\approx \Phi(x_j,t_l) - \frac{u h_t}{2 h_x} \left[ \Phi(x_{j+1},t_{l+1})-\Phi(x_{j-1},t_{l+1}) \right] \\
+\xi^{l+1} \mathrm{e}^{\mathrm{i}\lambda j h_x} &\approx \xi^l \mathrm{e}^{\mathrm{i}\lambda j h_x} - \frac{u h_t}{2 h_x} \left[ \xi^{l+1} \mathrm{e}^{\mathrm{i}\lambda (j+1) h_x}- \xi^{l+1}\mathrm{e}^{\mathrm{i}\lambda (j-1) h_x} \right] \\
+\xi &\approx \left[ 1 + \operatorname{sgn}(u)\cdot \mathrm{CFL}_x \cdot\mathrm{i}\sin(\lambda h_x) \right]^{-1} \\\\
+\forall(\lambda h_x)\in\mathbb{R}\colon\quad 1 &\geq \left|1 + \operatorname{sgn}(u)\cdot \mathrm{CFL}_x \cdot\mathrm{i}\sin(\lambda h_x)\right|^{-1} \\
+\mathrm{CFL}_x &\geq 0
 \end{align*}
 $$
 
-Das Verfahren ist unbedingt stabil.
+Die Kombination der Approximationsverfahren ist unbedingt stabil, da das implizite Euler-Verfahren die Konvektion in Strömungsrichtung begünstigt, während die Zentraldifferenz keinen Einfluss hat.
 
 </details>
 
 ---
 <details>
-<summary markdown="span"><b>Beispiel: Euler implizit mit Rückwärtsdifferenz 1. Ordnung</b></summary>
+<summary markdown="span"><b>Konvektionsgleichung: implizites Euler-Verfahren mit Rückwärtsdifferenz 1. Ordnung</b></summary>
 <br>
 
 $$
 \begin{align*}
-\Phi(x_j,h_t) &\approx \Phi(x_j,0) + h_t \partial_t \Phi(x_j,h_t) \\
-&\approx \Phi(x_j,0) + h_t \left[-u \partial_x \Phi(x_j,h_t) \right] \\
-&\approx \Phi(x_j,0) - \frac{u h_t}{h_x} \left[ \Phi(x_{j},h_t)-\Phi(x_{j-1},h_t) \right] \\
-\xi \mathrm{e}^{\mathrm{i}\lambda j h_x} &\approx \mathrm{e}^{\mathrm{i}\lambda j h_x} - \frac{u h_t}{h_x} \left[ \xi\mathrm{e}^{\mathrm{i}\lambda j h_x}-\xi\mathrm{e}^{\mathrm{i}\lambda (j-1) h_x} \right] \\
-\xi &\approx \left[1 + \operatorname{sgn}(u)\cdot \mathrm{CFL} \cdot \left[ 1-\cos(\lambda h_x)+\mathrm{i}\sin(\lambda h_x) \right]\right]^{-1} \\\\
-\Rightarrow\qquad 1 &\geq \left|1 + \operatorname{sgn}(u)\cdot \mathrm{CFL} \cdot \left[ 1-\cos(\lambda h_x)+\mathrm{i}\sin(\lambda h_x) \right]\right|^{-1} \\
-&\leq \left[ 1 + \operatorname{sgn}(u)\cdot \mathrm{CFL} \cdot \left[ 1-\cos(\lambda h_x) \right] \right]^2 +\left[\mathrm{CFL}\cdot \sin(\lambda h_x) \right]^2 \\
+\Phi(x_j,t_{l+1}) &\approx \Phi(x_j,t_l) + h_t \partial_t \Phi(x_j,t_{l+1}) \\
+&\approx \Phi(x_j,t_l) + h_t \left[-u \partial_x \Phi(x_j,t_{l+1}) \right] \\
+&\approx \Phi(x_j,t_l) - \frac{u h_t}{h_x} \left[ \Phi(x_{j},t_{l+1})-\Phi(x_{j-1},t_{l+1}) \right] \\
+\xi^{l+1} \mathrm{e}^{\mathrm{i}\lambda j h_x} &\approx \xi^l \mathrm{e}^{\mathrm{i}\lambda j h_x} - \frac{u h_t}{h_x} \left[ \xi^{l+1} \mathrm{e}^{\mathrm{i}\lambda j h_x}-\xi^{l+1} \mathrm{e}^{\mathrm{i}\lambda (j-1) h_x} \right] \\
+\xi &\approx \left[1 + \operatorname{sgn}(u)\cdot \mathrm{CFL}_x \cdot \left[ 1-\cos(\lambda h_x)+\mathrm{i}\sin(\lambda h_x) \right]\right]^{-1} \\\\
+\forall(\lambda h_x)\in\mathbb{R}\colon\quad 1 &\geq \left|1 + \operatorname{sgn}(u)\cdot \mathrm{CFL}_x \cdot \left[ 1-\cos(\lambda h_x)+\mathrm{i}\sin(\lambda h_x) \right]\right|^{-1} \\
+&\leq \left[ 1 + \operatorname{sgn}(u)\cdot \mathrm{CFL}_x \cdot \left[ 1-\cos(\lambda h_x) \right] \right]^2 +\left[\mathrm{CFL}_x\cdot \sin(\lambda h_x) \right]^2 \\
 &\leq \ldots \\
-&\leq 1 + 2\left[ 1-\cos(\lambda h_x) \right] \left[ \mathrm{CFL} \left[ \mathrm{CFL} + \operatorname{sgn}(u) \right] \right] \\
-&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\mathrm{CFL} \begin{cases}\geq 0, &\operatorname{sgn}(u)=1 \\ \leq 1, &\operatorname{sgn}(u)<1 \end{cases}
+&\leq 1 + 2\left[ 1-\cos(\lambda h_x) \right] \left[ \mathrm{CFL}_x \left[ \mathrm{CFL}_x + \operatorname{sgn}(u) \right] \right] \\
+&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\mathrm{CFL}_x \begin{cases}\geq 0, &\operatorname{sgn}(u)=1 \\ \leq 1, &\operatorname{sgn}(u)<1 \end{cases}
 \end{align*}
 $$
 
-Das Verfahren ist in Abhängigkeit von der Strömungsrichtung bedingt stabil.
+Die Kombination der Approximationsverfahren ist in Abhängigkeit von der Strömungsrichtung bedingt stabil, da das implizite Euler-Verfahren die Konvektion in Strömungsrichtung begünstigt, während die Rückwärtsdifferenz in positiver Strömungsrichtung dämpft und in negativer Strömungsrichtung entfacht.
 
 </details>
 
 ---
-> **Aufgabe (CFL-Kriterium des Runge-Kutta-Verfahrens)**
->
-> Wie lautet das CFL-Kriterium für das klassische Runge-Kutta-Verfahren unter Verwendung der Zentraldifferenz 2. Ordnung und Rückwärtsdifferenz 1. Ordnung?
+<details>
+<summary markdown="span"><b>Diffusionsgleichung: explizites Euler-Verfahren mit Zentraldifferenz 2. Ordnung</b></summary>
+<br>
+
+$$
+\begin{align*}
+\Phi(x_j,t_{l+1}) &\approx \Phi(x_j,t_l) + h_t \partial_t \Phi(x_j,t_l) \\
+&\approx \Phi(x_j,t_l) + h_t \left[c \partial_x^2 \Phi(x_j,t_l) \right] \\
+&\approx \Phi(x_j,t_l) + \frac{c h_t}{h_x^2} \left[ \Phi(x_{j+1},t_l)-2\Phi(x_j,t_l)+\Phi(x_{j-1},t_l) \right] \\
+\xi^{l+1} \mathrm{e}^{\mathrm{i}\lambda j h_x} &\approx \xi^l \mathrm{e}^{\mathrm{i}\lambda j h_x} + \frac{c h_t}{h_x^2} \left[ \xi^l \mathrm{e}^{\mathrm{i}\lambda (j+1) h_x} - 2 \xi^l \mathrm{e}^{\mathrm{i}\lambda j h_x} + \xi^l \mathrm{e}^{\mathrm{i}\lambda (j-1) h_x} \right] \\
+\xi &\approx 1 + \frac{c h_t}{h_x^2} \left[ \mathrm{e}^{\mathrm{i}\lambda h_x} - 2 + \mathrm{e}^{-\mathrm{i}\lambda h_x} \right] \\
+&\approx 1 + \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \cdot 2\left[\cos(\lambda h_x)-1\right] \\\\
+\forall(\lambda h_x)\in\mathbb{R}\colon\quad 1 &\geq \left|1 + \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \cdot 2\left[\cos(\lambda h_x)-1\right]\right| \\
+&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\mathrm{CFL}_{xx} \begin{cases}\geq 0, &\operatorname{sgn}(c)=1 \\ = 0, &\operatorname{sgn}(c)<1 \end{cases}
+\end{align*}
+$$
+
+Die Kombination der Approximationsverfahren ist für positive Diffusion stabil, da das explizite Euler-Verfahren die Diffusion in dieser Richtung begünstigt, und für negative Diffusion dementsprechend instabil, wobei die Zentraldifferenz keinen Einfluss hat.
+
+</details>
 
 ---
-> **Aufgabe (CFL-Kriterium für die Wirbeltransportgleichung)**
->
-> Ist das CFL-Kriterium bei der Simulation der Wirbeltransportgleichung anwendbar? Testet eure Implementierung für unterschiedliche CFL-Zahlen.
+<details>
+<summary markdown="span"><b>Diffusionsgleichung: explizites Euler-Verfahren mit Rückwärtsdifferenz 1. Ordnung</b></summary>
+<br>
+
+$$
+\begin{align*}
+\Phi(x_j,t_{l+1}) &\approx \Phi(x_j,t_l) + h_t \partial_t \Phi(x_j,t_l) \\
+&\approx \Phi(x_j,t_l) + h_t \left[c \partial_x^2 \Phi(x_j,t_l) \right] \\
+&\approx \Phi(x_j,t_l) + \frac{c h_t}{h_x^2} \left[ \Phi(x_j,t_l)-2\Phi(x_{j-1},t_l)+\Phi(x_{j-2},t_l) \right] \\
+\xi^{l+1} \mathrm{e}^{\mathrm{i}\lambda j h_x} &\approx \xi^l \mathrm{e}^{\mathrm{i}\lambda j h_x} + \frac{c h_t}{h_x^2} \left[ \xi^l \mathrm{e}^{\mathrm{i}\lambda j h_x} - 2 \xi^l \mathrm{e}^{\mathrm{i}\lambda (j-1) h_x} + \xi^l \mathrm{e}^{\mathrm{i}\lambda (j-2) h_x} \right] \\
+\xi &\approx 1 + \frac{c h_t}{h_x^2} \left[ 1 - 2 \mathrm{e}^{-\mathrm{i}\lambda h_x} + \mathrm{e}^{-2 \mathrm{i}\lambda h_x} \right] \\
+&\approx 1 + \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \left[1-2\cos(\lambda h_x)+\cos(2\lambda h_x)+\mathrm{i}\left[2\sin(\lambda h_x)+\sin(2\lambda h_x)\right]\right] \\\\
+\forall(\lambda h_x)\in\mathbb{R}\colon\quad 1 &\geq \left|1 + \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \left[1-2\cos(\lambda h_x)+\cos(2\lambda h_x)+\mathrm{i}\left[2\sin(\lambda h_x)+\sin(2\lambda h_x)\right]\right]\right| \\
+&\geq \left[1 + \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \left[1-2\cos(\lambda h_x)+\cos(2\lambda h_x)\right]\right]^2+\left[\mathrm{CFL}_{xx}\left[2\sin(\lambda h_x)+\sin(2\lambda h_x)\right]\right]^2 \\
+\mathrm{CFL}_{xx} &= 0
+\end{align*}
+$$
+
+Die Kombination der Approximationsverfahren ist instabil, da die Rückwärtsdifferenz bei der zweiten Ableitung die Diffusion in entgegengesetzter Richtung entfacht und dadurch das Zeitschrittverfahren destabilisiert.
+
+</details>
+
+---
+<details>
+<summary markdown="span"><b>Diffusionsgleichung: implizites Euler-Verfahren mit Zentraldifferenz 2. Ordnung</b></summary>
+<br>
+
+$$
+\begin{align*}
+\Phi(x_j,t_{l+1}) &\approx \Phi(x_j,t_l) + h_t \partial_t \Phi(x_j,t_{l+1}) \\
+&\approx \Phi(x_j,t_l) + h_t \left[c \partial_x^2 \Phi(x_j,t_{l+1}) \right] \\
+&\approx \Phi(x_j,t_l) + \frac{c h_t}{h_x^2} \left[ \Phi(x_{j+1},t_{l+1}) - 2\Phi(x_j,t_{l+1}) + \Phi(x_{j-1},t_{l+1}) \right] \\
+\xi^{l+1} \mathrm{e}^{\mathrm{i}\lambda j h_x} &\approx \xi^l \mathrm{e}^{\mathrm{i}\lambda j h_x} + \frac{c h_t}{h_x^2} \left[ \xi^{l+1} \mathrm{e}^{\mathrm{i}\lambda (j+1) h_x} -2 \xi^{l+1} \mathrm{e}^{\mathrm{i}\lambda j h_x} +\xi^{l+1}\mathrm{e}^{\mathrm{i}\lambda (j-1) h_x} \right] \\
+\xi &\approx \left[ 1 - \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \cdot 2\left[\cos(\lambda h_x)-1\right] \right]^{-1} \\\\
+\forall(\lambda h_x)\in\mathbb{R}\colon\quad 1 &\geq \left|1 - \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \cdot 2\left[\cos(\lambda h_x)-1\right]\right|^{-1} \\
+&\leq 1 - \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \cdot 4\left[\cos(\lambda h_x)-1\right] + \mathrm{CFL}_{xx}^2 \cdot 4\left[\cos(\lambda h_x)-1\right]^2 \\
+0 &\leq - \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} + \mathrm{CFL}_{xx}^2 \left[\cos(\lambda h_x)-1\right] \\
+&\leq \mathrm{CFL}_{xx}\left[\mathrm{CFL}_{xx} \left[\cos(\lambda h_x)-1\right] - \operatorname{sgn}(c) \right] \\
+&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\mathrm{CFL}_{xx} \begin{cases}\leq 1, &\operatorname{sgn}(c)=-1 \\ = 0, &\operatorname{sgn}(c)>-1 \end{cases}
+\end{align*}
+$$
+
+Die Kombination der Approximationsverfahren ist für positive Diffusion instabil, da das implizite Euler-Verfahren die Diffusion entgegen dieser Richtung entfacht, und für negative Diffusion dementsprechend bedingt stabil, wobei die Zentraldifferenz keinen Einfluss hat.
+
+</details>
+
+---
+<details>
+<summary markdown="span"><b>Diffusionsgleichung: implizites Euler-Verfahren mit Rückwärtsdifferenz 1. Ordnung</b></summary>
+<br>
+
+$$
+\begin{align*}
+\Phi(x_j,t_{l+1}) &\approx \Phi(x_j,t_l) + h_t \partial_t \Phi(x_j,t_{l+1}) \\
+&\approx \Phi(x_j,t_l) + h_t \left[c \partial_x^2 \Phi(x_j,t_{l+1}) \right] \\
+&\approx \Phi(x_j,t_l) + \frac{c h_t}{h_x^2} \left[ \Phi(x_j,t_{l+1}) - 2\Phi(x_{j-1},t_{l+1}) + \Phi(x_{j-2},t_{l+1}) \right] \\
+\xi^{l+1} \mathrm{e}^{\mathrm{i}\lambda j h_x} &\approx \xi^l \mathrm{e}^{\mathrm{i}\lambda j h_x} + \frac{c h_t}{h_x^2} \left[ \xi^{l+1} \mathrm{e}^{\mathrm{i}\lambda j h_x} -2 \xi^{l+1}\mathrm{e}^{\mathrm{i}\lambda (j-1) h_x} + \xi^{l+1}\mathrm{e}^{\mathrm{i}\lambda (j-2) h_x} \right] \\
+\xi &\approx \left[ 1 - \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \left[1-2\cos(\lambda h_x)+\cos(2\lambda h_x)+\mathrm{i}\left[2\sin(\lambda h_x)+\sin(2\lambda h_x)\right]\right] \right]^{-1} \\\\
+\forall(\lambda h_x)\in\mathbb{R}\colon\quad 1 &\geq \left|1 - \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \left[1-2\cos(\lambda h_x)+\cos(2\lambda h_x)+\mathrm{i}\left[2\sin(\lambda h_x)+\sin(2\lambda h_x)\right]\right]\right|^{-1} \\
+&\leq \left[1 - \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \left[1-2\cos(\lambda h_x)+\cos(2\lambda h_x)\right]\right]^2+\left[\mathrm{CFL}_{xx}\left[2\sin(\lambda h_x)+\sin(2\lambda h_x)\right]\right]^2 \\
+\mathrm{CFL}_{xx} &= 0
+\end{align*}
+$$
+
+Die Kombination der Approximationsverfahren ist instabil, da die Rückwärtsdifferenz bei der zweiten Ableitung die Diffusion in entgegengesetzter Richtung entfacht und dadurch das Zeitschrittverfahren destabilisiert.
+
+</details>
+
+
+<!------------------------------------------------------------------------------
+Implementierung angepasster Verfahren
+------------------------------------------------------------------------------->
+## Implementierung angepasster Verfahren
+
+Bei der Implementierung der Approximationsverfahren geht es neben dem Rechenaufwand vorrangig um Stabilität und Genauigkeit. Unter Anbetracht der Stabilitätsanalyse und des Übertragungsverhaltens lassen sich dafür gezielt Vorkehrungen treffen.
+
+### Aufwind-Differenzenverfahren
+
+Die Finite-Differenzenschemata entgegen der Strömungsrichtung anzulegen, hat nicht nur einen stabilisierenden Effekt, sondern geht auch mit einer höheren Genauigkeit einher, zumal die Informationen mit der Strömung transportiert und somit rechtzeitig abgegriffen werden. Dafür wird der Konvektionsterm überall nach dem Vorzeichen der Geschwindigkeit angepasst:
+
+$$
+\underbrace{\left[\operatorname{diag}(\boldsymbol{u}_-)\cdot\boldsymbol{D}_{x+}^{(1)}+\operatorname{diag}(\boldsymbol{u}_+)\cdot\boldsymbol{D}_{x-}^{(1)}\right.}_{u\partial_x \cdot} + \underbrace{\left.\operatorname{diag}(\boldsymbol{v}_-)\cdot\boldsymbol{D}_{y+}^{(1)}+\operatorname{diag}(\boldsymbol{v}_+)\cdot\boldsymbol{D}_{y-}^{(1)}\right]}_{v\partial_y \cdot} \cdot
+$$
+
+Wobei
+
+$$
+\begin{align*}
+    \boldsymbol{u}_- &= \min(\boldsymbol{u},\boldsymbol{0}), \\
+    \boldsymbol{u}_+ &= \max(\boldsymbol{u},\boldsymbol{0}), \\
+    \boldsymbol{v}_- &= \min(\boldsymbol{v},\boldsymbol{0}), \\
+    \boldsymbol{v}_+ &= \max(\boldsymbol{v},\boldsymbol{0}), \\
+\end{align*}
+$$
+
+und
+
+$$
+\begin{align*}
+\begin{rcases}
+    \boldsymbol{D}_{x-}^{(1)} \\
+    \boldsymbol{D}_{y-}^{(1)}
+\end{rcases}&~
+\text{Rückwärtsdifferenzen}, \\
+\begin{rcases}
+    \boldsymbol{D}_{x+}^{(1)} \\
+    \boldsymbol{D}_{y+}^{(1)}
+\end{rcases}&~
+\text{Vorwärtsdifferenzen}.
+\end{align*}
+$$
+
+### Kombiniertes Zeitschrittverfahren
+
+Bei der Stabilitätsanalyse hat sich die zeitliche Entwicklung mittels expliziten Euler-Verfahrens für die Diffusionsgleichung und mittels impliziten Euler-Verfahrens für die Konvektionsgleichung als stabil erwiesen. Da sich die Wirbeltransportgleichung sowohl aus dem Konvektionsterm als auch dem Diffusionsterm zusammensetzt, ist es evident, beide Zeitschrittverfahren so zu kombinieren, dass für die gesamte Gleichung Stabilität gewährleistet ist.
+
+$$
+\omega_z(t+h_t) \approx \omega_z(t) + h_t \underbrace{\left[ \nu\nabla^2\omega_z(t)\right.}_\text{explizit} - \underbrace{\left.\boldsymbol{u}(\omega_z(t+h_t))\cdot\nabla\omega_z(t+h_t) \right]}_\text{implizit}
+$$
+
+Zusätzlich kann auch hier im Konvektionsterm das Aufwind-Differenzenverfahren eingebaut werden.
+
+### Implizite Berechnung
+
+Für die implizite Berechnung des nächsten Funktionswertes wird die Vorschrift erst nach null aufgelöst,
+
+$$
+f({\color{red}z},t) \coloneqq \omega_z(t) - {\color{red}z} + h_t \left[ \nu\nabla^2\omega_z(t) - \boldsymbol{u}({\color{red}z})\cdot\nabla{\color{red}z} \right]
+$$
+
+und dann das Newton-Verfahren zu jedem Zeitschritt sukzessiv angewendet:
+
+$$
+\forall t \in h_t\cdot\mathbb{N}\colon\quad f(z,t) \overset{!}{=} 0 \quad\Rightarrow\quad z \approx \omega_z(t+h_t)
+$$
+
+Der vorherige Funktionswert wird dabei jeweils als Startwert verwendet.

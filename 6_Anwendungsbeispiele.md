@@ -70,6 +70,8 @@ $$
 \boldsymbol{p}(t+h_t) \approx \boldsymbol{p}(t) + h_t \cdot \dot{\boldsymbol{p}}(t) = \boldsymbol{p}(t) + h_t \cdot \boldsymbol{u}(\boldsymbol{p}(t),t)
 $$
 
+Hier wird dafür exemplarisch das explizite Euler-Verfahren verwendet. Stattdessen lassen sich aber auch andere Zeitschrittverfahren verwenden, um eine noch bessere Genauigkeit der Darstellung zu erzielen.
+
 > **Begleitmaterial (Visualisierung des Taylor-Green-Wirbels)**
 >
 > [![Matlab Beispiel](.Dateien/Plaketten/Matlab_Beispiel.svg)](Begleitmaterial/Taylor_Green_Wirbel.m) [![Python Beispiel](.Dateien/Plaketten/Python_Beispiel.svg)](Begleitmaterial/Taylor_Green_Wirbel.py)
@@ -81,14 +83,14 @@ $$
 ---
 > **Aufgabe (Topologie des Taylor-Green-Wirbels)**
 >
-> Welche Topologie liegt dem Taylor-Green-Wirbel zugrunde? Welche Randbedingungen lassen sich hier setzen?
+> Welche Topologie liegt dem Taylor-Green-Wirbel mit periodischen Randbedingungen zugrunde?
 
 ---
 > **Aufgabe (Vergleich der Enstrophie)**
 >
-> Vergleicht bei eurer Simulation die Enstrophie mit ihrem analytischen Ergebnis, indem ihr das zweidimensionale Volumenintegral über die Riemann-Summe approximiert. Wie hängt der Verlauf von dem gewählten Differenzenverfahren ab? Lässt sich numerische Diffusion erkennen?
+> Vergleicht bei eurer Simulation die Enstrophie mit ihrem analytischen Ergebnis, indem ihr das zweidimensionale Volumenintegral über die Riemann-Summe approximiert. Wie hängt der Verlauf von den gewählten Differenzen- und Zeitschrittverfahren ab und wann tritt numerische Diffusion auf? (Die Enstrophie müsste im diffusionsfreien Fall eine Erhaltungsgröße sein.)
 
 ---
 > **Aufgabe (Vergleich der Laufzeit)**
 >
-> Wie verändert sich die Laufzeit eures Lösungsalgorithmus mit der Fehlerordnung der gewählten Differenzenschemata?
+> Wie verändert sich die Laufzeit eures Lösungsalgorithmus mit der Fehlerordnung der gewählten Differenzenschemata und wie viel länger braucht das implizite Zeitschrittverfahren im Vergleich zu einem expliziten? Ist der höhere Rechenaufwand durch bessere Stabilität und Genauigkeit gerechtfertigt?
