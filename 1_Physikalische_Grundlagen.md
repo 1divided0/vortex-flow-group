@@ -88,10 +88,10 @@ $$
     \partial_t \rho + \nabla\cdot (\rho \boldsymbol{u}) = 0,
 $$
 
-oder unter der Annahme von Inkompressibilität (wobei sich das Kontrollvolumen nicht mit dem Druck _`p`_ ändert und die Dichte _`ρ`_ konstant bleibt), d. h. in diesem Fall
+oder unter der Annahme von Inkompressibilität und Isothermie, d. h. in diesem Fall
 
 $$
-    \partial_p V = 0 ~\Leftrightarrow~ \rho = \text{konstant}
+    \rho = \text{konstant}
 $$
 
 und somit
@@ -159,7 +159,7 @@ $$
     D_t \boldsymbol{u} = -\nabla{p}/\rho + (\nabla\cdot\boldsymbol{\tau})/\rho + \boldsymbol{g}
 $$
 
-Um diese Gleichung für inkompressibile Newton'sche Fluide zu vereinfachen, kann der Stokes'sche Spannungsansatz
+Um diese Gleichung für inkompressible Newton'sche Fluide zu vereinfachen, kann der Stokes'sche Spannungsansatz
 
 $$
     \boldsymbol{\tau} = \mu [ \nabla\boldsymbol{u} + (\nabla\boldsymbol{u})^\top ]
@@ -204,7 +204,7 @@ Allgemeine Transportgleichung (alias Konvektions-Diffusions-Gleichung)
 ------------------------------------------------------------------------------->
 ## Allgemeine Transportgleichung (alias Konvektions-Diffusions-Gleichung)
 
-Aus den beiden Herleitungen gehen gewisse Ähnlichkeiten hervor. Darum stellt sich die Frage, ob es nicht eine Art Blaupause für die Herleitung solcher Erhaltungsgleichungen gibt – und die gibt es in der Tat. Um dem Verständnis für die Erhaltungsgleichungen näher zu kommen, ist es durchaus von Vorteil, das Konzept einer solchen zu verallgemeinern. Dafür wird die Kontinuitätsgleichung für eine allgemeine Strömungsgröße _`Φ`_ mit Quellterm _`R`_ aufgestellt.
+Aus den beiden Herleitungen gehen gewisse Ähnlichkeiten hervor. Darum stellt sich die Frage, ob es nicht eine Art Blaupause für solche Erhaltungsgleichungen gibt – und die gibt es tatsächlich. Mit ihr lässt sich das Konzept einer Erhaltungsgleichung verallgemeinern. Dafür wird die Kontinuitätsgleichung zunächst für eine beliebige Strömungsgröße _`Φ`_ mit Quellterm _`R`_ aufgestellt.
 
 $$
     \partial_t \Phi + \nabla\cdot\boldsymbol{J} = R
@@ -222,16 +222,16 @@ $$
     \boldsymbol{J} = \boldsymbol{J}_\mathrm{diff} + \boldsymbol{J}_\mathrm{konv} = -c\nabla\Phi + \boldsymbol{u}\Phi
 $$
 
-Und es ergibt sich die Konvektions-Diffusions-Gleichung mit ihren unterschiedlichen Termen für Skalare
+Deren Divergenz ergibt sich bei konstantem Diffusionskoeffizienten und Anwendung der Produktregel zu
 
 $$
-    \underbrace{\partial_t \Phi}_\text{Instationarität} = \underbrace{c\nabla^2\Phi}_\text{Diffusion} - \underbrace{\nabla\cdot(\boldsymbol{u}\Phi)}_\text{Konvektion} + \underbrace{R}_\text{Quelle},
+    \nabla\cdot\boldsymbol{J} = -c\nabla^2\Phi + (\nabla\cdot\boldsymbol{u})\Phi + (\boldsymbol{u}\cdot\nabla)\Phi,
 $$
 
-bzw. für Vektoren
+wobei der zweite Term für inkompressible Strömungen aufgrund der Massenerhaltung entfällt. In diesem Fall lautet die Konvektions-Diffusions-Gleichung: 
 
 $$
-    \underbrace{\partial_t \boldsymbol{\Phi}}_\text{Instationarität} = \underbrace{c\nabla^2\boldsymbol{\Phi}}_\text{Diffusion} - \underbrace{(\boldsymbol{u}\cdot\nabla)\boldsymbol{\Phi}}_\text{Konvektion} + \underbrace{\boldsymbol{R}}_\text{Quelle}.
+    \underbrace{\partial_t \Phi}_\text{Instationarität} = \underbrace{c\nabla^2\Phi}_\text{Diffusion} - \underbrace{(\boldsymbol{u}\cdot\nabla)\Phi}_\text{Konvektion} + \underbrace{R}_\text{Quelle}
 $$
 
 ---

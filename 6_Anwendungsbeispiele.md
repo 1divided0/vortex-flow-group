@@ -49,13 +49,16 @@ $$
 Die Poisson-Gleichung hängt dann nur noch von der Stromfunktion ab und in der Wirbeltransportgleichung entfällt der Konvektionsterm, da der Gradient der Stromfunktion senkrecht zur Geschwindigkeit ist. Die beiden Ansätze
 
 $$
-\begin{alignat*}{2}
-\Psi &\sim \mathrm{e}^{-\nu\eta t}, &&\quad\text{für die Wirbeltransportgleichung, und}\\
-\Psi &\sim \sin(x)\sin(y), &&\quad\text{für die Poisson-Gleichung,}
-\end{alignat*}
+\Psi \sim \mathrm{e}^{-\nu\eta t}
 $$
 
-lassen sich kombiniert einsetzten, was zu einem bestimmten Wert für $\eta$ und somit zur analytischen Lösung führt.
+für die Wirbeltransportgleichung und
+
+$$
+\Psi &\sim \sin(x)\sin(y)
+$$
+
+für die Poisson-Gleichung, lassen sich kombiniert einsetzten, was zu einem bestimmten Wert für $\eta$ und somit zu einer analytischen Lösung führt.
 
 ---
 > **Aufgabe (Herleitung der analytischen Lösung des Taylor-Green-Wirbels)**
@@ -88,7 +91,7 @@ Hier wird dafür exemplarisch das explizite Euler-Verfahren verwendet. Stattdess
 ---
 > **Aufgabe (Vergleich der Enstrophie)**
 >
-> Vergleicht bei eurer Simulation die Enstrophie mit ihrem analytischen Ergebnis, indem ihr das zweidimensionale Volumenintegral über die Riemann-Summe approximiert. Wie hängt der Verlauf von den gewählten Differenzen- und Zeitschrittverfahren ab und wann tritt numerische Diffusion auf? (Die Enstrophie müsste im diffusionsfreien Fall eine Erhaltungsgröße sein.)
+> Vergleicht bei eurer Simulation die Enstrophie mit dem analytischen Ergebnis, indem ihr das zweidimensionale Volumenintegral über die Riemann-Summe approximiert. Wie hängt der Verlauf von den gewählten Differenzen- und Zeitschrittverfahren ab und wann tritt numerische Diffusion auf? (Die Enstrophie müsste im diffusionsfreien Fall eine Erhaltungsgröße sein.)
 
 ---
 > **Aufgabe (Vergleich der Laufzeit)**

@@ -99,18 +99,6 @@ Periodische Randbedingungen charakterisieren in gewisser Weise die Topologie des
 
 Das Anfangswertproblem besteht darin, die Begebenheiten zu einer bestimmten Zeit zu extrapolieren. Dabei wird die Annahme getroffen, dass das System zu diesem Zeitpunkt vollständig bestimmt ist und einer chronologischen Kausalität unterliegt. Es gibt also demzufolge keine zeitliche Rückwirkung. Von dieser Warte aus stellt das Anfangswertproblem so etwas wie eine einseitige Randbedingung, nur eben in der Zeit.
 
-Durch den Fluss einer Strömungsgröße ergibt sich ein Zusammenhang zwischen örtlicher und zeitlicher Auflösung. Die CFL-Zahl (benannt nach R. Courant, K. Friedrichs und H. Lewy – 1928) gibt an, um wie viele Gitterzellen sich eine Strömungsgröße pro Zeitschritt maximal fortbewegt. Für eine einzige Gitterzelle ist die Transportgeschwindigkeit durch das Verhältnis zwischen der örtlichen und zeitlichen Schrittweite gegeben. Die CFL-Zahl entspricht somit der Summe aller Geschwindigkeitsbeträge bezogen auf ebendiese Einheitsgeschwindigkeit.
-
-$$
-\mathrm{CFL} \coloneqq |u|\frac{h_t}{h_x} + |v|\frac{h_t}{h_y}
-$$
-
-> **Abbildung (CFL-Zahl)**
->
-> ![CFL-Zahl](.Dateien/Bilder/CFL_Zahl.svg)
-
-Wird das System durch die Modellierung von Dissipation gedämpft, dann gibt es höhere Stabilitätsanforderungen an das Zeitschrittverfahren, d. h. die CFL-Zahl muss dann kleiner gewählt werden. Implizite Zeitschrittverfahren haben dabei generell eine höhere Toleranz. Sind die Stabilitätsanforderungen jedoch nicht erfüllt, dann ist mit einer Divergenz der Ergebnisse zu rechnen, die sich über die Zeit immer weiter verstärkt. Systeme, welche diesen Effekt prädestinieren werden auch als steif bezeichnet.
-
 
 <!------------------------------------------------------------------------------
 Lösungsalgorithmus
@@ -123,7 +111,7 @@ Der Lösungsalgorithmus erfolgt dreiteilig mit jedem Zeitschritt:
 2. Umrechnung der Stromfunktion _**`Ψ`**_ in die einzelnen Geschwindigkeitskomponenten _**`u`**_ und _**`v`**_ anhand der Cauchy-Riemann-Gleichungen.
 3. Berechnung der Wirbelstärke _**`ω`**_ zum nächsten Zeitpunkt mittels Wirbeltransportgleichung und Wiederholung der Schleife beginnend bei 1., sofern die gewünschte Endzeit noch nicht erreicht ist.
 
-Außerdem wird zunächst das Rechengitter vektorisiert.
+_**Hinweis:** Damit der Laplace-Operator invertiert werden kann, muss das Rechengitter zunächst vektorisiert werden. Dementsprechend wird der Lösungsalgorithmus in dieser Form mit zweidimensionalen Ableitungsmatrizen formuliert. Hier bezeichnet $\odot$ das Hadamard-Produkt._
 
 
 ### Poisson-Gleichung
@@ -164,14 +152,5 @@ $$
 Die Randbedingungen sind in dem zuvor berechneten Geschwindigkeitsfeld enthalten, sodass die örtliche Auflösung bereits abgeschlossen ist und die Wirbelstärke zum nächsten Zeitpunkt berechnet werden kann. Damit die Randbedingungen korrekt in die bevorstehende Berechnung einfließen, muss unbedingt darauf geachtet werden, dass das Differenzenschema auch für den Randbereich konsistent ist.
 
 $$
-\dot{\boldsymbol{\omega}} = \left[ \nu(\boldsymbol{D}_x^{(2)} + \boldsymbol{D}_y^{(2)}) - (\operatorname{diag}(\boldsymbol{u})\cdot\boldsymbol{D}_x^{(1)} + \operatorname{diag}(\boldsymbol{v})\cdot\boldsymbol{D}_y^{(1)}) \right] \boldsymbol{\omega}
-$$
-
-Der Zeitschritt wird dabei durch die CFL-Zahl bestimmt, da die Stabilität in Abhängigkeit von dem gewählten Zeitschrittverfahren nur bis zu einer bestimmten CFL-Zahl gewährleistet ist.
-
-$$
-\begin{align*}
-\mathrm{CFL} &= \left(\frac{|u|}{h_x} + \frac{|v|}{h_y}\right) h_t \overset{!}{\leq} \mathrm{CFL}_\mathrm{max} \\\\
-\Rightarrow\quad h_t &\overset{!}{\leq} \mathrm{CFL}_\mathrm{max} \left(\frac{|u|_\mathrm{max}}{h_x} + \frac{|v|_\mathrm{max}}{h_y}\right)^{-1}
-\end{align*}
+\dot{\boldsymbol{\omega}} = \underbrace{\left[ \nu(\boldsymbol{D}_x^{(2)} + \boldsymbol{D}_y^{(2)})\right.}_\text{Diffusion} - \underbrace{\left.(\operatorname{diag}(\boldsymbol{u})\cdot\boldsymbol{D}_x^{(1)} + \operatorname{diag}(\boldsymbol{v})\cdot\boldsymbol{D}_y^{(1)}) \right]}_\text{Konvektion} \boldsymbol{\omega}
 $$

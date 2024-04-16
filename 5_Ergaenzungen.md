@@ -206,7 +206,7 @@ $$
 {\color{blue}-\mathrm{i}{\color{red}f} \mathrm{e}^{-\mathrm{i}f l h_t}} &\approx \frac{1}{h_t}\left[ \mathrm{e}^{-\mathrm{i}f (l+1) h_t}-\mathrm{e}^{-\mathrm{i}f l h_t} \right] \\
 &\approx \frac{1}{h_t}\left[ \mathrm{e}^{-\mathrm{i}f h_t}-1 \right] \mathrm{e}^{-\mathrm{i}f l h_t} \\
 &\approx -\mathrm{i}\left[ \frac{\mathrm{i}\mathrm{e}^{-\mathrm{i}f h_t}-\mathrm{i}}{h_t} \right] \mathrm{e}^{-\mathrm{i}f l h_t} \\
-&\approx {\color{blue}-\mathrm{i}{\color{red}\underbrace{\left[ \frac{\sin(f h_t)}{h_t} + \frac{\mathrm{i}}{h_t}\left(\cos(f h_t)-1\right) \right]}_{\eqqcolon f^\prime}} \mathrm{e}^{-\mathrm{i}f l h_t}}
+&\approx {\color{blue}-\mathrm{i}{\color{red}\underbrace{\left[ \frac{\sin(f h_t)}{h_t} + \mathrm{i}\frac{\cos(f h_t)-1}{h_t} \right]}_{\eqqcolon f^\prime}} \mathrm{e}^{-\mathrm{i}f l h_t}}
 \end{align*}
 $$
 
@@ -229,7 +229,7 @@ $$
 {\color{blue}-\mathrm{i}{\color{red}f} \mathrm{e}^{-\mathrm{i}f l h_t}} &\approx \frac{1}{h_t}\left[ \mathrm{e}^{-\mathrm{i}f l h_t}-\mathrm{e}^{-\mathrm{i}f (l-1) h_t} \right] \\
 &\approx \frac{1}{h_t}\left[ 1-\mathrm{e}^{\mathrm{i}f h_t} \right] \mathrm{e}^{-\mathrm{i}f l h_t} \\
 &\approx -\mathrm{i}\left[ \frac{\mathrm{i}-\mathrm{i}\mathrm{e}^{\mathrm{i}f h_t}}{h_t} \right] \mathrm{e}^{-\mathrm{i}f l h_t} \\
-&\approx {\color{blue}-\mathrm{i}{\color{red}\underbrace{\left[ \frac{\sin(f h_t)}{h_t} + \frac{\mathrm{i}}{h_t}\left(1-\cos(f h_t)\right) \right]}_{\eqqcolon f^\prime}} \mathrm{e}^{-\mathrm{i}f l h_t}}
+&\approx {\color{blue}-\mathrm{i}{\color{red}\underbrace{\left[ \frac{\sin(f h_t)}{h_t} + \mathrm{i}\frac{1-\cos(f h_t)}{h_t} \right]}_{\eqqcolon f^\prime}} \mathrm{e}^{-\mathrm{i}f l h_t}}
 \end{align*}
 $$
 
@@ -307,7 +307,7 @@ $$
 \xi &\approx 1 - \frac{u h_t}{2 h_x} \left[ \mathrm{e}^{\mathrm{i}\lambda h_x}-\mathrm{e}^{-\mathrm{i}\lambda h_x} \right] \\
 &\approx 1 - \operatorname{sgn}(u)\cdot \mathrm{CFL}_x \cdot\mathrm{i}\sin(\lambda h_x) \\\\
 \forall(\lambda h_x)\in\mathbb{R}\colon\quad 1 &\geq \left|1 - \operatorname{sgn}(u)\cdot \mathrm{CFL}_x \cdot\mathrm{i}\sin(\lambda h_x)\right| \\
-\mathrm{CFL}_x &= 0
+\Rightarrow\quad \mathrm{CFL}_x &= 0
 \end{align*}
 $$
 
@@ -332,7 +332,7 @@ $$
 &\geq \left[ 1 - \operatorname{sgn}(u)\cdot \mathrm{CFL}_x \cdot \left[ 1-\cos(\lambda h_x) \right] \right]^2 +\left[\mathrm{CFL}_x\cdot \sin(\lambda h_x) \right]^2 \\
 &\geq \ldots \\
 &\geq 1 + 2\left[ 1-\cos(\lambda h_x) \right] \left[ \mathrm{CFL}_x \left[ \mathrm{CFL}_x - \operatorname{sgn}(u) \right] \right] \\
-&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\mathrm{CFL}_x \begin{cases}\leq 1, &\operatorname{sgn}(u)=1 \\ =0, &\operatorname{sgn}(u)<1 \end{cases}
+&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\! \Rightarrow\quad \mathrm{CFL}_x \begin{cases}\leq 1, &\operatorname{sgn}(u)=1 \\ =0, &\operatorname{sgn}(u)<1 \end{cases}
 \end{align*}
 $$
 
@@ -353,7 +353,7 @@ $$
 \xi^{l+1} \mathrm{e}^{\mathrm{i}\lambda j h_x} &\approx \xi^l \mathrm{e}^{\mathrm{i}\lambda j h_x} - \frac{u h_t}{2 h_x} \left[ \xi^{l+1} \mathrm{e}^{\mathrm{i}\lambda (j+1) h_x}- \xi^{l+1}\mathrm{e}^{\mathrm{i}\lambda (j-1) h_x} \right] \\
 \xi &\approx \left[ 1 + \operatorname{sgn}(u)\cdot \mathrm{CFL}_x \cdot\mathrm{i}\sin(\lambda h_x) \right]^{-1} \\\\
 \forall(\lambda h_x)\in\mathbb{R}\colon\quad 1 &\geq \left|1 + \operatorname{sgn}(u)\cdot \mathrm{CFL}_x \cdot\mathrm{i}\sin(\lambda h_x)\right|^{-1} \\
-\mathrm{CFL}_x &\geq 0
+\Rightarrow\quad \mathrm{CFL}_x &\geq 0
 \end{align*}
 $$
 
@@ -377,7 +377,7 @@ $$
 &\leq \left[ 1 + \operatorname{sgn}(u)\cdot \mathrm{CFL}_x \cdot \left[ 1-\cos(\lambda h_x) \right] \right]^2 +\left[\mathrm{CFL}_x\cdot \sin(\lambda h_x) \right]^2 \\
 &\leq \ldots \\
 &\leq 1 + 2\left[ 1-\cos(\lambda h_x) \right] \left[ \mathrm{CFL}_x \left[ \mathrm{CFL}_x + \operatorname{sgn}(u) \right] \right] \\
-&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\mathrm{CFL}_x \begin{cases}\geq 0, &\operatorname{sgn}(u)=1 \\ \leq 1, &\operatorname{sgn}(u)<1 \end{cases}
+&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\! \Rightarrow\quad \mathrm{CFL}_x \begin{cases}\geq 0, &\operatorname{sgn}(u)=1 \\ \leq 1, &\operatorname{sgn}(u)<1 \end{cases}
 \end{align*}
 $$
 
@@ -399,7 +399,7 @@ $$
 \xi &\approx 1 + \frac{c h_t}{h_x^2} \left[ \mathrm{e}^{\mathrm{i}\lambda h_x} - 2 + \mathrm{e}^{-\mathrm{i}\lambda h_x} \right] \\
 &\approx 1 + \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \cdot 2\left[\cos(\lambda h_x)-1\right] \\\\
 \forall(\lambda h_x)\in\mathbb{R}\colon\quad 1 &\geq \left|1 + \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \cdot 2\left[\cos(\lambda h_x)-1\right]\right| \\
-&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\mathrm{CFL}_{xx} \begin{cases}\geq 0, &\operatorname{sgn}(c)=1 \\ = 0, &\operatorname{sgn}(c)<1 \end{cases}
+&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\! \Rightarrow\quad \mathrm{CFL}_{xx} \begin{cases}\geq 0, &\operatorname{sgn}(c)=1 \\ = 0, &\operatorname{sgn}(c)<1 \end{cases}
 \end{align*}
 $$
 
@@ -422,7 +422,7 @@ $$
 &\approx 1 + \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \left[1-2\cos(\lambda h_x)+\cos(2\lambda h_x)+\mathrm{i}\left[2\sin(\lambda h_x)+\sin(2\lambda h_x)\right]\right] \\\\
 \forall(\lambda h_x)\in\mathbb{R}\colon\quad 1 &\geq \left|1 + \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \left[1-2\cos(\lambda h_x)+\cos(2\lambda h_x)+\mathrm{i}\left[2\sin(\lambda h_x)+\sin(2\lambda h_x)\right]\right]\right| \\
 &\geq \left[1 + \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \left[1-2\cos(\lambda h_x)+\cos(2\lambda h_x)\right]\right]^2+\left[\mathrm{CFL}_{xx}\left[2\sin(\lambda h_x)+\sin(2\lambda h_x)\right]\right]^2 \\
-\mathrm{CFL}_{xx} &= 0
+\Rightarrow\quad \mathrm{CFL}_{xx} &= 0
 \end{align*}
 $$
 
@@ -446,7 +446,7 @@ $$
 &\leq 1 - \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \cdot 4\left[\cos(\lambda h_x)-1\right] + \mathrm{CFL}_{xx}^2 \cdot 4\left[\cos(\lambda h_x)-1\right]^2 \\
 0 &\leq - \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} + \mathrm{CFL}_{xx}^2 \left[\cos(\lambda h_x)-1\right] \\
 &\leq \mathrm{CFL}_{xx}\left[\mathrm{CFL}_{xx} \left[\cos(\lambda h_x)-1\right] - \operatorname{sgn}(c) \right] \\
-&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\mathrm{CFL}_{xx} \begin{cases}\leq 1, &\operatorname{sgn}(c)=-1 \\ = 0, &\operatorname{sgn}(c)>-1 \end{cases}
+&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\! \Rightarrow\quad \mathrm{CFL}_{xx} \begin{cases}\leq 1, &\operatorname{sgn}(c)=-1 \\ = 0, &\operatorname{sgn}(c)>-1 \end{cases}
 \end{align*}
 $$
 
@@ -468,7 +468,7 @@ $$
 \xi &\approx \left[ 1 - \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \left[1-2\cos(\lambda h_x)+\cos(2\lambda h_x)+\mathrm{i}\left[2\sin(\lambda h_x)+\sin(2\lambda h_x)\right]\right] \right]^{-1} \\\\
 \forall(\lambda h_x)\in\mathbb{R}\colon\quad 1 &\geq \left|1 - \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \left[1-2\cos(\lambda h_x)+\cos(2\lambda h_x)+\mathrm{i}\left[2\sin(\lambda h_x)+\sin(2\lambda h_x)\right]\right]\right|^{-1} \\
 &\leq \left[1 - \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \left[1-2\cos(\lambda h_x)+\cos(2\lambda h_x)\right]\right]^2+\left[\mathrm{CFL}_{xx}\left[2\sin(\lambda h_x)+\sin(2\lambda h_x)\right]\right]^2 \\
-\mathrm{CFL}_{xx} &= 0
+\Rightarrow\quad \mathrm{CFL}_{xx} &= 0
 \end{align*}
 $$
 
@@ -489,7 +489,7 @@ Bei der Implementierung der Approximationsverfahren geht es neben dem Rechenaufw
 Die Finite-Differenzenschemata entgegen der Strömungsrichtung anzulegen, hat nicht nur einen stabilisierenden Effekt, sondern geht auch mit einer höheren Genauigkeit einher, zumal die Informationen mit der Strömung transportiert und somit rechtzeitig abgegriffen werden. Dafür wird der Konvektionsterm überall nach dem Vorzeichen der Geschwindigkeit angepasst:
 
 $$
-\underbrace{\left[\operatorname{diag}(\boldsymbol{u}_-)\cdot\boldsymbol{D}_{x+}^{(1)}+\operatorname{diag}(\boldsymbol{u}_+)\cdot\boldsymbol{D}_{x-}^{(1)}\right.}_{u\partial_x \cdot} + \underbrace{\left.\operatorname{diag}(\boldsymbol{v}_-)\cdot\boldsymbol{D}_{y+}^{(1)}+\operatorname{diag}(\boldsymbol{v}_+)\cdot\boldsymbol{D}_{y-}^{(1)}\right]}_{v\partial_y \cdot} \cdot
+\left[\operatorname{diag}(\boldsymbol{u}_-)\cdot\boldsymbol{D}_{x+}^{(1)}+\operatorname{diag}(\boldsymbol{u}_+)\cdot\boldsymbol{D}_{x-}^{(1)} + \operatorname{diag}(\boldsymbol{v}_-)\cdot\boldsymbol{D}_{y+}^{(1)}+\operatorname{diag}(\boldsymbol{v}_+)\cdot\boldsymbol{D}_{y-}^{(1)}\right] \cdot
 $$
 
 Wobei

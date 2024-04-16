@@ -237,7 +237,7 @@ $$
     \partial_t E_\mathrm{kin} + \partial_t E_\mathrm{pot} = -\partial_t E_\mathrm{diss}
 $$
 
-Hängt die potentielle Energie nicht von der Zeit ab, dann verschwindet der Potentialstrom über die Grenzflächen und es folgt
+Hängt die potentielle Energie nicht von der Zeit ab (indem das Strömungsgebiet geschlossen oder periodisch ist), dann verschwindet der Potentialstrom über die Grenzflächen und es folgt
 
 $$
     \partial_t E_\mathrm{kin} = \mu \int_\Omega \boldsymbol{u}\cdot\nabla^2\boldsymbol{u}\,dV.

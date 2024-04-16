@@ -188,9 +188,14 @@ $$
 </details>
 
 ---
-> **Aufgabe (Ableitung 1d)**
+> **Aufgabe (Ableitung 1d mit Rand)**
 >
 > Schreibt ein Programm, welches die erste Ableitung von `sin(x)` für _`0≤x≤2π`_ und _`N=100`_ in der Mitte mit der Zentraldifferenz _`l=r=1`_, am linken Rand mit der Vorwärtsdifferenz  _`l=0,r=2`_ und am rechten Rand mit der Rückwärtsdifferenz  _`l=2,r=0`_ berechnet und vergleicht das Ergebnis mit der analytischen Lösung. Welche Fehlerordnung hat dieses Ableitungsverfahren und warum macht es Sinn, das Differenzenschema jeweils an den beiden Rändern zu unterscheiden?
+
+---
+> **Aufgabe (Ableitung 1d ohne Rand)**
+>
+> Berechnet wiederum die Ableitung von `sin(x)`: Diesmal für _`0≤x<2π`_, _`N=99`_ und nur unter Verwendung der Zentraldifferenz _`l=r=1`_, indem die beiden Randpunkte identifiziert werden _`0≡2π`_, sodass das Differenzenschema von der einen Seite der Matrix in die andere übergeht. Warum ist das in diesem Fall so möglich?
 
 
 <!------------------------------------------------------------------------------
