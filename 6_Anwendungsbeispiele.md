@@ -55,7 +55,7 @@ $$
 für die Wirbeltransportgleichung und
 
 $$
-\Psi &\sim \sin(x)\sin(y)
+\Psi \sim \sin(x)\sin(y)
 $$
 
 für die Poisson-Gleichung, lassen sich kombiniert einsetzten, was zu einem bestimmten Wert für $\eta$ und somit zu einer analytischen Lösung führt.
