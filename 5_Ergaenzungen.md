@@ -332,7 +332,7 @@ $$
 &\geq \left[ 1 - \operatorname{sgn}(u)\cdot \mathrm{CFL}_x \cdot \left[ 1-\cos(\lambda h_x) \right] \right]^2 +\left[\mathrm{CFL}_x\cdot \sin(\lambda h_x) \right]^2 \\
 &\geq \ldots \\
 &\geq 1 + 2\left[ 1-\cos(\lambda h_x) \right] \left[ \mathrm{CFL}_x \left[ \mathrm{CFL}_x - \operatorname{sgn}(u) \right] \right] \\
-&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\! \Rightarrow\quad \mathrm{CFL}_x \begin{cases}\leq 1, &\operatorname{sgn}(u)=1 \\ =0, &\operatorname{sgn}(u)<1 \end{cases}
+&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\! \Rightarrow\quad \mathrm{CFL}_x \begin{cases}\leq 1, &\operatorname{sgn}(u)=1 \\ =0, &\operatorname{sgn}(u)<1 \end{cases}
 \end{align*}
 $$
 
@@ -377,7 +377,7 @@ $$
 &\leq \left[ 1 + \operatorname{sgn}(u)\cdot \mathrm{CFL}_x \cdot \left[ 1-\cos(\lambda h_x) \right] \right]^2 +\left[\mathrm{CFL}_x\cdot \sin(\lambda h_x) \right]^2 \\
 &\leq \ldots \\
 &\leq 1 + 2\left[ 1-\cos(\lambda h_x) \right] \left[ \mathrm{CFL}_x \left[ \mathrm{CFL}_x + \operatorname{sgn}(u) \right] \right] \\
-&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\! \Rightarrow\quad \mathrm{CFL}_x \begin{cases}\geq 0, &\operatorname{sgn}(u)=1 \\ \leq 1, &\operatorname{sgn}(u)<1 \end{cases}
+&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\! \Rightarrow\quad \mathrm{CFL}_x \begin{cases}\geq 0, &\operatorname{sgn}(u)=1 \\ \leq 1, &\operatorname{sgn}(u)<1 \end{cases}
 \end{align*}
 $$
 
@@ -399,7 +399,7 @@ $$
 \xi &\approx 1 + \frac{c h_t}{h_x^2} \left[ \mathrm{e}^{\mathrm{i}\lambda h_x} - 2 + \mathrm{e}^{-\mathrm{i}\lambda h_x} \right] \\
 &\approx 1 + \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \cdot 2\left[\cos(\lambda h_x)-1\right] \\\\
 \forall(\lambda h_x)\in\mathbb{R}\colon\quad 1 &\geq \left|1 + \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \cdot 2\left[\cos(\lambda h_x)-1\right]\right| \\
-&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\! \Rightarrow\quad \mathrm{CFL}_{xx} \begin{cases}\geq 0, &\operatorname{sgn}(c)=1 \\ = 0, &\operatorname{sgn}(c)<1 \end{cases}
+&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\! \Rightarrow\quad \mathrm{CFL}_{xx} \begin{cases}\geq 0, &\operatorname{sgn}(c)=1 \\ = 0, &\operatorname{sgn}(c)<1 \end{cases}
 \end{align*}
 $$
 
@@ -446,7 +446,7 @@ $$
 &\leq 1 - \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} \cdot 4\left[\cos(\lambda h_x)-1\right] + \mathrm{CFL}_{xx}^2 \cdot 4\left[\cos(\lambda h_x)-1\right]^2 \\
 0 &\leq - \operatorname{sgn}(c)\cdot \mathrm{CFL}_{xx} + \mathrm{CFL}_{xx}^2 \left[\cos(\lambda h_x)-1\right] \\
 &\leq \mathrm{CFL}_{xx}\left[\mathrm{CFL}_{xx} \left[\cos(\lambda h_x)-1\right] - \operatorname{sgn}(c) \right] \\
-&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\! \Rightarrow\quad \mathrm{CFL}_{xx} \begin{cases}\leq 1, &\operatorname{sgn}(c)=-1 \\ = 0, &\operatorname{sgn}(c)>-1 \end{cases}
+&\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\! \Rightarrow\quad \mathrm{CFL}_{xx} \begin{cases}\leq 1, &\operatorname{sgn}(c)=-1 \\ = 0, &\operatorname{sgn}(c)>-1 \end{cases}
 \end{align*}
 $$
 
