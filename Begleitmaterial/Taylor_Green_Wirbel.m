@@ -2,10 +2,11 @@
 
 function Taylor_Green_Wirbel(options)
 arguments
-    options.nu   double = 0   % Kinematische Viskosität
-    options.CFL  double = 1   % CFL-Zahl für den Zeitschritt
-    options.x_nr uint16 = 100 % Auflösung in x-Richtung
-    options.y_nr uint16 = 20  % Auflösung in y-Richtung
+    options.nu    double = 0   % Kinematische Viskosität
+    options.t_end double = 5   % Endzeit
+    options.t_nr  uint16 = 100 % Anzahl der Zeitschritte
+    options.x_nr  uint16 = 100 % Auflösung in x-Richtung
+    options.y_nr  uint16 = 20  % Auflösung in y-Richtung
 end
 
 % Gitter
@@ -43,8 +44,9 @@ ylabel('$y$','Interpreter','latex');
 zlabel('$\Psi$','Interpreter','latex');
 
 % Zeitschleife
-t = 0;
-while t <= 5
+time  = linspace(0,options.t_end,options.t_nr);
+t_stp = time(2)-time(1);
+for t = time
 
     % Aktuelle Strömungsgrößen
     U_now   = U(t);
@@ -64,9 +66,6 @@ while t <= 5
     drawnow;
     
     % Nächster Zeitschritt
-    t_stp = options.CFL ...
-        / (max(abs(U_now),[],'all')/dx + max(abs(V_now),[],'all')/dy);
-    t     = t + t_stp;
     X_pos = X_pos + t_stp*interp2(X,Y,U_now,X_pos,Y_pos);
     Y_pos = Y_pos + t_stp*interp2(X,Y,V_now,X_pos,Y_pos);
 

@@ -6,10 +6,11 @@ import matplotlib.pyplot as plt
 """ Visualisierung des Taylor-Green-Wirbels """
 
 def Taylor_Green_Wirbel(
-    nu:   float = 0,   # Kinematische Viskosität
-    CFL:  float = 1,   # CFL-Zahl für den Zeitschritt
-    x_nr: int   = 100, # Auflösung in x-Richtung
-    y_nr: int   = 20   # Auflösung in y-Richtung
+    nu:    float = 0,   # Kinematische Viskosität
+    t_end: float = 5,   # Endzeit
+    t_nr:  int   = 100, # Anzahl der Zeitschritte
+    x_nr:  int   = 100, # Auflösung in x-Richtung
+    y_nr:  int   = 20   # Auflösung in y-Richtung
 ):
 
     # Gitter
@@ -51,8 +52,9 @@ def Taylor_Green_Wirbel(
     ax.set_zlabel(r'$\Psi$')
 
     # Zeitschleife
-    t = 0
-    while t <= 5:
+    time  = np.linspace(0,t_end,t_nr)
+    t_stp = time[1]-time[0]
+    for t in time:
 
         # Aktuelle Strömungsgrößen
         U_now   = U(t)
@@ -70,7 +72,5 @@ def Taylor_Green_Wirbel(
         fig.canvas.flush_events()
         
         # Nächster Zeitschritt
-        t_stp  = CFL / (np.max(np.abs(U_now))/dx + np.max(np.abs(V_now))/dy)
-        t     += t_stp
         X_pos += t_stp * RectBivariateSpline(x,y,U_now.T)(X_pos,Y_pos,grid=False)
         Y_pos += t_stp * RectBivariateSpline(x,y,V_now.T)(X_pos,Y_pos,grid=False)
