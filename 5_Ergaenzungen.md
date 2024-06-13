@@ -525,7 +525,7 @@ $$
 Bei der Stabilitätsanalyse hat sich die zeitliche Entwicklung mittels expliziten Euler-Verfahrens für die Diffusionsgleichung und mittels impliziten Euler-Verfahrens für die Konvektionsgleichung als stabil erwiesen. Da sich die Wirbeltransportgleichung sowohl aus dem Konvektionsterm als auch dem Diffusionsterm zusammensetzt, ist es evident, beide Zeitschrittverfahren so zu kombinieren, dass für die gesamte Gleichung Stabilität gewährleistet ist.
 
 $$
-\omega_z(t+h_t) \approx \omega_z(t) + h_t \underbrace{\left[ \nu\nabla^2\omega_z(t)\right.}_\text{explizit} - \underbrace{\left.\boldsymbol{u}(\omega_z(t+h_t))\cdot\nabla\omega_z(t+h_t) \right]}_\text{implizit}
+\omega_z(t+h_t) \approx \omega_z(t) + h_t \underbrace{\left[ \nu\nabla^2\omega_z(t)\right.}_\text{explizit} - \underbrace{\left.\boldsymbol{u}(\omega_z(t+h_t))\cdot\boldsymbol{\nabla}\omega_z(t+h_t) \right]}_\text{implizit}
 $$
 
 Zusätzlich kann auch hier im Konvektionsterm das Aufwind-Differenzenverfahren eingebaut werden.
@@ -535,7 +535,7 @@ Zusätzlich kann auch hier im Konvektionsterm das Aufwind-Differenzenverfahren e
 Für die implizite Berechnung des nächsten Funktionswertes wird die Vorschrift erst nach null aufgelöst,
 
 $$
-f({\color{red}z},t) \coloneqq \omega_z(t) - {\color{red}z} + h_t \left[ \nu\nabla^2\omega_z(t) - \boldsymbol{u}({\color{red}z})\cdot\nabla{\color{red}z} \right]
+f({\color{red}z},t) \coloneqq \omega_z(t) - {\color{red}z} + h_t \left[ \nu\nabla^2\omega_z(t) - \boldsymbol{u}({\color{red}z})\cdot\boldsymbol{\nabla}{\color{red}z} \right]
 $$
 
 und dann das Newton-Verfahren zu jedem Zeitschritt sukzessiv angewendet:

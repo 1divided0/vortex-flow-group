@@ -37,7 +37,7 @@ Für den hier betrachteten zweidimensionalen Wirbel hat erstmals Geoffrey I. Tay
 Die Herleitung ist so simpel wie genial. Ausgehend von der Wirbeltransportgleichung für zweidimensionale inkompressible Strömungen
 
 $$
-\partial_t \omega_z + \boldsymbol{u} \cdot \nabla\omega_z = \nu\nabla^2\omega_z
+\partial_t \omega_z + \boldsymbol{u} \cdot \boldsymbol{\nabla}\omega_z = \nu\nabla^2\omega_z
 $$
 
 wird die Annahme einer allgemeinen Beltrami-Strömung getroffen, dass sich die Wirbelstärke entlang von Stromlinien konstant verhält, also in diesem Fall ein $\eta$-Faches der Stromfunktion darstellt:
