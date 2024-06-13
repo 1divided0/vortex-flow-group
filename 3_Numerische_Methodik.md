@@ -15,7 +15,7 @@ Um ein zweidimensionales Gitter zu erstellen, werden zunächst die beiden Achsen
 $$
 \begin{align*}
     \Omega &\coloneqq X \times Y = \{(x,y) ~|~ x\in X, y\in Y\} \\
-    &\Downarrow~\text{Diskretisierung} \\
+    &~\Downarrow~\text{Diskretisierung} \\
     \Omega_{ji} &~=~ (x_i,y_j)
 \end{align*}
 $$
