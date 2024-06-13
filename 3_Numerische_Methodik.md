@@ -16,7 +16,7 @@ $$
 \begin{align*}
     \Omega &\coloneqq X \times Y = \{(x,y) ~|~ x\in X, y\in Y\} \\
     &\Downarrow~\text{Diskretisierung} \\
-    \boldsymbol{\Omega}_{ji} &~\widehat{=}~ (x_i,y_j)
+    \Omega_{ji} &~=~ (x_i,y_j)
 \end{align*}
 $$
 
@@ -134,10 +134,15 @@ $$
 \forall p \in \{ 0,\ldots,l+r \} \ni k\colon\quad \sum_{j=-l}^{r} j^p \alpha_j = \delta_{kp} p!
 $$
 
-Daraus lässt sich ein beliebiges Differenzenschema für die _`k`_-te Ableitung mit der Fehlerordnung _`l+r+1-k`_ konstruieren. Die Ableitungsordnung muss dabei nur kleiner sein als die Anzahl von Stützstellen.
+Daraus lässt sich ein beliebiges Differenzenschema für die _`k`_-te Ableitung mit einer Fehlerordnung von mindestens _`l+r+1-k`_ konstruieren. Die Ableitungsordnung muss dabei nur kleiner sein als die Anzahl von Stützstellen.
 
 ---
-> **Aufgabe (Differenzenschema)**
+> **Aufgabe (FDM Zentraldifferenz)**
+>
+> Zeigt mathematisch, dass zentrale Differenzenschemata mit gerader Ableitungsordnung eine Fehlerordnung von _`l+r+2-k`_ aufweisen. Beachtet dabei, dass Differenzenschemata mit gerader Ableitungsordnung symmetrisch sind und mit ungerader Ableitungsordnung antisymmetrisch.
+
+---
+> **Aufgabe (FDM Programm)**
 >
 > Schreibt ein Programm, welches mit _`l≥0`_, _`r≥0`_ und _`0<k≤l+r`_ die Koeffizienten des Differenzenschemas für die _`k`_-te Ableitung berechnet.
 

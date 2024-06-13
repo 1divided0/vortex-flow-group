@@ -85,7 +85,7 @@ $$
 Übrig bleibt die Kontinuitätsgleichung in ihrer vollen Pracht
 
 $$
-    \partial_t \rho + \nabla\cdot (\rho \boldsymbol{u}) = 0,
+    \partial_t \rho + \boldsymbol{\nabla}\cdot (\rho \boldsymbol{u}) = 0,
 $$
 
 oder unter der Annahme von Inkompressibilität und Isothermie, d. h. in diesem Fall
@@ -97,7 +97,7 @@ $$
 und somit
 
 $$
-    \nabla\cdot \boldsymbol{u} = 0.
+    \boldsymbol{\nabla}\cdot \boldsymbol{u} = 0.
 $$
 
 
@@ -156,22 +156,22 @@ $$
 Hier begegnet uns eine mögliche Form der Navier-Stokes-Gleichung.
 
 $$
-    D_t \boldsymbol{u} = -\nabla{p}/\rho + (\nabla\cdot\boldsymbol{\tau})/\rho + \boldsymbol{g}
+    D_t \boldsymbol{u} = -\boldsymbol{\nabla}{p}/\rho + (\boldsymbol{\nabla}\cdot\boldsymbol{\tau})/\rho + \boldsymbol{g}
 $$
 
 Um diese Gleichung für inkompressible Newton'sche Fluide zu vereinfachen, kann der Stokes'sche Spannungsansatz
 
 $$
-    \boldsymbol{\tau} = \mu [ \nabla\boldsymbol{u} + (\nabla\boldsymbol{u})^\top ]
+    \boldsymbol{\tau} = \mu [ \boldsymbol{\nabla}\boldsymbol{u} + (\boldsymbol{\nabla}\boldsymbol{u})^\top ]
 $$
 
 mit den folgenden Identitäten herangezogen werden.
 
 $$
 \begin{align*}
-    \nabla\cdot (\nabla\boldsymbol{u}) &= \nabla^2 \boldsymbol{u} \\
-    \nabla\cdot (\nabla\boldsymbol{u})^\top &= \nabla(\nabla\cdot\boldsymbol{u}) \\
-    \nabla\cdot\boldsymbol{u} &= 0 \\
+    \boldsymbol{\nabla}\cdot (\boldsymbol{\nabla}\boldsymbol{u}) &= \nabla^2 \boldsymbol{u} \\
+    \boldsymbol{\nabla}\cdot (\boldsymbol{\nabla}\boldsymbol{u})^\top &= \boldsymbol{\nabla}(\boldsymbol{\nabla}\cdot\boldsymbol{u}) \\
+    \boldsymbol{\nabla}\cdot\boldsymbol{u} &= 0 \\
     \mu &= \nu\rho
 \end{align*}
 $$
@@ -179,7 +179,7 @@ $$
 Wird dies in die Navier-Stokes-Gleichung eingesetzt, so ergibt sich
 
 $$
-    D_t \boldsymbol{u} = -\nabla{p}/\rho + \nu\nabla^2\boldsymbol{u} + \boldsymbol{g}
+    D_t \boldsymbol{u} = -\boldsymbol{\nabla}{p}/\rho + \nu\nabla^2\boldsymbol{u} + \boldsymbol{g}
 $$
 
 und mit der substantiellen Ableitung
@@ -188,14 +188,14 @@ $$
 \begin{align*}
     D_t\boldsymbol{u} &= (dt/dt)(\partial_t\boldsymbol{u}) + \sum_{i=1}^n \underbrace{(dx_i/dt)}_{u_i}(\partial_{x_i}\boldsymbol{u}) \\
     &= \partial_t\boldsymbol{u} + \left( \sum_{i=1}^n u_i \partial_{x_i} \right) \boldsymbol{u} \\
-    &= \partial_t\boldsymbol{u} + (\boldsymbol{u}\cdot\nabla)\boldsymbol{u}
+    &= \partial_t\boldsymbol{u} + (\boldsymbol{u}\cdot\boldsymbol{\nabla})\boldsymbol{u}
 \end{align*}
 $$
 
 letztendlich
 
 $$
-    \partial_t\boldsymbol{u} + (\boldsymbol{u}\cdot\nabla)\boldsymbol{u} = -\nabla{p}/\rho + \nu\nabla^2\boldsymbol{u} + \boldsymbol{g}.
+    \partial_t\boldsymbol{u} + (\boldsymbol{u}\cdot\boldsymbol{\nabla})\boldsymbol{u} = -\boldsymbol{\nabla}{p}/\rho + \nu\nabla^2\boldsymbol{u} + \boldsymbol{g}.
 $$
 
 
@@ -207,31 +207,31 @@ Allgemeine Transportgleichung (alias Konvektions-Diffusions-Gleichung)
 Aus den beiden Herleitungen gehen gewisse Ähnlichkeiten hervor. Darum stellt sich die Frage, ob es nicht eine Art Blaupause für solche Erhaltungsgleichungen gibt – und die gibt es tatsächlich. Mit ihr lässt sich das Konzept einer Erhaltungsgleichung verallgemeinern. Dafür wird die Kontinuitätsgleichung zunächst für eine beliebige Strömungsgröße _`Φ`_ mit Quellterm _`R`_ aufgestellt.
 
 $$
-    \partial_t \Phi + \nabla\cdot\boldsymbol{J} = R
+    \partial_t \Phi + \boldsymbol{\nabla}\cdot\boldsymbol{J} = R
 $$
 
 Dabei ist _**`J`**_ die Stromdichte, die den Fluss der Größe _`Φ`_ durch die Grenzflächen des Kontrollvolumens beschreibt. Die Stromdichte setzt sich aus zwei Anteilen zusammen:
 
-- Dem Diffusionsanteil $$\boldsymbol{J}_\mathrm{diff} = -c\nabla\Phi,$$ welcher nach dem 1. Fick'schen Gesetz den Transport durch Diffusion beschreibt (als negativ proportional zum Konzentrationsgradienten, da die Stromdichte in Diffusionsrichtung abnimmt).
+- Dem Diffusionsanteil $$\boldsymbol{J}_\mathrm{diff} = -c\boldsymbol{\nabla}\Phi,$$ welcher nach dem 1. Fick'schen Gesetz den Transport durch Diffusion beschreibt (als negativ proportional zum Konzentrationsgradienten, da die Stromdichte in Diffusionsrichtung abnimmt).
 
 - Und dem Konvektionsanteil $$\boldsymbol{J}_\mathrm{konv} = \boldsymbol{u}\Phi,$$ welcher den Transport durch Konvektion beschreibt (als Produkt der Geschwindigkeit mit der Strömungsgröße).
 
 Damit setzt sich die Stromdichte folgendermaßen zusammen.
 
 $$
-    \boldsymbol{J} = \boldsymbol{J}_\mathrm{diff} + \boldsymbol{J}_\mathrm{konv} = -c\nabla\Phi + \boldsymbol{u}\Phi
+    \boldsymbol{J} = \boldsymbol{J}_\mathrm{diff} + \boldsymbol{J}_\mathrm{konv} = -c\boldsymbol{\nabla}\Phi + \boldsymbol{u}\Phi
 $$
 
 Deren Divergenz ergibt sich bei konstantem Diffusionskoeffizienten und Anwendung der Produktregel zu
 
 $$
-    \nabla\cdot\boldsymbol{J} = -c\nabla^2\Phi + (\nabla\cdot\boldsymbol{u})\Phi + (\boldsymbol{u}\cdot\nabla)\Phi,
+    \boldsymbol{\nabla}\cdot\boldsymbol{J} = -c\nabla^2\Phi + (\boldsymbol{\nabla}\cdot\boldsymbol{u})\Phi + (\boldsymbol{u}\cdot\boldsymbol{\nabla})\Phi,
 $$
 
 wobei der zweite Term für inkompressible Strömungen aufgrund der Massenerhaltung entfällt. In diesem Fall lautet die Konvektions-Diffusions-Gleichung: 
 
 $$
-    \underbrace{\partial_t \Phi}_\text{Instationarität} = \underbrace{c\nabla^2\Phi}_\text{Diffusion} - \underbrace{(\boldsymbol{u}\cdot\nabla)\Phi}_\text{Konvektion} + \underbrace{R}_\text{Quelle}
+    \underbrace{\partial_t \Phi}_\text{Instationarität} = \underbrace{c\nabla^2\Phi}_\text{Diffusion} - \underbrace{(\boldsymbol{u}\cdot\boldsymbol{\nabla})\Phi}_\text{Konvektion} + \underbrace{R}_\text{Quelle}
 $$
 
 ---

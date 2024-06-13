@@ -89,11 +89,6 @@ Periodische Randbedingungen charakterisieren in gewisser Weise die Topologie des
 >
 > Wie lassen sich periodische Randbedingungen mit dem Finite-Differenzen-Verfahren realisieren?
 
----
-> **Aufgabe (Keine Randbedingungen)**
->
-> Was würde passieren, wenn gar keine Randbedingungen gesetzt werden? Wie ließe sich das physikalisch begründen?
-
 
 ### Anfangswertproblem
 
@@ -126,10 +121,10 @@ $$
 \end{cases}
 $$
 
-Unter Umständen ist es nicht erforderlich, auf dem gesamten Rand Bedingungen zu setzen. Der Vektor _**`B`**_ muss dann dementsprechend angepasst werden. Für die Poisson-Gleichung wird somit das folgende lineare Gleichungssystem mit den jeweiligen Dirichlet-Randbedingungen gelöst:
+Für die Poisson-Gleichung wird somit das folgende lineare Gleichungssystem mit den jeweiligen Dirichlet-Randbedingungen gelöst:
 
 $$
-\underbrace{\left[ \operatorname{diag}(\lnot \boldsymbol{B}) \cdot (\boldsymbol{D}_x^{(2)} + \boldsymbol{D}_y^{(2)}) + \operatorname{diag}(\boldsymbol{B}) \right]}_{\nabla^2\text{ für }\Omega^\circ\text{ bzw. } I\text{ für }\Gamma_\Omega} \boldsymbol{\Psi} = \underbrace{\lnot{\boldsymbol{B}}\odot(-\boldsymbol{\omega}) + \boldsymbol{B}\odot\boldsymbol{\Psi}_\Gamma}_{-\omega\text{ für }\Omega^\circ\text{ bzw. }\Psi_\Gamma\text{ für }\Gamma_\Omega}
+\underbrace{\left[ \operatorname{diag}(\lnot \boldsymbol{B}) \cdot (\boldsymbol{D}_x^{(2)} + \boldsymbol{D}_y^{(2)}) + \operatorname{diag}(\boldsymbol{B}) \right]}_{\nabla^2\text{ für }\Omega^\circ\text{ bzw. } I\text{ für }\Gamma_\Omega} \cdot\boldsymbol{\Psi} = \underbrace{\lnot{\boldsymbol{B}}\odot(-\boldsymbol{\omega}) + \boldsymbol{B}\odot\boldsymbol{\Psi}_\Gamma}_{-\omega\text{ für }\Omega^\circ\text{ bzw. }\Psi_\Gamma\text{ für }\Gamma_\Omega}
 $$
 
 _**Tipp:** Wenn sich die Matrix des Gleichungssystems über die Zeit nicht verändert, dann kann ihre LR-Zerlegung aus der Zeititeration ausgelagert und somit Rechenzeit gespart werden. Möglicherweise muss außerdem auf die Konditionierung dieser Matrix geachtet werden._
@@ -137,20 +132,20 @@ _**Tipp:** Wenn sich die Matrix des Gleichungssystems über die Zeit nicht verä
 
 ### Cauchy-Riemann-Gleichungen
 
-Bei der Berechnung der Geschwindigkeitskomponenten bietet es sich an, die Neumann-Randbedingungen einzubeziehen und somit, falls vorhanden, die Geschwindigkeit tangential zum Rand festzulegen. Auch hier lässt sich wieder mit einem Boole'schen Vektor _**`B`**_ arbeiten, welcher die entsprechenden Positionen dafür angibt.
+Bei der Berechnung der Geschwindigkeitskomponenten bietet es sich an, die Neumann-Randbedingungen einzubeziehen und somit, falls vorhanden, die Geschwindigkeit tangential zum Rand festzulegen. Diese Randbedingungen werden nur auf den Wänden benötigt und sind im Sinne der Wandhaftung homogen. Die entsprechenden Wandpositionen werden wiederum mit einem Boole'schen Vektor _**`W`**_ angegeben.
 
 $$
 \begin{align*}
-\boldsymbol{u} &= \underbrace{\lnot\boldsymbol{B}\odot(\boldsymbol{D}_y^{(1)}\boldsymbol{\Psi}) + \boldsymbol{B}\odot\boldsymbol{u}_\Gamma}_{\partial_y\Psi\text{ für }\Omega^\circ\text{ bzw. }u_\Gamma\text{ für }\Gamma_\Omega} \\\\
-\boldsymbol{v} &= \underbrace{\lnot\boldsymbol{B}\odot(-\boldsymbol{D}_x^{(1)}\boldsymbol{\Psi}) + \boldsymbol{B}\odot\boldsymbol{v}_\Gamma}_{-\partial_x\Psi\text{ für }\Omega^\circ\text{ bzw. }v_\Gamma\text{ für }\Gamma_\Omega}
+\boldsymbol{u} &= \underbrace{\lnot\boldsymbol{W}\odot(\boldsymbol{D}_y^{(1)}\boldsymbol{\Psi}) + \boldsymbol{W}\odot\boldsymbol{u}_\Gamma}_{\partial_y\Psi\text{ für }\Omega^\circ\text{ bzw. }u_\Gamma\text{ für }\Gamma_\Omega} \\\\
+\boldsymbol{v} &= \underbrace{\lnot\boldsymbol{W}\odot(-\boldsymbol{D}_x^{(1)}\boldsymbol{\Psi}) + \boldsymbol{W}\odot\boldsymbol{v}_\Gamma}_{-\partial_x\Psi\text{ für }\Omega^\circ\text{ bzw. }v_\Gamma\text{ für }\Gamma_\Omega}
 \end{align*}
 $$
 
 
 ### Wirbeltransportgleichung
 
-Die Randbedingungen sind in dem zuvor berechneten Geschwindigkeitsfeld enthalten, sodass die örtliche Auflösung bereits abgeschlossen ist und die Wirbelstärke zum nächsten Zeitpunkt berechnet werden kann. Damit die Randbedingungen korrekt in die bevorstehende Berechnung einfließen, muss unbedingt darauf geachtet werden, dass das Differenzenschema auch für den Randbereich konsistent ist.
+Ist die örtliche Auflösung abgeschlossen, kann die Wirbelstärke zum nächsten Zeitpunkt berechnet werden. Damit die Randbedingungen korrekt in diese Berechnung einfließen, muss unbedingt darauf geachtet werden, dass das Differenzenschema für den gesamten Randbereich konsistent ist.
 
 $$
-\dot{\boldsymbol{\omega}} = \underbrace{\left[ \nu(\boldsymbol{D}_x^{(2)} + \boldsymbol{D}_y^{(2)})\right.}_\text{Diffusion} - \underbrace{\left.(\operatorname{diag}(\boldsymbol{u})\cdot\boldsymbol{D}_x^{(1)} + \operatorname{diag}(\boldsymbol{v})\cdot\boldsymbol{D}_y^{(1)}) \right]}_\text{Konvektion} \boldsymbol{\omega}
+\dot{\boldsymbol{\omega}} = \underbrace{\left[ \nu(\boldsymbol{D}_x^{(2)} + \boldsymbol{D}_y^{(2)})\right.}_\text{Diffusion} - \underbrace{\left.(\operatorname{diag}(\boldsymbol{u})\cdot\boldsymbol{D}_x^{(1)} + \operatorname{diag}(\boldsymbol{v})\cdot\boldsymbol{D}_y^{(1)}) \right]}_\text{Konvektion} \cdot \underbrace{\left[ \lnot\boldsymbol{W}\odot\boldsymbol{\omega} + \boldsymbol{W}\odot (-(\boldsymbol{D}_x^{(2)} + \boldsymbol{D}_y^{(2)})\boldsymbol{\Psi}) \right]}_{\omega\text{ für }\Omega^\circ\text{ bzw. }-\nabla^2\Psi\text{ für }\Gamma_\Omega}
 $$

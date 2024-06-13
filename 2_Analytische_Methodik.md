@@ -13,7 +13,7 @@ Wirbeltransportgleichung
 Um Wirbelströmungen adäquat untersuchen zu können, wird der Transport einer ganz bestimmten Strömungsgröße betrachtet – nämlich der Wirbelstärke _**`ω`**_. Sie ist wie folgt definiert:
 
 $$
-    \boldsymbol{\omega} \coloneqq \operatorname{rot}(\boldsymbol{u}) = \nabla\times\boldsymbol{u}
+    \boldsymbol{\omega} \coloneqq \operatorname{rot}(\boldsymbol{u}) = \boldsymbol{\nabla}\times\boldsymbol{u}
 $$
 
 Für zweidimensionale Strömungen in der x-y-Ebene ist die Geschwindigkeit in z-Richtung null,
@@ -29,24 +29,24 @@ $$
 Für die Herleitung der inkompressiblen Wirbeltransportgleichung
 
 $$
-    \partial_t\boldsymbol{\omega} + (\boldsymbol{u}\cdot\nabla)\boldsymbol{\omega} = (\boldsymbol{\omega}\cdot\nabla)\boldsymbol{u} + \nu\nabla^2\boldsymbol{\omega}
+    \partial_t\boldsymbol{\omega} + (\boldsymbol{u}\cdot\boldsymbol{\nabla})\boldsymbol{\omega} = (\boldsymbol{\omega}\cdot\boldsymbol{\nabla})\boldsymbol{u} + \nu\nabla^2\boldsymbol{\omega}
 $$
 
 wird die Rotation auf die inkompressible Navier-Stokes-Gleichung angewendet,
 
 $$
-    \nabla\times \left\{ \partial_t\boldsymbol{u} + (\boldsymbol{u}\cdot\nabla)\boldsymbol{u} \right\} = \nabla\times \left\{ -\nabla{p}/\rho + \nu\nabla^2\boldsymbol{u} + \boldsymbol{g} \right\}
+    \boldsymbol{\nabla}\times \left\{ \partial_t\boldsymbol{u} + (\boldsymbol{u}\cdot\boldsymbol{\nabla})\boldsymbol{u} \right\} = \boldsymbol{\nabla}\times \left\{ -\boldsymbol{\nabla}{p}/\rho + \nu\nabla^2\boldsymbol{u} + \boldsymbol{g} \right\}
 $$
 
 und es werden die folgenden Zusammenhänge einbezogen.
 
 $$
 \begin{align*}
-    (\boldsymbol{u}\cdot\nabla)\boldsymbol{u} &=\nabla\boldsymbol{u}^2/2 -\boldsymbol{u}\times\boldsymbol{\omega} \\
-    \nabla\times(\boldsymbol{u}\times\boldsymbol{\omega}) &= \boldsymbol{u}(\nabla\cdot\boldsymbol{\omega}) - \boldsymbol{\omega}(\nabla\cdot\boldsymbol{u}) + (\boldsymbol{\omega}\cdot\nabla)\boldsymbol{u} - (\boldsymbol{u}\cdot\nabla)\boldsymbol{\omega} \\
-    \nabla\cdot\boldsymbol{\omega} = \nabla\cdot(\nabla\times\boldsymbol{u}) &= 0 \quad\text{(dreidimensionale Rotationsfelder sind divergenzfrei)} \\
-    \nabla\times\nabla\phi &= \boldsymbol{0} \quad\text{(Gradientenfelder sind wirbelfrei)} \\
-    \boldsymbol{F}_\mathrm{grav} &= m\boldsymbol{g} = -\nabla W_\mathrm{pot} \quad\text{(die Schwerkraft ist eine konservative Kraft)}
+    (\boldsymbol{u}\cdot\boldsymbol{\nabla})\boldsymbol{u} &=\boldsymbol{\nabla}\boldsymbol{u}^2/2 -\boldsymbol{u}\times\boldsymbol{\omega} \\
+    \boldsymbol{\nabla}\times(\boldsymbol{u}\times\boldsymbol{\omega}) &= \boldsymbol{u}(\boldsymbol{\nabla}\cdot\boldsymbol{\omega}) - \boldsymbol{\omega}(\boldsymbol{\nabla}\cdot\boldsymbol{u}) + (\boldsymbol{\omega}\cdot\boldsymbol{\nabla})\boldsymbol{u} - (\boldsymbol{u}\cdot\boldsymbol{\nabla})\boldsymbol{\omega} \\
+    \boldsymbol{\nabla}\cdot\boldsymbol{\omega} = \boldsymbol{\nabla}\cdot(\boldsymbol{\nabla}\times\boldsymbol{u}) &= 0 \quad\text{(dreidimensionale Rotationsfelder sind divergenzfrei)} \\
+    \boldsymbol{\nabla}\times\boldsymbol{\nabla}\phi &= \boldsymbol{0} \quad\text{(Gradientenfelder sind wirbelfrei)} \\
+    \boldsymbol{F}_\mathrm{grav} &= m\boldsymbol{g} = -\boldsymbol{\nabla} W_\mathrm{pot} \quad\text{(die Schwerkraft ist eine konservative Kraft)}
 \end{align*}
 $$
 
@@ -147,7 +147,7 @@ $$
 Wohlgemerkt, erfüllt die Stromfunktion nach Konstruktion ebenso die inkompressible Kontinuitätsgleichung. (Hier wird im letzten Schritt der Satz von Schwarz angewendet.)
 
 $$
-    0 = \nabla\cdot\boldsymbol{u} = \partial_x u + \partial_y v = \partial_x(\partial_y\Psi) - \partial_y(\partial_x\Psi) = \partial_x\partial_y\Psi - \partial_x\partial_y\Psi = 0
+    0 = \boldsymbol{\nabla}\cdot\boldsymbol{u} = \partial_x u + \partial_y v = \partial_x(\partial_y\Psi) - \partial_y(\partial_x\Psi) = \partial_x\partial_y\Psi - \partial_x\partial_y\Psi = 0
 $$
 
 
@@ -196,16 +196,16 @@ $$
 Für die zeitliche Änderung der Geschwindigkeit kann dann die Navier-Stokes-Gleichung eingesetzt werden.
 
 $$
-    \partial_t E_\mathrm{kin} = \rho \int_\Omega \boldsymbol{u} \cdot \left\{ -\boldsymbol{u}\cdot\nabla\boldsymbol{u} -\nabla{p}/\rho + \nu\nabla^2\boldsymbol{u} + \boldsymbol{g} \right\} \,dV
+    \partial_t E_\mathrm{kin} = \rho \int_\Omega \boldsymbol{u} \cdot \left\{ -\boldsymbol{u}\cdot\boldsymbol{\nabla}\boldsymbol{u} -\boldsymbol{\nabla}{p}/\rho + \nu\nabla^2\boldsymbol{u} + \boldsymbol{g} \right\} \,dV
 $$
 
 Zur Umschreibung werden die folgenden Identitäten herangezogen.
 
 $$
 \begin{align*}
-    \boldsymbol{u}\cdot(\boldsymbol{u}\cdot\nabla\boldsymbol{u}) &= \frac{1}{2}\boldsymbol{u}\cdot\nabla\boldsymbol{u}^2 = \frac{1}{2}\nabla\cdot\boldsymbol{u}^3 - \frac{1}{2}\boldsymbol{u}^2(\nabla\cdot\boldsymbol{u}) \\
-    \boldsymbol{u}\cdot\nabla p &= \nabla\cdot(\boldsymbol{u} p) - p(\nabla\cdot\boldsymbol{u}) \\
-    \boldsymbol{u}\cdot\boldsymbol{g} &= -\frac{1}{m}\boldsymbol{u}\cdot\nabla W_\mathrm{pot} = -\frac{1}{m}\nabla\cdot(\boldsymbol{u} W_\mathrm{pot}) + \frac{1}{m}W_\mathrm{pot}(\nabla\cdot\boldsymbol{u})
+    \boldsymbol{u}\cdot(\boldsymbol{u}\cdot\boldsymbol{\nabla}\boldsymbol{u}) &= \frac{1}{2}\boldsymbol{u}\cdot\boldsymbol{\nabla}\boldsymbol{u}^2 = \frac{1}{2}\boldsymbol{\nabla}\cdot\boldsymbol{u}^3 - \frac{1}{2}\boldsymbol{u}^2(\boldsymbol{\nabla}\cdot\boldsymbol{u}) \\
+    \boldsymbol{u}\cdot\boldsymbol{\nabla} p &= \boldsymbol{\nabla}\cdot(\boldsymbol{u} p) - p(\boldsymbol{\nabla}\cdot\boldsymbol{u}) \\
+    \boldsymbol{u}\cdot\boldsymbol{g} &= -\frac{1}{m}\boldsymbol{u}\cdot\boldsymbol{\nabla} W_\mathrm{pot} = -\frac{1}{m}\boldsymbol{\nabla}\cdot(\boldsymbol{u} W_\mathrm{pot}) + \frac{1}{m}W_\mathrm{pot}(\boldsymbol{\nabla}\cdot\boldsymbol{u})
 \end{align*}
 $$
 
@@ -213,16 +213,16 @@ Für inkompressible Fluide vereinfachen sich diese aufgrund der Kontinuitätsgle
 
 $$
 \begin{align*}
-    \boldsymbol{u}\cdot(\boldsymbol{u}\cdot\nabla\boldsymbol{u}) &= \frac{1}{2}\nabla\cdot\boldsymbol{u}^3 \\
-    \boldsymbol{u}\cdot\nabla p &= \nabla\cdot(\boldsymbol{u} p) \\
-    \boldsymbol{u}\cdot\boldsymbol{g} &= -\frac{1}{m}\nabla\cdot(\boldsymbol{u} W_\mathrm{pot})
+    \boldsymbol{u}\cdot(\boldsymbol{u}\cdot\boldsymbol{\nabla}\boldsymbol{u}) &= \frac{1}{2}\boldsymbol{\nabla}\cdot\boldsymbol{u}^3 \\
+    \boldsymbol{u}\cdot\boldsymbol{\nabla} p &= \boldsymbol{\nabla}\cdot(\boldsymbol{u} p) \\
+    \boldsymbol{u}\cdot\boldsymbol{g} &= -\frac{1}{m}\boldsymbol{\nabla}\cdot(\boldsymbol{u} W_\mathrm{pot})
 \end{align*}
 $$
 
 Daraus folgt
 
 $$
-    \partial_t E_\mathrm{kin} = \mu \int_\Omega \boldsymbol{u}\cdot\nabla^2\boldsymbol{u}\,dV - \int_\Omega \nabla\cdot \left[\left( \frac{\rho}{2}\boldsymbol{u}^2+p+\frac{\rho}{m}W_\mathrm{pot} \right)\boldsymbol{u}\right] \,dV,
+    \partial_t E_\mathrm{kin} = \mu \int_\Omega \boldsymbol{u}\cdot\nabla^2\boldsymbol{u}\,dV - \int_\Omega \boldsymbol{\nabla}\cdot \left[\left( \frac{\rho}{2}\boldsymbol{u}^2+p+\frac{\rho}{m}W_\mathrm{pot} \right)\boldsymbol{u}\right] \,dV,
 $$
 
 und mit dem Gauß'schen Integralsatz
@@ -246,13 +246,13 @@ $$
 Mit der Lagrange-Identität
 
 $$
-    \boldsymbol{\omega}^2 = (\nabla\times\boldsymbol{u})^2 = \nabla^2\boldsymbol{u}^2 - \boldsymbol{u}\cdot\nabla^2\boldsymbol{u},
+    \boldsymbol{\omega}^2 = (\boldsymbol{\nabla}\times\boldsymbol{u})^2 = \nabla^2\boldsymbol{u}^2 - \boldsymbol{u}\cdot\nabla^2\boldsymbol{u},
 $$
 
 und inkompressiblen Kontinuitätsgleichung
 
 $$
-    \nabla^2\boldsymbol{u}^2 = \nabla\cdot\underbrace{(\nabla\cdot\boldsymbol{u})}_{=0}\cdot\boldsymbol{u},
+    \nabla^2\boldsymbol{u}^2 = \boldsymbol{\nabla}\cdot\underbrace{(\boldsymbol{\nabla}\cdot\boldsymbol{u})}_{=0}\cdot\boldsymbol{u},
 $$
 
 ergibt sich letztendlich der besagte Zusammenhang

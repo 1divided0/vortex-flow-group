@@ -20,6 +20,8 @@ In diesem Projekt wird ein numerischer Lösungsalgorithmus für zweidimensionale
 
 ## Literatur Empfehlungen
 Die folgende Literatur ist für diejenigen zu empfehlen, die sich über diese Projektarbeit hinaus mit dem Thema im Selbststudium beschäftigen möchten.
+- Milton Van Dyke. An Album of Fluid Motion. Stanford University.
+  - [Buch](https://courses.washington.edu/me431/handouts/Album-Fluid-Motion-Van-Dyke.pdf)
 - Jeffrey Chasnov. Flow Around a Cylinder. Hong Kong University of Science and Technology.
   - [Kursunterlagen](https://www.math.hkust.edu.hk/~machas/flow-around-a-cylinder.pdf)
   - [YouTube-Playlist](https://youtube.com/playlist?list=PLkZjai-2Jcxk4qNx393VcKfCCwe7YTaWn&si=iPwT-5spRPapJUY4)
