@@ -106,7 +106,7 @@ Zylinderumströmung
 ------------------------------------------------------------------------------->
 ## Zylinderumströmung
 
-Ein klassisches Beispiel stellt die Zylinderumströmung dar, ist aber technisch weitaus schwieriger zu implementieren als der Taylor-Green-Wirbel. Außerdem ist für dieses Problem auch keine analytische Lösung bekannt. Neben der Ein- und Auslassrandbedingung muss an der Zylinderoberfläche noch eine Wandrandbedingung mit Wandhaftung gesetzt werden. In kartesischen Koordinaten ist das mit der finiten Differenzen-Methode recht anspruchsvoll. Darum werden die Gleichungen im Folgenden in (logarithmischen) Polarkoordinaten vorgestellt. Dafür sollen sie aber zunächst entdimensionalisiert werden, um die Strömung anhand der Reynolds-Zahl
+Ein klassisches Beispiel stellt die Zylinderumströmung dar, ist aber technisch schwieriger zu implementieren als der Taylor-Green-Wirbel. Außerdem ist für dieses Problem keine analytische Lösung bekannt. Neben der Ein- und Auslassrandbedingung muss an der Zylinderoberfläche noch eine Wandrandbedingung mit Wandhaftung gesetzt werden. In kartesischen Koordinaten ist das mit der finiten Differenzen-Methode recht anspruchsvoll. Darum werden die Gleichungen im Folgenden in (logarithmischen) Polarkoordinaten vorgestellt. Dafür sollen sie aber zunächst entdimensionalisiert werden, um die Strömung anhand der Reynolds-Zahl
 
 $$
 \mathrm{Re} = \frac{2r_0 u_\infty}{\nu}
@@ -156,7 +156,7 @@ $$
 \end{align*}
 $$
 
-und überzeugt sich selbst davon, dass auch in diesem Fall das Buckingham'sche Π-Theorem Recht behält. Als eine kleine Fingerübung lässt sich selbiges auch mit dem Zylinderdurchmesser bewerkstelligen, was für die (technisch schwierigere) Implementierung in kartesischen Koordinaten zu bevorzugen ist.
+und überzeugt sich selbst davon, dass auch in diesem Fall das Buckingham'sche Π-Theorem Recht behält. Als eine kleine Fingerübung lässt sich selbiges auch mit dem Zylinderdurchmesser bewerkstelligen, was für die Implementierung in kartesischen Koordinaten zu bevorzugen ist.
 
 </details>
 
