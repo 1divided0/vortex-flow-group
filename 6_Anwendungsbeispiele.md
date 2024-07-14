@@ -1,6 +1,6 @@
 # Thema 6: Anwendungsbeispiele
 
-Nach ein paar Hinweisen zur Programmierung, wird hier der Taylor-Green-Wirbel als Beispiel für die numerische Untersuchung vorgestellt.
+Nach ein paar Hinweisen zur Programmierung, wird hier der Taylor-Green-Wirbel als Beispiel für die numerische Untersuchung vorgestellt. Dahingegen ist die Implementierung der Zylinderumströmung technisch anspruchsvoller, soll aber trotzdem nicht unerwähnt bleiben.
 
 [TOC]
 
@@ -20,9 +20,7 @@ In dem [Begleitmaterial](Begleitmaterial) befinden sich bereits Beispiele für b
 
 4. **Typisierung:** Durch das sog. Type-Hinting kann bei Programmiersprachen mit impliziter Typisierung explizit auf den Datentyp hingewiesen werden. Dies ist gerade bei Funktionsargumenten und Rückgabewerten sehr nützlich, da so Missverständnisse vermieden werden.
 
-<!--
 5. **Handhabung von großen Datenmengen:** Bei Skriptsprachen wie Matlab oder Python erfolgt der Funktionsaufruf meistens durch sog. Wertparameter (call by value) und nicht durch sog. Referenzparameter (call by reference), wodurch das gesamte Funktionsargument bei dem Funktionsaufruf kopiert wird. Da Speicheroperationen aber in der Regel sehr langsam sind, ist es in diesem Fall günstiger, große Objekte – wie z. B. die Differenzenmatrizen – global zu definieren, um sie nicht ständig neu zu initialisieren.
--->
 
 
 <!------------------------------------------------------------------------------
@@ -70,10 +68,14 @@ für die Poisson-Gleichung, lassen sich kombiniert einsetzten, was zu einem best
 Die Lösung lässt sich durch das Verfolgen sog. Lagrange-Partikel visualisieren. Hierzu wird auf dem Rechengebiet eine Startverteilung masseloser Punkte gewählt und deren Position nach der Lagrange'schen Betrachtungsweise in der Zeit durch Interpolation des Geschwindigkeitsvektorfeldes entwickelt.
 
 $$
-\boldsymbol{p}(t+h_t) \approx \boldsymbol{p}(t) + h_t \cdot \dot{\boldsymbol{p}}(t) = \boldsymbol{p}(t) + h_t \cdot \boldsymbol{u}(\boldsymbol{p}(t),t)
+\boldsymbol{p}(t+T) = \boldsymbol{p}(t) + \int_t^T \dot{\boldsymbol{p}}(s) \, ds = \boldsymbol{p}(t) + \int_t^T \boldsymbol{u}(\boldsymbol{p}(s),s) \, ds
 $$
 
 Hier wird dafür exemplarisch das explizite Euler-Verfahren verwendet. Stattdessen lassen sich aber auch andere Zeitschrittverfahren verwenden, um eine noch bessere Genauigkeit der Darstellung zu erzielen.
+
+$$
+\boldsymbol{p}(t+h_t) \approx \boldsymbol{p}(t) + h_t \cdot \dot{\boldsymbol{p}}(t) = \boldsymbol{p}(t) + h_t \cdot \boldsymbol{u}(\boldsymbol{p}(t),t)
+$$
 
 > **Begleitmaterial (Visualisierung des Taylor-Green-Wirbels)**
 >
@@ -97,3 +99,156 @@ Hier wird dafür exemplarisch das explizite Euler-Verfahren verwendet. Stattdess
 > **Aufgabe (Vergleich der Laufzeit)**
 >
 > Wie verändert sich die Laufzeit eures Lösungsalgorithmus mit der Fehlerordnung der gewählten Differenzenschemata und wie viel länger braucht das implizite Zeitschrittverfahren im Vergleich zu einem expliziten? Ist der höhere Rechenaufwand durch bessere Stabilität und Genauigkeit gerechtfertigt?
+
+
+<!------------------------------------------------------------------------------
+Zylinderumströmung
+------------------------------------------------------------------------------->
+## Zylinderumströmung
+
+Ein klassisches Beispiel stellt die Zylinderumströmung dar, ist aber technisch weitaus schwieriger zu implementieren als der Taylor-Green-Wirbel. Außerdem ist für dieses Problem auch keine analytische Lösung bekannt. Neben der Ein- und Auslassrandbedingung muss an der Zylinderoberfläche noch eine Wandrandbedingung mit Wandhaftung gesetzt werden. In kartesischen Koordinaten ist das mit der finiten Differenzen-Methode recht anspruchsvoll. Darum werden die Gleichungen im Folgenden in (logarithmischen) Polarkoordinaten vorgestellt. Dafür sollen sie aber zunächst entdimensionalisiert werden, um die Strömung anhand der Reynolds-Zahl
+
+$$
+\mathrm{Re} = \frac{2r_0 u_\infty}{\nu}
+$$
+
+zu charakterisieren. Wobei hier der Zylinderradius und die Anströmungsgeschwindigkeit verwendet wird.
+
+---
+<details>
+<summary markdown="span"><b>Entdimensionalisierung</b></summary>
+<br>
+
+Wird der Zusammenhang mit der Reynolds-Zahl in die Gleichungen eingesetzt,
+
+$$
+\begin{align*}
+    \omega_z &= -\nabla^2\psi \\
+    \boldsymbol{u} &= \begin{bmatrix} \partial_y\psi \\ - \partial_x\psi \end{bmatrix} \\
+    \partial_t\omega_z &= \left( \frac{2r_0 u_\infty}{\mathrm{Re}}\nabla^2-\boldsymbol{u}\cdot\boldsymbol{\nabla} \right) \omega_z
+\end{align*}
+$$
+
+dann finden sich insgesamt 9 dimensionsbehaftete Größen wieder:
+
+$$
+    t,~ \omega_z,~ \psi,~ x,~ y,~ u,~ v,~ r_0,~ u_\infty
+$$
+
+Rein theoretisch könnte hier auch die Startverteilung der Wirbelstärke mitgezählt werden. Wird der Zylinderradius und die Anströmungsgeschwindigkeit zum Entdimensionalisieren verwendet, dann sind das (laut dem Buckingham'schen Π-Theorem) genau zwei Größen, um die sich diese Anzahl verringert. Die Wahl dieser Größen ist prinzipiell beliebig, muss aber jede vorkommende physikalische Einheit beinhalten. Die Einheitenbetrachtung ergibt folgenden Zusammenhang.
+
+$$
+\begin{gather*}
+    [x] = [y] = [r_0] \\
+    [u] = [v] = [u_\infty] \\
+    [\psi] = [r_0]^2/[t] = [r_0][u_\infty] \\
+    [\omega_z] = 1/[t] = [u_\infty]/[r_0]
+\end{gather*}
+$$
+
+Demnach wurde mit dem Zylinderradius und der Anströmungsgeschwindigkeit eine zulässige Wahl getroffen, da die Einheiten dieser beiden Größen zusammen alle anderen Einheiten darstellen können. In dem nun jede, in den Gleichungen vorkommende, dimensionsbehaftete Größe entsprechend durch diese beiden Größen dimensionslos umskaliert wird, erhält man die entdimensionalisierten Gleigungen,
+
+$$
+\begin{align*}
+    \omega_z &= -\nabla^2\psi \\
+    \boldsymbol{u} &= \begin{bmatrix} \partial_y\psi \\ - \partial_x\psi \end{bmatrix} \\
+    \partial_t\omega_z &= \left( \frac{2}{\mathrm{Re}}\nabla^2-\boldsymbol{u}\cdot\boldsymbol{\nabla} \right) \omega_z
+\end{align*}
+$$
+
+und überzeugt sich selbst davon, dass auch in diesem Fall das Buckingham'sche Π-Theorem Recht behält. Als eine kleine Fingerübung lässt sich selbiges auch mit dem Zylinderdurchmesser bewerkstelligen, was für die (technisch schwierigere) Implementierung in kartesischen Koordinaten zu bevorzugen ist.
+
+</details>
+
+---
+<details>
+<summary markdown="span"><b>Polarkoordinaten</b></summary>
+<br>
+
+In Polarkoordinaten sind die Gleichungen gegeben durch:
+
+$$
+\begin{align*}
+    \omega_z &= -\nabla^2\psi \\
+    \boldsymbol{u} &= \frac{1}{r}\begin{bmatrix} \partial_\theta\psi \\ - r\partial_r\psi \end{bmatrix} \\
+    \partial_t\omega_z &= \left( \frac{2}{\mathrm{Re}}\nabla^2-\boldsymbol{u}\cdot\boldsymbol{\nabla} \right) \omega_z
+\end{align*}
+$$
+
+wobei
+
+$$
+\boldsymbol{\nabla} = \frac{1}{r}\begin{bmatrix}r\partial_r\\\partial_\theta\end{bmatrix},\quad \nabla^2 = \frac{1}{r^2}\left((r\partial_r)(r\partial_r)+\partial_\theta^2\right).
+$$
+
+Auch hier erfüllen die Cauchy-Riemann-Gleichungen gleichermaßen die inkompressible Kontinuitätsgleichung. 
+
+</details>
+
+---
+<details>
+<summary markdown="span"><b>Logarithmische Polarkoordinaten</b></summary>
+<br>
+
+Logarithmische Polarkoordinaten können dabei helfen, die Wandgrenzschicht höher aufzulösen und das Rechengitter auf den relevanten Bereich zu fokussieren. Dafür wird der Radius, wie der Name schon sagt, logarithmisch abgetragen.
+
+$$
+r_{\ln}\coloneqq\ln r
+$$
+
+Daraus folgt
+
+$$
+\frac{d r}{d r_{\ln}} = \left( \frac{d r_{\ln}}{d r} \right)^{-1} = \left( \frac{d}{d r}\ln r \right)^{-1} = r,
+$$
+
+und somit
+
+$$
+\frac{\partial}{\partial r_{\ln}} = \frac{d r}{d r_{\ln}}\frac{\partial}{\partial r} = r\frac{\partial}{\partial r}.
+$$
+
+Wird dieser Zusammenhang in die Gleichungen eingesetzt, ergibt sich schließlich das folgende System.
+
+$$
+\begin{align*}
+    \omega_z &= -\nabla^2\psi \\
+    \boldsymbol{u} &= \mathrm{e}^{-r_{\ln}}\begin{bmatrix} \partial_\theta\psi \\ - \partial_{r_{\ln}}\psi \end{bmatrix} \\
+    \partial_t\omega_z &= \left( \frac{2}{\mathrm{Re}}\nabla^2-\boldsymbol{u}\cdot\boldsymbol{\nabla} \right) \omega_z
+\end{align*}
+$$
+
+Wobei
+
+$$
+\boldsymbol{\nabla} = \mathrm{e}^{-r_{\ln}}\begin{bmatrix}\partial_{r_{\ln}}\\\partial_\theta\end{bmatrix},\quad \nabla^2 = \mathrm{e}^{-2 r_{\ln}}\left(\partial_{r_{\ln}}^2+\partial_\theta^2\right).
+$$
+
+</details>
+
+---
+<details>
+<summary markdown="span"><b>Visualisierung</b></summary>
+<br>
+
+Für die Darstellung Lagrange kohärenter Strukturen kann der Ljapunow-Exponent zeitlich abgeschätzt werden. Dafür werden wieder die Partikelpositionen zu einem bestimmten Zeitpunkt in einem Gitter initialisiert und zeitlich mitverfolgt,
+
+$$
+\boldsymbol{p}(t+T) = \boldsymbol{p}(t) + \int_t^T \dot{\boldsymbol{p}}(s) \, ds = \boldsymbol{p}(t) + \int_t^T \boldsymbol{u}(\boldsymbol{p}(s),s) \, ds
+$$
+
+wobei die Jacobimatrix dieser Abbildung durch finite Differenzen approximiert und in einem symmetrischen Deformationstensor auf den maximalen Eigenwert untersucht wird:
+
+$$
+\sigma(t+T) = \frac{1}{|T|} \sqrt{\lambda_{\max}\{ J_{\boldsymbol{p}}(t+T)^\top J_{\boldsymbol{p}}(t+T) \}}
+$$
+
+Dabei sollten die Nullstellen des quadratischen charakteristischen Polynoms explizit ausgerechnet werden, um Rechenzeit zu sparen. Außerdem muss darauf geachtet werden, dass der Definitionsbereich groß genug ist und lang genug integriert wird, damit die Strukturen sichtbar werden. In der nachfolgenden Abbildung sind die stabilen Strukturen (in blau) rückwärts in der Zeit, und die instabilen Strukturen (in rot) vorwärts in der Zeit berechnet worden.
+
+</details>
+
+---
+
+> **Abbildung (Visualisierung der Zylinderumströmung mit Ljapunow-Exponent)**
+>
+> ![Ljapunow-Exponent](.Dateien/Bilder/Zylinder_FTLE.gif)
