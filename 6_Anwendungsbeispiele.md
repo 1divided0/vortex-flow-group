@@ -146,7 +146,7 @@ $$
 \end{gather*}
 $$
 
-Demnach wurde mit dem Zylinderradius und der Anströmungsgeschwindigkeit eine zulässige Wahl getroffen, da die Einheiten dieser beiden Größen zusammen alle anderen Einheiten darstellen können. In dem nun jede, in den Gleichungen vorkommende, dimensionsbehaftete Größe entsprechend durch diese beiden Größen dimensionslos umskaliert wird, erhält man die entdimensionalisierten Gleigungen,
+Demnach wurde mit dem Zylinderradius und der Anströmungsgeschwindigkeit eine zulässige Wahl getroffen, da die Einheiten dieser beiden Größen zusammen alle anderen Einheiten darstellen können. In dem nun jede, in den Gleichungen vorkommende, dimensionsbehaftete Größe entsprechend durch diese beiden Größen dimensionslos umskaliert wird, erhält man die entdimensionalisierten Gleichungen,
 
 $$
 \begin{align*}
