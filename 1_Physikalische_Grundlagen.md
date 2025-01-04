@@ -52,7 +52,7 @@ $$
     (\dot m_{\mathrm{ein}})_i = \rho u_i V/dx_i
 $$
 
-Der austretende Massenstrom ergibt sich wiederum durch die Taylorreihe des eintretenden Massenstroms, entwickelt an der Eintrittsstelle und ausgewertet an der Austrittstelle.
+Der austretende Massenstrom ergibt sich wiederum durch die Taylorreihe des eintretenden Massenstroms, entwickelt an der Eintrittsstelle und ausgewertet an der Austrittsstelle.
 
 $$
     (\dot m_{\mathrm{aus}})_i = [\rho u_i /dx_i + \partial_{x_i}(\rho u_i) + \mathcal{O}(dx_i)] V

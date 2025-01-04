@@ -1,4 +1,4 @@
-# Herzlich Willkommen zum Projekt Wirbelströmung!
+# Herzlich willkommen zum Projekt Wirbelströmung!
 In diesem Projekt wird ein numerischer Lösungsalgorithmus für zweidimensionale inkompressible Strömungen entwickelt. Ein Anwendungsbeispiel stellt dabei der Taylor-Green-Wirbel dar. Die Implementierung soll numerisch beurteilt und validiert werden.
 
 ## Lernziele
