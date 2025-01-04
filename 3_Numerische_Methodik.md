@@ -123,9 +123,7 @@ $$
 Um aus der Vorschrift ein Gleichungssystem abzuleiten, wird die äußere Summe mit _`p=k`_ und _`p≠k`_ aufgespalten.
 
 $$
-\partial_x^k \Phi_i = \underbrace{\left[ \sum_{j=-l}^{r} j^k \alpha_j / k! \right]}_{\stackrel{!}{=}1} \partial_x^k \Phi_i
-+ \sum_{\substack{p = 0 \\ p \ne k}}^{l+r} h_x^{p-k} \underbrace{\left[ \sum_{j=-l}^{r} j^p \alpha_j / p! \right]}_{\stackrel{!}{=}0} \partial_x^p \Phi_i
-+ \mathcal{O}(h_x^{l+r+1-k})
+\partial_x^k \Phi_i = \underbrace{\left[ \sum_{j=-l}^{r} j^k \alpha_j / k! \right]}_{\stackrel{!}{=}1} \partial_x^k \Phi_i + \sum_{\substack{p = 0 \\ p \ne k}}^{l+r} h_x^{p-k} \underbrace{\left[ \sum_{j=-l}^{r} j^p \alpha_j / p! \right]}_{\stackrel{!}{=}0} \partial_x^p \Phi_i + \mathcal{O}(h_x^{l+r+1-k})
 $$
 
 Damit die Vorschrift konsistent ist, muss der Ausdruck in der ersten Klammer 1 und in der zweiten Klammer 0 ergeben, sodass sich für die Koeffizienten folgendes Gleichungssystem ergibt:

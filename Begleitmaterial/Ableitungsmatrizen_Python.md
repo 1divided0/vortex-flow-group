@@ -54,7 +54,7 @@ Unter Umständen ist das Strömungsgebiet nicht einfach zusammenhängend und ent
 
 > **Abbildung (2d Ableitung mit Hindernis)**
 >
-> ![2d Ableitung mit Hindernis](../Dateien/Bilder/2d_Ableitung_mit_Hindernis_Python.svg)
+> ![2d Ableitung mit Hindernis](Dateien/Bilder/2d_Ableitung_mit_Hindernis_Python.svg)
 
 In diesem Fall müssen die Ableitungsmatrizen aus individuellen Blöcken zusammengesetzt werden.
 
