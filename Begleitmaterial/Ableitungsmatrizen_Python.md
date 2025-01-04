@@ -54,14 +54,14 @@ Unter Umständen ist das Strömungsgebiet nicht einfach zusammenhängend und ent
 
 > **Abbildung (2d Ableitung mit Hindernis)**
 >
-> ![2d Ableitung mit Hindernis](Dateien/Bilder/2d_Ableitung_mit_Hindernis_Python.svg)
+> ![2d Ableitung mit Hindernis](.Dateien/Bilder/2d_Ableitung_mit_Hindernis_Python.svg)
 
 In diesem Fall müssen die Ableitungsmatrizen aus individuellen Blöcken zusammengesetzt werden.
 
 $$
-\begin{gather*}
-\forall{i,j}\in\{0,\ldots,2\}\colon\quad (\boldsymbol{D}_{y}^{(k)})_{ij} \coloneqq \begin{bmatrix}(\boldsymbol{D}_{y_0}^{(k)})_{ij}&&&&\\&(\boldsymbol{D}_{y_1}^{(k)})_{ij}&&&\\&&(\boldsymbol{D}_{y_2}^{(k)})_{ij}&&\\&&&(\boldsymbol{D}_{y_3}^{(k)})_{ij}&\\&&&&(\boldsymbol{D}_{y_4}^{(k)})_{ij}\end{bmatrix} \\\\
-\boldsymbol{D}_x^{(k)} \coloneqq \begin{bmatrix}\boldsymbol{D}_{x_0}^{(k)}&&\\&\boldsymbol{D}_{x_1}^{(k)}&\\&&\boldsymbol{D}_{x_2}^{(k)}\end{bmatrix},\quad
-\boldsymbol{D}_y^{(k)} \coloneqq \begin{bmatrix}(\boldsymbol{D}_{y}^{(k)})_{00}&(\boldsymbol{D}_{y}^{(k)})_{01}&(\boldsymbol{D}_{y}^{(k)})_{02}\\(\boldsymbol{D}_{y}^{(k)})_{10}&(\boldsymbol{D}_{y}^{(k)})_{11}&(\boldsymbol{D}_{y}^{(k)})_{12}\\(\boldsymbol{D}_{y}^{(k)})_{20}&(\boldsymbol{D}_{y}^{(k)})_{21}&(\boldsymbol{D}_{y}^{(k)})_{22}\end{bmatrix}
-\end{gather*}
+\forall{i,j}\in\{0,\ldots,2\}\colon\quad (\boldsymbol{D}_{y}^{(k)})_{ij} \coloneqq \begin{bmatrix}(\boldsymbol{D}_{y_0}^{(k)})_{ij}&&&&\\&(\boldsymbol{D}_{y_1}^{(k)})_{ij}&&&\\&&(\boldsymbol{D}_{y_2}^{(k)})_{ij}&&\\&&&(\boldsymbol{D}_{y_3}^{(k)})_{ij}&\\&&&&(\boldsymbol{D}_{y_4}^{(k)})_{ij}\end{bmatrix}
+$$
+
+$$
+\boldsymbol{D}_x^{(k)} \coloneqq \begin{bmatrix}\boldsymbol{D}_{x_0}^{(k)}&&\\&\boldsymbol{D}_{x_1}^{(k)}&\\&&\boldsymbol{D}_{x_2}^{(k)}\end{bmatrix},\quad \boldsymbol{D}_y^{(k)} \coloneqq \begin{bmatrix}(\boldsymbol{D}_{y}^{(k)})_{00}&(\boldsymbol{D}_{y}^{(k)})_{01}&(\boldsymbol{D}_{y}^{(k)})_{02}\\(\boldsymbol{D}_{y}^{(k)})_{10}&(\boldsymbol{D}_{y}^{(k)})_{11}&(\boldsymbol{D}_{y}^{(k)})_{12}\\(\boldsymbol{D}_{y}^{(k)})_{20}&(\boldsymbol{D}_{y}^{(k)})_{21}&(\boldsymbol{D}_{y}^{(k)})_{22}\end{bmatrix}
 $$

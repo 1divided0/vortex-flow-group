@@ -54,7 +54,7 @@ Unter Umständen ist das Strömungsgebiet nicht einfach zusammenhängend und ent
 
 > **Abbildung (2d Ableitung mit Hindernis)**
 >
-> ![2d Ableitung mit Hindernis](Dateien/Bilder/2d_Ableitung_mit_Hindernis_Matlab.svg)
+> ![2d Ableitung mit Hindernis](.Dateien/Bilder/2d_Ableitung_mit_Hindernis_Matlab.svg)
 
 In diesem Fall müssen die Ableitungsmatrizen aus individuellen Blöcken zusammengesetzt werden.
 
@@ -63,6 +63,5 @@ $$
 $$
 
 $$
-\boldsymbol{D}_x^{(k)} \coloneqq \begin{bmatrix}(\boldsymbol{D}_{x}^{(k)})_{11}&(\boldsymbol{D}_{x}^{(k)})_{12}&(\boldsymbol{D}_{x}^{(k)})_{13}&(\boldsymbol{D}_{x}^{(k)})_{14}&(\boldsymbol{D}_{x}^{(k)})_{15}\\(\boldsymbol{D}_{x}^{(k)})_{21}&(\boldsymbol{D}_{x}^{(k)})_{22}&(\boldsymbol{D}_{x}^{(k)})_{23}&(\boldsymbol{D}_{x}^{(k)})_{24}&(\boldsymbol{D}_{x}^{(k)})_{25}\\(\boldsymbol{D}_{x}^{(k)})_{31}&(\boldsymbol{D}_{x}^{(k)})_{32}&(\boldsymbol{D}_{x}^{(k)})_{33}&(\boldsymbol{D}_{x}^{(k)})_{34}&(\boldsymbol{D}_{x}^{(k)})_{35}\\(\boldsymbol{D}_{x}^{(k)})_{41}&(\boldsymbol{D}_{x}^{(k)})_{42}&(\boldsymbol{D}_{x}^{(k)})_{43}&(\boldsymbol{D}_{x}^{(k)})_{44}&(\boldsymbol{D}_{x}^{(k)})_{45}\\(\boldsymbol{D}_{x}^{(k)})_{51}&(\boldsymbol{D}_{x}^{(k)})_{52}&(\boldsymbol{D}_{x}^{(k)})_{53}&(\boldsymbol{D}_{x}^{(k)})_{54}&(\boldsymbol{D}_{x}^{(k)})_{55}\end{bmatrix},\quad
-\boldsymbol{D}_y^{(k)} \coloneqq \begin{bmatrix}\boldsymbol{D}_{y_1}^{(k)}&&&&\\&\boldsymbol{D}_{y_2}^{(k)}&&&\\&&\boldsymbol{D}_{y_3}^{(k)}&&\\&&&\boldsymbol{D}_{y_4}^{(k)}&\\&&&&\boldsymbol{D}_{y_5}^{(k)}\end{bmatrix}
+\boldsymbol{D}_x^{(k)} \coloneqq \begin{bmatrix}(\boldsymbol{D}_{x}^{(k)})_{11}&(\boldsymbol{D}_{x}^{(k)})_{12}&(\boldsymbol{D}_{x}^{(k)})_{13}&(\boldsymbol{D}_{x}^{(k)})_{14}&(\boldsymbol{D}_{x}^{(k)})_{15}\\(\boldsymbol{D}_{x}^{(k)})_{21}&(\boldsymbol{D}_{x}^{(k)})_{22}&(\boldsymbol{D}_{x}^{(k)})_{23}&(\boldsymbol{D}_{x}^{(k)})_{24}&(\boldsymbol{D}_{x}^{(k)})_{25}\\(\boldsymbol{D}_{x}^{(k)})_{31}&(\boldsymbol{D}_{x}^{(k)})_{32}&(\boldsymbol{D}_{x}^{(k)})_{33}&(\boldsymbol{D}_{x}^{(k)})_{34}&(\boldsymbol{D}_{x}^{(k)})_{35}\\(\boldsymbol{D}_{x}^{(k)})_{41}&(\boldsymbol{D}_{x}^{(k)})_{42}&(\boldsymbol{D}_{x}^{(k)})_{43}&(\boldsymbol{D}_{x}^{(k)})_{44}&(\boldsymbol{D}_{x}^{(k)})_{45}\\(\boldsymbol{D}_{x}^{(k)})_{51}&(\boldsymbol{D}_{x}^{(k)})_{52}&(\boldsymbol{D}_{x}^{(k)})_{53}&(\boldsymbol{D}_{x}^{(k)})_{54}&(\boldsymbol{D}_{x}^{(k)})_{55}\end{bmatrix},\quad \boldsymbol{D}_y^{(k)} \coloneqq \begin{bmatrix}\boldsymbol{D}_{y_1}^{(k)}&&&&\\&\boldsymbol{D}_{y_2}^{(k)}&&&\\&&\boldsymbol{D}_{y_3}^{(k)}&&\\&&&\boldsymbol{D}_{y_4}^{(k)}&\\&&&&\boldsymbol{D}_{y_5}^{(k)}\end{bmatrix}
 $$
