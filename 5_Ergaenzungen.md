@@ -148,6 +148,8 @@ $$
 
 Dabei bestimmt der Imaginärteil der modifizierten Frequenz bzw. modifizierten Wellenzahl das numerische Diffusionsverhalten, wobei die zeitliche Konzentrationsänderung (als Ursache) der Diffusion ebenjener Strömungsgröße entgegenwirkt.
 
+### Beispiele
+
 ---
 > **Begleitmaterial (Beispiele für das numerische Übertragungsverhalten)**
 >
@@ -202,6 +204,8 @@ Die CFL-Zahl für den Diffusionsterm mit der 2. räumlichen Ableitung nach _`x`_
 $$
 \mathrm{CFL}_{xx} \coloneqq |c|\frac{h_t}{h_x^2}
 $$
+
+### Beispiele
 
 ---
 > **Begleitmaterial (Beispiele für die Stabilitätsanalyse )**
