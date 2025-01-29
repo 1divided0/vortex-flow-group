@@ -240,7 +240,7 @@ $$
 wobei die Jacobimatrix dieser Abbildung durch finite Differenzen approximiert und in einem symmetrischen Deformationstensor auf den maximalen Eigenwert untersucht wird:
 
 $$
-\sigma(t+T) = \frac{1}{|T|} \sqrt{\lambda_{\max}\{ J_{\boldsymbol{p}}(t+T)^\top J_{\boldsymbol{p}}(t+T) \}}
+\sigma(t+T) = \frac{1}{|T|} \ln\left(\sqrt{\lambda_{\max}\{ J_{\boldsymbol{p}}(t+T)^\top J_{\boldsymbol{p}}(t+T) \}}\right)
 $$
 
 Dabei sollten die Nullstellen des quadratischen charakteristischen Polynoms explizit ausgerechnet werden, um Rechenzeit zu sparen. Außerdem muss darauf geachtet werden, dass der Definitionsbereich groß genug ist und lang genug integriert wird, damit die Strukturen sichtbar werden. In der nachfolgenden Abbildung sind die stabilen Strukturen (in blau) rückwärts in der Zeit, und die instabilen Strukturen (in rot) vorwärts in der Zeit berechnet worden.

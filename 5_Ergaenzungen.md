@@ -266,7 +266,7 @@ $$
 
 Zusätzlich kann auch hier im Konvektionsterm das Aufwind-Differenzenverfahren eingebaut werden.
 
-### Implizite Berechnung
+**Implizite Berechnung**
 
 Für die implizite Berechnung des nächsten Funktionswertes wird die Vorschrift erst nach null aufgelöst,
 
@@ -281,3 +281,62 @@ $$
 $$
 
 Der vorherige Funktionswert wird dabei jeweils als Startwert verwendet.
+
+### Schiefsymmetrisches Konvektionsschema
+
+Stabilität des Konvektionsschemas lässt sich durch Schiefsymmetrie auch ohne Beeinflussung der Diffusion erreichen. Jede Matrix $\boldsymbol{M}$ lässt sich in ein symmetrischen Teil $\boldsymbol{M}_s$ und ein schief- bzw. antisymmetrischen Teil $\boldsymbol{M}_a$ zerlegen:
+
+$$
+\boldsymbol{M} = \underbrace{\frac{\boldsymbol{M}+\boldsymbol{M}^\top}{2}}_{\eqqcolon \boldsymbol{M}_s} + \underbrace{\frac{\boldsymbol{M}-\boldsymbol{M}^\top}{2}}_{\eqqcolon \boldsymbol{M}_a} = \boldsymbol{M}_s + \boldsymbol{M}_a
+$$
+
+Dabei gilt $\boldsymbol{M}_s^\top=\boldsymbol{M}_s$ und $\boldsymbol{M}_a^\top=-\boldsymbol{M}_a$. Die Grundidee ist, dass eine schiefsymmetrische Matrix $\boldsymbol{M}_a$ als alternierende Bilinearform über dem selben Vektorfeld $\boldsymbol{v}$ verschwindet und damit die entsprechende Norm der Strömungsgröße erhält:
+
+$$
+z = \boldsymbol{v}^\top \boldsymbol{M}_a \boldsymbol{v} = (\boldsymbol{v}^\top \boldsymbol{M}_a \boldsymbol{v})^\top = - \boldsymbol{v}^\top \boldsymbol{M}_a \boldsymbol{v} = -z
+$$
+
+Für den skalaren Wert folgt daraus unmittelbar $z=0$. In den vorliegenden Gleichungen kann Schiefsymmetrie hergestellt werden, indem die sog. konservative und nicht-konservative Form gemittelt werden. Die konservative Form der Wirbeltransportgleichung ist gegeben durch
+
+$$
+\partial_t \omega_z + \boldsymbol{\nabla}\cdot(\boldsymbol{u}\omega_z) = \nu\nabla^2\omega_z
+$$
+
+und die nicht-konservative Form durch
+
+$$
+\partial_t \omega_z + \boldsymbol{u}\cdot\boldsymbol{\nabla}\omega_z = \nu\nabla^2\omega_z,
+$$
+
+wobei sich nur der Konvektionsterm
+
+$$
+\boldsymbol{\nabla}\cdot(\boldsymbol{u}\omega_z) = \omega_z\boldsymbol{\nabla}\cdot\boldsymbol{u} + \boldsymbol{u}\cdot\boldsymbol{\nabla}\omega_z
+$$
+
+unterscheidet, aber unter Inkompressibilität identisch ist. Die Mittelung der beiden Varianten für den Konvektionsterm führt zu folgendem Ausdruck:
+
+$$
+\begin{align*}
+\frac{1}{2}\left(\boldsymbol{\nabla}\cdot(\boldsymbol{u}\omega_z) + \boldsymbol{u}\cdot\boldsymbol{\nabla}\omega_z\right) &= \frac{1}{2}\left( \sum_i \partial_{x_i}(u_i\omega_z) + u_i\partial_{x_i}\omega_z \right) \\
+&= \frac{1}{2}\left( \sum_i \omega_z\partial_{x_i}u_i + u_i\partial_{x_i}\omega_z + u_i\partial_{x_i}\omega_z \right) \\
+&= \sum_i \frac{1}{2}\omega_z\partial_{x_i}u_i + u_i\partial_{x_i}\omega_z \\
+&= \sum_i \sqrt{u_i}\, \partial_{x_i} (\sqrt{u_i}\, \omega_z) \\
+&= (\sqrt{\boldsymbol{u}} \odot \boldsymbol{\nabla}) \cdot (\sqrt{\boldsymbol{u}}\,\omega_z)
+\end{align*}
+$$
+
+Wobei die Komplexität der Wurzelausdrücke zu beachten ist. Nach erfolgreicher Berechnung des Konvektionsterms ist jedoch nur noch der Realteil entscheidend, sodass nur dieser abgespeichert werden muss.
+
+Betrachten wir nun die Wirbeltransportgleichung ohne Diffusion, indem wir die Viskosität zu null setzen und mit der Wirbelstärke von links multiplizieren,
+
+$$
+\omega_z\partial_t\omega_z = \frac{1}{2}\partial_t\omega_z^2 = -\omega_z(\sqrt{\boldsymbol{u}} \odot \boldsymbol{\nabla}) \cdot (\sqrt{\boldsymbol{u}}\omega_z) \overset{!}{=} 0,
+$$
+
+stellen wir fest, dass sich der Ausdruck als eine alternierende Bilinearform schreiben lässt, sofern der Differentialoperator $\boldsymbol{\nabla}$ schiefsymmetrisch ist (was bei einem zentralen Differenzenschema ohne Rand der Fall ist), dabei entsprechend verschwindet und die Norm der Wirbelstärke erhält.
+
+---
+> **Aufgabe (Bezug zur Enstrophie)**
+>
+> Zeigt, dass über den Zusammenhang mit der Enstrophie auch die kinetische Energie erhalten ist, indem ihr die Kontraktion der Bilinearform als diskrete räumliche Integration auffasst.
