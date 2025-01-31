@@ -328,15 +328,15 @@ $$
 
 Wobei die Komplexität der Wurzelausdrücke zu beachten ist. Nach erfolgreicher Berechnung des Konvektionsterms ist jedoch nur noch der Realteil entscheidend, sodass nur dieser abgespeichert werden muss.
 
-Betrachten wir nun die Wirbeltransportgleichung ohne Diffusion, indem wir die Viskosität zu null setzen und mit der Wirbelstärke von links multiplizieren,
+Betrachten wir nun die Wirbeltransportgleichung ohne Diffusion, indem wir die Viskosität zu null setzen und mit der Wirbelstärke von links multiplizieren und anschließend über das Volumen integrieren,
 
 $$
-\omega_z\partial_t\omega_z = \frac{1}{2}\partial_t\omega_z^2 = -\omega_z(\sqrt{\boldsymbol{u}} \odot \boldsymbol{\nabla}) \cdot (\sqrt{\boldsymbol{u}}\omega_z) \overset{!}{=} 0,
+\int_\Omega\omega_z\partial_t\omega_z \,\mathrm{d}V= \frac{1}{2}\int_\Omega\partial_t\omega_z^2 \,\mathrm{d}V = -\int_\Omega\omega_z(\sqrt{\boldsymbol{u}} \odot \boldsymbol{\nabla}) \cdot (\sqrt{\boldsymbol{u}}\,\omega_z)\,\mathrm{d}V \overset{!}{=} 0,
 $$
 
-stellen wir fest, dass sich der Ausdruck als eine alternierende Bilinearform schreiben lässt, sofern der Differentialoperator $\boldsymbol{\nabla}$ schiefsymmetrisch ist (was bei einem zentralen Differenzenschema ohne Rand der Fall ist), dabei entsprechend verschwindet und die Norm der Wirbelstärke erhält.
+stellen wir fest, dass sich der Ausdruck durch Diskretisierung als eine alternierende Bilinearform schreiben lässt – sofern der Differentialoperator $\boldsymbol{\nabla}$ schiefsymmetrisch ist (was bei einem zentralen Differenzenschema mit periodischen Randbedingungen der Fall ist) – wobei die Kontraktion der Bilinearform einer diskreten Volumenintegration entspricht und dabei die Norm der Wirbelstärke erhält.
 
 ---
 > **Aufgabe (Bezug zur Enstrophie)**
 >
-> Zeigt, dass über den Zusammenhang mit der Enstrophie auch die kinetische Energie erhalten ist, indem ihr die Kontraktion der Bilinearform als diskrete räumliche Integration auffasst.
+> Zeigt, dass über den Zusammenhang mit der Enstrophie auch die kinetische Energie erhalten ist.
