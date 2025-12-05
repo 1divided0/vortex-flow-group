@@ -132,7 +132,7 @@ _**Tipp:** Wenn sich die Matrix des Gleichungssystems über die Zeit nicht verä
 
 ### Cauchy-Riemann-Gleichungen
 
-Bei der Berechnung der Geschwindigkeitskomponenten bietet es sich an, die Neumann-Randbedingungen einzubeziehen und somit die Geschwindigkeit tangential zum Rand festzulegen. Diese Randbedingungen werden nur auf den Wänden benötigt und sind im Sinne der Wandhaftung homogen. Die entsprechenden Wandpositionen werden wiederum mit einem Boole'schen Vektor _**`W`**_ angegeben.
+Bei der Berechnung der Geschwindigkeitskomponenten bietet es sich an, die Neumann-Randbedingungen einzubeziehen und somit die Geschwindigkeit tangential zum Rand festzulegen. Diese Randbedingungen werden nur auf den Wänden benötigt. Die entsprechenden Wandpositionen werden wiederum mit einem Boole'schen Vektor _**`W`**_ angegeben.
 
 $$
 \begin{align*}
