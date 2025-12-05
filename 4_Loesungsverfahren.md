@@ -147,5 +147,5 @@ $$
 Ist die örtliche Auflösung abgeschlossen, so kann die Wirbelstärke zum nächsten Zeitpunkt berechnet werden. Damit die Randbedingungen korrekt in diese Berechnung einfließen, muss unbedingt darauf geachtet werden, dass das Differenzenschema für den gesamten Randbereich konsistent ist.
 
 $$
-\dot{\boldsymbol{\omega}} = \underbrace{\left[ \nu(\boldsymbol{D}_x^{(2)} + \boldsymbol{D}_y^{(2)})\right.}_\text{Diffusion} - \underbrace{\left.(\operatorname{diag}(\boldsymbol{u})\cdot\boldsymbol{D}_x^{(1)} + \operatorname{diag}(\boldsymbol{v})\cdot\boldsymbol{D}_y^{(1)}) \right]}_\text{Konvektion} \cdot \underbrace{\left[ \lnot\boldsymbol{W}\odot\boldsymbol{\omega} + \boldsymbol{W}\odot (-(\boldsymbol{D}_x^{(2)} + \boldsymbol{D}_y^{(2)})\boldsymbol{\Psi}) \right]}_{\omega\text{ für }\Omega^\circ\text{ bzw. }-\nabla^2\Psi\text{ für }\Gamma_\Omega}
+\dot{\boldsymbol{\omega}} = \underbrace{\left[ \nu(\boldsymbol{D}_x^{(2)} + \boldsymbol{D}_y^{(2)})\right.}_\text{Diffusion} - \underbrace{\left.(\operatorname{diag}(\boldsymbol{u})\cdot\boldsymbol{D}_x^{(1)} + \operatorname{diag}(\boldsymbol{v})\cdot\boldsymbol{D}_y^{(1)}) \right]}_\text{Konvektion} \cdot \underbrace{\left[ \boldsymbol{D}_x^{(1)}\boldsymbol{v} - \boldsymbol{D}_y^{(1)}\boldsymbol{u} \right]}_\text{Wirbelstärke}
 $$
