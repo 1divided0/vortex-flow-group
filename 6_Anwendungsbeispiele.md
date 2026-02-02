@@ -70,7 +70,7 @@ $$
 Hier wird dafür exemplarisch das explizite Euler-Verfahren verwendet. Stattdessen lassen sich aber auch andere Zeitschrittverfahren verwenden, um eine noch bessere Genauigkeit der Darstellung zu erzielen.
 
 $$
-\boldsymbol{p}(t+h_t) \approx \boldsymbol{p}(t) + h_t \cdot \dot{\boldsymbol{p}}(t) = \boldsymbol{p}(t) + h_t \cdot \boldsymbol{u}(\boldsymbol{p}(t),t)
+\boldsymbol{p}(t+h_t) \approx \boldsymbol{p}(t) + h_t \cdot \dot{\boldsymbol{p}}(t) = \boldsymbol{p}(t) + h_t \cdot \boldsymbol{u}(t)
 $$
 
 > **Begleitmaterial (Visualisierung des Taylor-Green-Wirbels)**
