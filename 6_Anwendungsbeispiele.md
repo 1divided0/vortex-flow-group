@@ -10,17 +10,13 @@ Bewährte Programmierpraktiken
 ------------------------------------------------------------------------------->
 ## Bewährte Programmierpraktiken
 
-In dem [Begleitmaterial](Begleitmaterial) befinden sich bereits Beispiele für bewährte Programmierpraktiken. Denn das Einhalten von Konvention macht die Entwicklung von Programmcode, für alle Beteiligten, sehr viel leichter. Genauso wie das wissenschaftliche Arbeiten zum Verfassen von fundierten Berichten gehört, so ist auch der Programmierstil für die Entwicklung von Programmcode maßgeblich. Dazu folgende Anmerkungen.
+Wenn an einem größeren Programmcode gearbeitet wird, dann ist eine gewisse Sorgfalt geboten. Denn das Einhalten von Konvention macht die Entwicklung, für alle Beteiligten, sehr viel leichter. Genauso wie das wissenschaftliche Arbeiten zum Verfassen von fundierten Berichten gehört, so ist auch der Programmierstil für die Entwicklung von Programmcode maßgeblich. Dazu folgende Anmerkungen.
 
 1. **Dokumentation:** Der Programmcode lässt sich durch Kommentare in Sinnabschnitte unterteilen. Außerdem bietet es sich an, mit einem sog. Docstring, kurze Funktionsbeschreibungen vorzunehmen.
 
 2. **Vermeidung von Redundanz:** Werte die mehrmals vorkommen, sollten als Variablen verwendet werden. Routinen welche mehrmals vorkommen, sollten als Funktionen ausgelagert werden.
 
-3. **Verwendung von Parametern:** Bei einer Simulation gibt es immer Parameter. Es bietet sich dafür an, die Hauptfunktion mit sog. Keyword-Arguments zu versehen, um dadurch Voreinstellungen für die möglichen Parameter zu treffen.
-
-4. **Typisierung:** Durch das sog. Type-Hinting kann bei Programmiersprachen mit impliziter Typisierung explizit auf den Datentyp hingewiesen werden. Dies ist gerade bei Funktionsargumenten und Rückgabewerten sehr nützlich, da so Missverständnisse vermieden werden.
-
-5. **Handhabung von großen Datenmengen:** Bei Skriptsprachen wie Matlab oder Python erfolgt der Funktionsaufruf meistens durch sog. Wertparameter (call by value) und nicht durch sog. Referenzparameter (call by reference), wodurch das gesamte Funktionsargument bei dem Funktionsaufruf kopiert wird. Da Speicheroperationen aber in der Regel sehr langsam sind, ist es in diesem Fall günstiger, große Objekte – wie z. B. die Differenzenmatrizen – global zu definieren, um sie nicht ständig neu zu initialisieren.
+3. **Objektorientierung:** Matlab und Python sind objektorientierte Programmiersprachen. Es bietet sich an, diese Funktionalität zu nutzen, indem für die Simulation eine Klasse mit Parametern und den Ableitungsmatrizen als Attributen initialisiert wird, sodass diese anschließend von jeder Subfunktion genutzt werden können.
 
 
 <!------------------------------------------------------------------------------
@@ -68,7 +64,7 @@ für die Poisson-Gleichung, lassen sich kombiniert einsetzten, was zu einem best
 Die Lösung lässt sich durch das Verfolgen sog. Lagrange-Partikel visualisieren. Hierzu wird auf dem Rechengebiet eine Startverteilung masseloser Punkte gewählt und deren Position nach der Lagrange'schen Betrachtungsweise in der Zeit durch Interpolation des Geschwindigkeitsvektorfeldes entwickelt.
 
 $$
-\boldsymbol{p}(t+T) = \boldsymbol{p}(t) + \int_t^T \dot{\boldsymbol{p}}(s) \, ds = \boldsymbol{p}(t) + \int_t^T \boldsymbol{u}(\boldsymbol{p}(s),s) \, ds
+\boldsymbol{p}(t) = \boldsymbol{p}(t_0) + \int_{t_0}^t \dot{\boldsymbol{p}}(\tau) \, d\tau = \boldsymbol{p}(t_0) + \int_{t_0}^t \boldsymbol{u}(\tau) \, d\tau
 $$
 
 Hier wird dafür exemplarisch das explizite Euler-Verfahren verwendet. Stattdessen lassen sich aber auch andere Zeitschrittverfahren verwenden, um eine noch bessere Genauigkeit der Darstellung zu erzielen.
@@ -234,13 +230,13 @@ $$
 Für die Darstellung Lagrange kohärenter Strukturen kann der Ljapunow-Exponent zeitlich abgeschätzt werden. Dafür werden wieder die Partikelpositionen zu einem bestimmten Zeitpunkt in einem Gitter initialisiert und zeitlich mitverfolgt,
 
 $$
-\boldsymbol{p}(t+T) = \boldsymbol{p}(t) + \int_t^T \dot{\boldsymbol{p}}(s) \, ds = \boldsymbol{p}(t) + \int_t^T \boldsymbol{u}(\boldsymbol{p}(s),s) \, ds
+\boldsymbol{p}(t) = \boldsymbol{p}(t_0) + \int_{t_0}^t \dot{\boldsymbol{p}}(\tau) \, d\tau = \boldsymbol{p}(t_0) + \int_{t_0}^t \boldsymbol{u}(\tau) \, d\tau
 $$
 
 wobei die Jacobimatrix dieser Abbildung durch finite Differenzen approximiert und in einem symmetrischen Deformationstensor auf den maximalen Eigenwert untersucht wird:
 
 $$
-\sigma(t+T) = \frac{1}{|T|} \ln\left(\sqrt{\lambda_{\max}\{ J_{\boldsymbol{p}}(t+T)^\top J_{\boldsymbol{p}}(t+T) \}}\right)
+\sigma(t) = \frac{1}{t-t_0} \ln\left(\sqrt{\lambda_{\max}\{ J_{\boldsymbol{p}}(t)^\top J_{\boldsymbol{p}}(t) \}}\right)
 $$
 
 Dabei sollten die Nullstellen des quadratischen charakteristischen Polynoms explizit ausgerechnet werden, um Rechenzeit zu sparen. Außerdem muss darauf geachtet werden, dass der Definitionsbereich groß genug ist und lang genug integriert wird, damit die Strukturen sichtbar werden. In der nachfolgenden Abbildung sind die stabilen Strukturen (in blau) rückwärts in der Zeit, und die instabilen Strukturen (in rot) vorwärts in der Zeit berechnet worden.
