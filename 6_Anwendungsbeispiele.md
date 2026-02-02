@@ -64,7 +64,7 @@ für die Poisson-Gleichung, lassen sich kombiniert einsetzten, was zu einem best
 Die Lösung lässt sich durch das Verfolgen sog. Lagrange-Partikel visualisieren. Hierzu wird auf dem Rechengebiet eine Startverteilung masseloser Punkte gewählt und deren Position nach der Lagrange'schen Betrachtungsweise in der Zeit durch Interpolation des Geschwindigkeitsvektorfeldes entwickelt.
 
 $$
-\boldsymbol{p}(t) = \boldsymbol{p}(t_0) + \int_{t_0}^t \dot{\boldsymbol{p}}(\tau) \, d\tau = \boldsymbol{p}(t_0) + \int_{t_0}^t \boldsymbol{u}(\tau) \, d\tau
+\boldsymbol{p}(t) = \boldsymbol{p}(t_0) + \int_{t_0}^t \dot{\boldsymbol{p}}(\tau) \, d\tau
 $$
 
 Hier wird dafür exemplarisch das explizite Euler-Verfahren verwendet. Stattdessen lassen sich aber auch andere Zeitschrittverfahren verwenden, um eine noch bessere Genauigkeit der Darstellung zu erzielen.
@@ -230,7 +230,7 @@ $$
 Für die Darstellung Lagrange kohärenter Strukturen kann der Ljapunow-Exponent zeitlich abgeschätzt werden. Dafür werden wieder die Partikelpositionen zu einem bestimmten Zeitpunkt in einem Gitter initialisiert und zeitlich mitverfolgt,
 
 $$
-\boldsymbol{p}(t) = \boldsymbol{p}(t_0) + \int_{t_0}^t \dot{\boldsymbol{p}}(\tau) \, d\tau = \boldsymbol{p}(t_0) + \int_{t_0}^t \boldsymbol{u}(\tau) \, d\tau
+\boldsymbol{p}(t) = \boldsymbol{p}(t_0) + \int_{t_0}^t \dot{\boldsymbol{p}}(\tau) \, d\tau
 $$
 
 wobei die Jacobimatrix dieser Abbildung durch finite Differenzen approximiert und in einem symmetrischen Deformationstensor auf den maximalen Eigenwert untersucht wird:
