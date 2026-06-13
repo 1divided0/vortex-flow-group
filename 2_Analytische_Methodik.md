@@ -249,13 +249,13 @@ $$
     \boldsymbol{\omega}^2 = (\boldsymbol{\nabla}\times\boldsymbol{u})^2 = \nabla^2\boldsymbol{u}^2 - \boldsymbol{u}\cdot\nabla^2\boldsymbol{u},
 $$
 
-und inkompressiblen Kontinuitätsgleichung
+verschwindet der Term
 
 $$
-    \nabla^2\boldsymbol{u}^2 = \boldsymbol{\nabla}\cdot\underbrace{(\boldsymbol{\nabla}\cdot\boldsymbol{u})}_{=0}\cdot\boldsymbol{u},
+    \nabla^2\boldsymbol{u}^2
 $$
 
-ergibt sich letztendlich der besagte Zusammenhang
+im Integral unter den genannten Randbedingungen und es ergibt sich letztendlich der besagte Zusammenhang
 
 $$
     \partial_t E_\mathrm{kin} = -\mu \int_\Omega \boldsymbol{\omega}^2\,dV.
