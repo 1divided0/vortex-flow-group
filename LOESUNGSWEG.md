@@ -452,11 +452,6 @@ Fertig-Kriterium — erst wenn es erfüllt ist, geht es weiter:
 | 8 | Störung + lange Laufzeit bei Re ≈ 100 | periodische Ablösung; $\mathrm{St} \approx 0{,}16$ |
 | 9 | Partikel/FTLE-Visualisierung | Strukturen wie in Thema 6 sichtbar |
 
-Zuordnung zum Programmcode: Stufen 1–2 → `src/operators.py`, 3–4 →
-`src/solver.py`, 5 → `src/taylor_green.py`, 6–8 → `src/cylinder.py`,
-9 → `src/visualization.py`; die Messungen dazu in `tests/` und
-`src/benchmark.py`.
-
 
 ---
 ## Die Meta-Prinzipien (das eigentlich Übertragbare)
