@@ -1,5 +1,5 @@
 import numpy as np 
-from log_polar_grid import erzeuge_log_polar_feld, rücktrafo, vorfaktor, vorfaktor
+from log_polar_grid import erzeuge_log_polar_feld, rücktrafo, vorfaktor
 
 class Domain:
 

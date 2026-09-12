@@ -50,7 +50,7 @@ def upwind_ableitung(field, velocity, forward_op, backward_op, domain): #auch hi
     #bei v < 0 vorwärts differenz 
 
     d_forward = domain.unflatten(forward_op @ domain.flatten(field))
-    d_backward = domain.unflatten(backward_op @ domain.unflatten(field))
+    d_backward = domain.unflatten(backward_op @ domain.flatten(field))
     return np.where(velocity >= 0.0, d_backward, d_forward)
 
 def berechne_rhs(omega, psi, domain, cfg, ops):  #rhs sthet hier für die rechte seite der gleichung in dem fall für die rechte seite der poisson gleichung

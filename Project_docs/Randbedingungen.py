@@ -25,14 +25,16 @@ def apply_farfield_bc(psi, omega, domain):
     inflow = domain.is_inflow
     outflow = domain.is_outflow
 
-    #einströmseite:
-    #maske sodass nur theta werte überschrieben werden (inflow)
+    #psi wird auf dem GANZEN fernrand per dirichlet gesetzt. psi ist der
+    #volumenstrom - laesst man es am ausstrom frei schwimmen (nullgradient),
+    #ist die durchstroemung nicht mehr festgelegt und dpsi/dr = 0 erzwingt
+    #ausserdem u_theta = 0, also rein radiales ausstroemen.
+    psi[i_f, :] = psi_potential
 
-    psi[i_f, inflow] = psi_potential[inflow]
+    #nur omega unterscheidet ein- und ausstrom: am einstrom ist die stroemung
+    #ungestoert, am ausstrom muss wirbelstaerke das gebiet verlassen duerfen,
+    #ohne reflektiert zu werden
     omega[i_f, inflow] = 0.0
-
-    #ausstromseite: mit neumann bc (randwerte einfach wie vorheriger wert)
-    psi[i_f, outflow] = psi[i_f - 1, outflow]
     omega[i_f, outflow] = omega[i_f - 1, outflow]
 
     return psi, omega
