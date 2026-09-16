@@ -1,6 +1,7 @@
 import numpy as np
-import time 
+import time
 import os
+import sys
 
 from config import Config
 from domain import Domain
@@ -25,7 +26,10 @@ def Anfangsbedingungen(domain, cfg, stoerung=0.5):
 
     return apply_bc(psi, omega, domain)
 
-def  eine_Schleife(cfg, t_end, max_steps = None, Snapshotrange=50, verbose=True):
+def  eine_Schleife(cfg, t_end, max_steps = None, Snapshotrange=50, verbose=True, t_speicher=0.0):
+    # t_speicher: snapshots erst ab dieser zeit sichern. der anlauf bis zur
+    # periodischen abloesung (bei Re=100 etwa t=50) wird fuer die auswertung
+    # nicht gebraucht und wuerde die snapshot-datei nur unnoetig aufblaehen
     domain = Domain(cfg)
     löser = PoissonSolver(domain)
     ops = build_alle_operatoren(domain)
@@ -50,15 +54,15 @@ def  eine_Schleife(cfg, t_end, max_steps = None, Snapshotrange=50, verbose=True)
         t += dt
         step += 1
 
-        if step % Snapshotrange == 0:
+        if step % Snapshotrange == 0 and t >= t_speicher:
             snapshots["t"].append(t)
             snapshots["psi"].append(psi.copy())
             snapshots["omega"].append(omega.copy())
 
-            if verbose and step % 100 == 0:
-                elapsed = time.time() - t_start_uhr
-                print(f"Schritt {step:6d} t={t: .5f} dt={dt: .2e} "
-                      f"max|omega|={np.max(np.abs(omega)):.3f}  ({elapsed:.1f}s Rechenzeit)")
+        if verbose and step % 1000 == 0:
+            elapsed = time.time() - t_start_uhr
+            print(f"Schritt {step:6d} t={t: .5f} dt={dt: .2e} "
+                  f"max|omega|={np.max(np.abs(omega)):.3f}  ({elapsed:.1f}s Rechenzeit)")
 
     if verbose:
         elapsed = time.time() - t_start_uhr
@@ -79,14 +83,22 @@ if __name__ == "__main__":
     # laengere Simulationszeit (mehrere Ablösezyklen) -- das dauert
     # entsprechend deutlich laenger und sollte lokal, nicht als
     # Schnelltest, laufen.
-    # dt ist nur die obergrenze, der cfl-schritt liegt hier bei ~1e-2.
-    # t_end = 1.5 ergibt gut 100 schritte, damit auch die fortschrittsausgabe
-    # (alle 100 schritte) im schnelltest einmal durchlaufen wird
-    cfg = Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=50, n_theta=100, dt=0.05, cfl_target=0.5)
-
-    domain, snapshots, psi_final, omega_final = eine_Schleife(
-        cfg, t_end=1.5, Snapshotrange=10, verbose=True
-    )
+    # dt ist nur die obergrenze, der cfl-schritt bestimmt den tatsaechlichen schritt.
+    #
+    #   python main.py        schnelltest (kleines gitter, ~1000 schritte, wenige sekunden)
+    #   python main.py lang   produktionslauf fuer visualisation.py: wirbelstrasse bei
+    #                         Re=100, gitter 80x160, t=0..100, snapshots ab t=60
+    #                         (dauert ca. 2-3 minuten, datei ca. 40 MB)
+    if len(sys.argv) > 1 and sys.argv[1] == "lang":
+        cfg = Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=80, n_theta=160, dt=0.05, cfl_target=0.5)
+        domain, snapshots, psi_final, omega_final = eine_Schleife(
+            cfg, t_end=100.0, Snapshotrange=20, verbose=True, t_speicher=60.0
+        )
+    else:
+        cfg = Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=50, n_theta=100, dt=0.05, cfl_target=0.5)
+        domain, snapshots, psi_final, omega_final = eine_Schleife(
+            cfg, t_end=12.0, Snapshotrange=10, verbose=True
+        )
  
     print()
     print(f"Anzahl gespeicherter Snapshots: {len(snapshots['t'])}")
@@ -100,11 +112,16 @@ if __name__ == "__main__":
     skript_ordner = os.path.dirname(os.path.abspath(__file__))
     pfad = os.path.join(skript_ordner, "simulation_snapshots.npz")
 
+    # die config wird mitgespeichert, damit visualisation.py das gitter exakt
+    # rekonstruieren kann. float32 halbiert die dateigroesse und reicht fuer
+    # die auswertung voellig aus
     np.savez(
     pfad,
     t=np.array(snapshots["t"]),
-    psi=np.array(snapshots["psi"]),
-    omega=np.array(snapshots["omega"]),
+    psi=np.array(snapshots["psi"], dtype=np.float32),
+    omega=np.array(snapshots["omega"], dtype=np.float32),
+    R=cfg.R, r_max=cfg.r_max, U_inf=cfg.U_inf, Re=cfg.Re,
+    n_xi=cfg.n_xi, n_theta=cfg.n_theta, dt=cfg.dt, cfl_target=cfg.cfl_target,
     )
     
     print("Snapshots gespeichert in simulation_snapshots.npz")
