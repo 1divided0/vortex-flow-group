@@ -14,7 +14,8 @@ class Config:
     n_xi: int          #anzahl der gitterpunkte in radialer richtung (Xi-Rchtung)
     n_theta: int       #anzahl der gitterpunkte in umfangsrichtung (Theta-Richtung)
     
-    dt: float          #zeitschrittweise
+    dt: float          #maximale zeitschrittweite - den tatsaechlichen schritt bestimmt die cfl-bedingung,
+                       #ein zu kleines dt hier bremst die rechnung unnoetig aus
 
     cfl_target: float = 0.5   #cfl wert (numerischer sicherheitswert)
 

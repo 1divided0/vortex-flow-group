@@ -25,14 +25,13 @@ def apply_farfield_bc(psi, omega, domain):
     inflow = domain.is_inflow
     outflow = domain.is_outflow
 
-    #einströmseite:
-    #maske sodass nur theta werte überschrieben werden (inflow)
+    #psi: auf dem ganzen fernrand potentialströmung (passend zu Poisson.py),
+    #denn psi legt den durchfluss fest
+    psi[i_f, :] = psi_potential
 
-    psi[i_f, inflow] = psi_potential[inflow]
+    #omega: nur hier ein-/ausstrom unterscheiden. einströmseite ungestört,
+    #ausströmseite nullgradient, damit wirbelstärke das gebiet verlassen kann
     omega[i_f, inflow] = 0.0
-
-    #ausstromseite: mit neumann bc (randwerte einfach wie vorheriger wert)
-    psi[i_f, outflow] = psi[i_f - 1, outflow]
     omega[i_f, outflow] = omega[i_f - 1, outflow]
 
     return psi, omega

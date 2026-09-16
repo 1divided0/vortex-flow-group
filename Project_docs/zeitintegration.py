@@ -60,14 +60,20 @@ def berechne_rhs(omega, psi, domain, cfg, ops):  #rhs sthet hier für die rechte
     # u.grad(omega) = 1/r *(u_r * domega/dxi + u_theta * domega/dtheta)
     #Diffusion mit nu * Laplace(omega) 
 
-    u_r, u_theta = geschwindigkeit(psi, domain, ops) #ops auch hier erst später definiert 
+    u_r, u_theta = geschwindigkeit(psi, domain, ops) #ops auch hier erst später definiert
 
-    domega_dxi_up = upwind_ableitung(omega, u_r, ops["fwd_xi"], ops["bwd_xi"], domain)
-    domega_dtheta_up = upwind_ableitung(omega, u_theta, ops["fwd_theta"], ops["bwd_theta"], domain)
+    # zentrale differenzen statt upwind: upwind 1. ordnung wirkt wie eine
+    # kuenstliche viskositaet ~ |u|*h/2. weil das log-gitter nach aussen groeber
+    # wird, war die im nachlauf mehrfach so gross wie nu -> effektiv Re ~ 20,
+    # und darunter loesen sich keine wirbel ab. rk4 ist mit zentralen
+    # differenzen bei Re = 100 stabil. upwind_ableitung bleibt fuer ein
+    # spaeteres hybridschema bei hoeheren Re erhalten.
+    domega_dxi = domain.unflatten(ops["D_xi"] @ domain.flatten(omega))
+    domega_dtheta = domain.unflatten(ops["D_theta"] @ domain.flatten(omega))
 
     r = domain.r[:, None]
 
-    advektion = (u_r * domega_dxi_up + u_theta * domega_dtheta_up) / r 
+    advektion = (u_r * domega_dxi + u_theta * domega_dtheta) / r
 
     diffusion = domain.unflatten(ops["L"] @ domain.flatten(omega)) * cfg.nu
 
@@ -105,7 +111,7 @@ def rk4(psi, omega, cfg, poisson_solver, ops, dt, domain):
         psi_stage = poisson_solver.löse(omega_stage)
         psi_stage, omega_stage = apply_bc(psi_stage, omega_stage, domain)
         k = berechne_rhs(omega_stage, psi_stage, domain, cfg, ops)
-        return psi-psi_stage, omega_stage, k
+        return psi_stage, omega_stage, k
 
     _, omega0, k1 = berechne(omega)
     _, _, k2 = berechne(omega0 + 0.5 * dt * k1)

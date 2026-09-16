@@ -13,11 +13,15 @@ def build_D_xi(domain):
         format='lil'
     ) / (2.0 * h)
 
-    #für die randzeilen kommen erstmal nur platzhalter mit einseitigen differnzen 1. ordnung 
-    D[0, 0] = -1.0 / h
-    D[0, 1] = 1.0 / h
-    D[-1, -1] = 1.0 / h
-    D[-1, -2] = -1.0 / h
+    #einseitige differenzen 2. ordnung am rand, damit die fehlerordnung
+    #des gesamten operators bei 2 bleibt
+    D[0, 0] = -3.0 / (2.0 * h)
+    D[0, 1] = 4.0 / (2.0 * h)
+    D[0, 2] = -1.0 / (2.0 * h)
+
+    D[-1, -1] = 3.0 / (2.0 * h)
+    D[-1, -2] = -4.0 / (2.0 * h)
+    D[-1, -3] = 1.0 / (2.0 * h)
 
     return D.tocsr()
 
@@ -34,11 +38,20 @@ def build_D2_xi(domain):
         format='lil'
     ) / (h**2)
 
-    #wieder randzeilen für später ersetzen
-    D2[0, :] = 0.0
-    D2[0, 0] = 1.0
-    D2[-1, :] = 0.0
-    D2[-1, -1] = 1.0 
+    #hier keine identitaetszeilen fuer dirichlet eintragen: in build_laplacian
+    #wuerde kron(I_xi, D2_theta) sie wieder verfaelschen und die metrik sie mit
+    #1/r^2 skalieren. die randzeilen ersetzt Poisson.build_poisson_matrix komplett.
+    #einseitige zweite ableitung 2. ordnung: (2f0 - 5f1 + 4f2 - f3)/h^2
+    D2[0, 0] = 2.0 / h**2
+    D2[0, 1] = -5.0 / h**2
+    D2[0, 2] = 4.0 / h**2
+    D2[0, 3] = -1.0 / h**2
+
+    D2[-1, -1] = 2.0 / h**2
+    D2[-1, -2] = -5.0 / h**2
+    D2[-1, -3] = 4.0 / h**2
+    D2[-1, -4] = -1.0 / h**2
+
     return D2.tocsr()
 
 def build_D_theta(domain):
@@ -82,23 +95,31 @@ def build_upwind_xi(domain):
     n = domain.n_xi
     h = domain.dxi
 
-    foreward = sp.diags([-1.0, 1.0], [0, 1], shape=(n, n), format='lil') / h #fehlt was 
-    backward = sp.diags([-1.0, 1.0], [-1, 0], shape=(n, n), format='lil') / h #fehlt was 
+    #in xi richtung gibt es keine periodizitaet: der vorwaertsdifferenz fehlt in
+    #der letzten zeile der nachbar, der rueckwaertsdifferenz in der ersten.
+    #ohne korrektur waere die zeilensumme dort ungleich null
+    forward = sp.diags([-1.0, 1.0], [0, 1], shape=(n, n), format='lil') / h
+    forward[-1, -1] = 1.0 / h
+    forward[-1, -2] = -1.0 / h
 
-    return foreward.tocsr(), backward.tocsr()
+    backward = sp.diags([-1.0, 1.0], [-1, 0], shape=(n, n), format='lil') / h
+    backward[0, 0] = -1.0 / h
+    backward[0, 1] = 1.0 / h
+
+    return forward.tocsr(), backward.tocsr()
 
 def build_upwind_theta(domain):
 
     n = domain.n_theta
-    h = domain.dtheta 
+    h = domain.dtheta
 
-    foreward = sp.diags([-1.0, 1.0], [0, 1], shape=(n, n), format='lil') / h
-    foreward[-1, 0] = 1.0 / h
+    forward = sp.diags([-1.0, 1.0], [0, 1], shape=(n, n), format='lil') / h
+    forward[-1, 0] = 1.0 / h
 
     backward = sp.diags([-1.0, 1.0], [-1, 0], shape=(n, n), format='lil') / h
     backward[0, -1] = -1.0 / h
 
-    return foreward.tocsr(), backward.tocsr()       
+    return forward.tocsr(), backward.tocsr()
 
 def build_laplacian(domain):
     #2d laplace operator via kronecker
@@ -149,16 +170,15 @@ if __name__ == "__main__":
     df_numeric = dom.unflatten(D_xi_full @ dom.flatten(f))
     df_analytic = 3.0 * dom.xi[:, None]**2
  
-    # nur INNERE Punkte vergleichen (Randzeilen sind nur Platzhalter,
-    # siehe Docstrings oben)
-    interior = slice(1, -1)
-    err_D_xi = np.max(np.abs(df_numeric[interior, :] - df_analytic[interior, :]))
-    print(f"max Fehler D_xi (innere Punkte, f=xi^3):  {err_D_xi:.6f}")
- 
+    # ALLE Punkte inklusive Rand vergleichen - wer die randzeilen ausklammert,
+    # uebersieht genau die fehler, die dort sitzen
+    err_D_xi = np.max(np.abs(df_numeric - df_analytic))
+    print(f"max Fehler D_xi (inkl. Rand, f=xi^3):  {err_D_xi:.6f}")
+
     d2f_numeric = dom.unflatten(D2_xi_full @ dom.flatten(f))
     d2f_analytic = 6.0 * dom.xi[:, None]
-    err_D2_xi = np.max(np.abs(d2f_numeric[interior, :] - d2f_analytic[interior, :]))
-    print(f"max Fehler D2_xi (innere Punkte, f=xi^3):  {err_D2_xi:.6f}")
+    err_D2_xi = np.max(np.abs(d2f_numeric - d2f_analytic))
+    print(f"max Fehler D2_xi (inkl. Rand, f=xi^3):  {err_D2_xi:.6f}")
  
     # --- Test 2: D_theta, D2_theta an sin(theta), periodisch ---
     g = np.tile(np.sin(dom.theta)[None, :], (dom.n_xi, 1))
@@ -187,6 +207,28 @@ if __name__ == "__main__":
     lap_numeric = dom.unflatten(L @ dom.flatten(h_field))
     lap_analytic = dom.vorfaktor[:, None] * (2.0 * np.sin(dom.theta)[None, :] - (dom.xi[:, None]**2) * np.sin(dom.theta)[None, :])
  
-    err_L = np.max(np.abs(lap_numeric[interior, :] - lap_analytic[interior, :]))
-    print(f"max Fehler Laplace-Operator (innere Punkte):  {err_L:.6f}")
+    err_L = np.max(np.abs(lap_numeric - lap_analytic))
+    print(f"max Fehler Laplace-Operator (inkl. Rand):  {err_L:.6f}")
+
+    # --- Test 4: Zeilensummen der Upwind-Matrizen ---
+    # eine ableitungsmatrix muss ein konstantes feld auf null abbilden
+    for name, (fw, bw) in (("xi", build_upwind_xi(dom)), ("theta", build_upwind_theta(dom))):
+        s = max(np.abs(np.asarray(fw.sum(axis=1))).max(),
+                np.abs(np.asarray(bw.sum(axis=1))).max())
+        print(f"max |Zeilensumme| Upwind {name} (soll 0):  {s:.2e}")
+
+    # --- Test 5: Abnahmetest Poisson-Loeser + Geschwindigkeiten ---
+    # bei omega = 0 muss exakt die Potentialstroemung herauskommen, an der
+    # Zylinderwand gilt dann analytisch u_theta = -2 U sin(theta)
+    from Poisson import PoissonSolver
+    from zeitintegration import build_alle_operatoren, geschwindigkeit
+
+    psi = PoissonSolver(dom).löse(np.zeros((dom.n_xi, dom.n_theta)))
+    R_grid, T_grid = np.meshgrid(dom.r, dom.theta, indexing="ij")
+    psi_exakt = cfg.U_inf * np.sin(T_grid) * (R_grid - cfg.R**2 / R_grid)
+    print(f"max Fehler Poisson gegen Potentialstroemung:  {np.max(np.abs(psi - psi_exakt)):.6f}")
+
+    u_r, u_theta = geschwindigkeit(psi, dom, build_alle_operatoren(dom))
+    err_wand = np.max(np.abs(u_theta[dom.i_wall] + 2.0 * cfg.U_inf * np.sin(dom.theta)))
+    print(f"max Fehler u_theta an der Wand (gegen -2U sin(theta)):  {err_wand:.6f}")
  

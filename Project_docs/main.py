@@ -8,12 +8,21 @@ from Poisson import PoissonSolver
 from Randbedingungen import apply_bc
 from zeitintegration import build_alle_operatoren,  geschwindigkeit, cfl_zeitschritt, rk4
 
-def Anfangsbedingungen(domain, cfg):
+def Anfangsbedingungen(domain, cfg, stoerung=0.5):
 
     R_grid = domain.r[:, None]
     Theta_grid = domain.theta[None, :]
     psi = cfg.U_inf * np.sin(Theta_grid) * (R_grid - cfg.R**2 / R_grid)
     omega = np.zeros_like(psi)
+
+    # gewollte kleine stoerung: gitter und randbedingungen sind spiegelsymmetrisch,
+    # ohne stoerung bleibt die loesung symmetrisch und es gibt keine wirbelstrasse.
+    # ein kleiner wirbel leicht oberhalb der achse hinter dem zylinder bricht die
+    # symmetrie kontrolliert (stoerung=0 schaltet das ab)
+    X, Y = domain.kartesisch()
+    x0, y0, breite = 1.5 * cfg.D, 0.3 * cfg.D, 0.1 * cfg.D**2
+    omega += stoerung * np.exp(-((X - x0)**2 + (Y - y0)**2) / breite)
+
     return apply_bc(psi, omega, domain)
 
 def  eine_Schleife(cfg, t_end, max_steps = None, Snapshotrange=50, verbose=True):
@@ -25,7 +34,7 @@ def  eine_Schleife(cfg, t_end, max_steps = None, Snapshotrange=50, verbose=True)
 
     snapshots = {"t": [], "psi": [], "omega": []}
     t = 0.0
-    step = 0.0
+    step = 0    # int, sonst bricht die ausgabe mit {step:6d} beim 100. schritt ab
     t_start_uhr = time.time()
 
     while t < t_end:
@@ -70,10 +79,13 @@ if __name__ == "__main__":
     # laengere Simulationszeit (mehrere Ablösezyklen) -- das dauert
     # entsprechend deutlich laenger und sollte lokal, nicht als
     # Schnelltest, laufen.
-    cfg = Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=50, n_theta=100, dt=1e-3, cfl_target=0.5)
- 
+    # dt ist nur die obergrenze, der cfl-schritt liegt hier bei ~1e-2.
+    # t_end = 1.5 ergibt gut 100 schritte, damit auch die fortschrittsausgabe
+    # (alle 100 schritte) im schnelltest einmal durchlaufen wird
+    cfg = Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=50, n_theta=100, dt=0.05, cfl_target=0.5)
+
     domain, snapshots, psi_final, omega_final = eine_Schleife(
-        cfg, t_end=0.05, Snapshotrange=10, verbose=True
+        cfg, t_end=1.5, Snapshotrange=10, verbose=True
     )
  
     print()
