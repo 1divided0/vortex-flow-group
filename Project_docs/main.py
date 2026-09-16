@@ -88,7 +88,6 @@ if __name__ == "__main__":
     #   python main.py        schnelltest (kleines gitter, ~1000 schritte, wenige sekunden)
     #   python main.py lang   produktionslauf fuer visualisation.py: wirbelstrasse bei
     #                         Re=100, gitter 80x160, t=0..100, snapshots ab t=60
-    #                         (dauert ca. 2-3 minuten, datei ca. 40 MB)
     if len(sys.argv) > 1 and sys.argv[1] == "lang":
         cfg = Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=80, n_theta=160, dt=0.05, cfl_target=0.5)
         domain, snapshots, psi_final, omega_final = eine_Schleife(
