@@ -40,7 +40,7 @@ def build_poisson_matrix(domain):
 
     return A.tocsr() #csr (compressed sparse row format ist wichtig für später)
 
-def build_rhs(domain, psi):
+def build_rhs(domain, omega):
     #rechte seite des GLS 
 
     n_xi = domain.n_xi
@@ -57,7 +57,7 @@ def build_rhs(domain, psi):
 
     #fernfeld, einströmseite -> dirichlet zielwert = potentialströmung
 
-    psi_potential = potential_flow_psi(domain, domain.r[i_f], domain.r[i_f])
+    psi_potential = potential_flow_psi(domain, domain.r[i_f])
     rhs[i_f, domain.is_inflow] = psi_potential[domain.is_inflow]
 
     #fernfeld, ausstömseite -> neumann zielwert = 0 (rhs bleibt 0)
@@ -75,14 +75,12 @@ class PoissonSolver:
 
     def löse(self, omega):
         # löst die poissongleichung für ein gegebenes omega
-        rhs = buildrhs(self.domain, omega)
+        rhs = build_rhs(self.domain, omega)
         psi_flat = self.lu.solve(rhs)
         return self.domain.unflatten(psi_flat)
 
     
 
  
-
-
 
 
