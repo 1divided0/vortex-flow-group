@@ -1,9 +1,11 @@
 import numpy as np
 
+
 def potential_flow_psi(domain, r_value):
-    # ist psi = U_inf * sintheta(r-R^2/r) zim wiederverwenden 
+    # psi = U_inf * sin(theta) * (r - R^2/r), zum wiederverwenden
     cfg = domain.cfg
     return cfg.U_inf * np.sin(domain.theta) * (r_value - cfg.R**2 / r_value)
+
 
 def apply_wall_bc(psi, omega, domain):
     # BC am Zylinder mit no slip und no penetration
@@ -11,11 +13,12 @@ def apply_wall_bc(psi, omega, domain):
     i_w = domain.i_wall
 
     #kein durchfluss
-    psi[i_w] = 0.0 
+    psi[i_w] = 0.0
 
-    #no slip
+    #no slip ueber die thom-formel: omega_w = -2 (psi_1 - psi_w) / (R^2 dxi^2)
     omega[i_w, :] = -2.0 * (psi[i_w + 1] - psi[i_w, :]) / (cfg.R**2 * domain.dxi**2)
     return psi, omega
+
 
 def apply_farfield_bc(psi, omega, domain):
     i_f = domain.i_far
@@ -36,16 +39,10 @@ def apply_farfield_bc(psi, omega, domain):
 
     return psi, omega
 
+
 def apply_bc(psi, omega, domain):
-    #bündelt die bc's
+    #bündelt die bc's. achtung: psi und omega werden direkt (in place) veraendert
 
     psi, omega = apply_wall_bc(psi, omega, domain)
     psi, omega = apply_farfield_bc(psi, omega, domain)
     return psi, omega
-
-
-
-
-
-
-

@@ -13,11 +13,10 @@ from zeitintegration import build_alle_operatoren, geschwindigkeit
 
 
 def lade_snapshots(pfad):
+    #snapshot-datei aus main.py laden und daraus gitter und config rekonstruieren
     daten = np.load(pfad)
     if "R" not in daten.files:
-      raise ValueError(
-            f"{pfad} enthält keine Gitterparameter"
-        )
+        raise ValueError(f"{pfad} enthält keine Gitterparameter")
 
     cfg = Config(
         R = float(daten["R"]), r_max = float(daten["r_max"]),
@@ -27,7 +26,7 @@ def lade_snapshots(pfad):
     )
     domain = Domain(cfg)
 
-#umwandeln in float64
+    #umwandeln in float64
     t = daten["t"].astype(float)
     psi = daten["psi"].astype(float)
     omega = daten["omega"].astype(float)
@@ -35,6 +34,7 @@ def lade_snapshots(pfad):
     return cfg, domain, t, psi, omega
 
 def kartesische_geschwindigkeit(domain, psi_snapshots):
+    #u_x, u_y aus u_r, u_theta fuer alle snapshots
     ops = build_alle_operatoren(domain)
     cos_t = np.cos(domain.theta)[None, :]
     sin_t = np.sin(domain.theta)[None, :]
@@ -44,31 +44,33 @@ def kartesische_geschwindigkeit(domain, psi_snapshots):
     u_theta_alle = np.empty_like(psi_snapshots)
 
     for n, psi in enumerate(psi_snapshots):
-       u_r, u_theta = geschwindigkeit(psi, domain, ops)
-       ux[n] = u_r * cos_t - u_theta * sin_t
-       uy[n] = u_r * sin_t + u_theta * cos_t
-       u_theta_alle[n] = u_theta
+        u_r, u_theta = geschwindigkeit(psi, domain, ops)
+        ux[n] = u_r * cos_t - u_theta * sin_t
+        uy[n] = u_r * sin_t + u_theta * cos_t
+        u_theta_alle[n] = u_theta
 
     return ux, uy, u_theta_alle
 
 
 def sonden_signal(domain, cfg, u_theta_alle, abstand_in_D=2.0):
-   """quergeschwindigkeit auf der symmetrieachse hinter dem zylinder"""
+    """quergeschwindigkeit auf der symmetrieachse hinter dem zylinder"""
 
-   i_sonde = int(np.argmin(np.abs(domain.r - abstand_in_D * cfg.D)))
+    i_sonde = int(np.argmin(np.abs(domain.r - abstand_in_D * cfg.D)))
 
-   return u_theta_alle[:, i_sonde, 0], domain.r[i_sonde]
+    return u_theta_alle[:, i_sonde, 0], domain.r[i_sonde]
 
 
 def strouhal_zahl(t, signal, cfg):
-   s = signal - np.mean(signal)
-   k = np.where((s[:-1] < 0) & (s[1:] >= 0))[0]
-   if len(k) < 3:
-      return np.nan
+    """St = D / (T * U_inf), periode T aus den linear interpolierten
+    aufwaerts-nulldurchgaengen des mittelwertfreien sondensignals."""
+    s = signal - np.mean(signal)
+    k = np.where((s[:-1] < 0) & (s[1:] >= 0))[0]
+    if len(k) < 3:
+        return np.nan
 
-   t_null = t[k] - s[k] * (t[k + 1] - t[k]) / (s[k + 1] - s[k])
-   periode = np.mean(np.diff(t_null))
-   return cfg.D / (periode * cfg.U_inf)
+    t_null = t[k] - s[k] * (t[k + 1] - t[k]) / (s[k + 1] - s[k])
+    periode = np.mean(np.diff(t_null))
+    return cfg.D / (periode * cfg.U_inf)
 
 
 # ---------------------------------------------------------------------------

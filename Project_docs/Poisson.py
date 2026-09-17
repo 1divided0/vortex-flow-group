@@ -1,5 +1,4 @@
 import numpy as np
-import scipy.sparse as sp
 import scipy.sparse.linalg as spla
 
 from operatoren import build_laplacian
@@ -7,16 +6,15 @@ from Randbedingungen import potential_flow_psi
 
 
 def build_poisson_matrix(domain):
+    #laplace-matrix, deren randzeilen durch dirichlet-zeilen (identitaet) ersetzt werden
 
-    n_xi = domain.n_xi
     n_theta = domain.n_theta
-
     A = build_laplacian(domain).tolil()
 
     i_w = domain.i_wall
-    i_f = domain.i_far 
+    i_f = domain.i_far
 
-    # wand mit dirichlet psi = 0 
+    # wand mit dirichlet psi = 0
     for j in range(n_theta):
         idx = i_w * n_theta + j
         A.rows[idx] = [idx]
@@ -31,19 +29,16 @@ def build_poisson_matrix(domain):
         A.rows[idx] = [idx]
         A.data[idx] = [1.0]
 
-    return A.tocsr() #csr (compressed sparse row format ist wichtig für später)
+    return A.tocsr()
+
 
 def build_rhs(domain, omega):
-    #rechte seite des GLS 
+    #rechte seite des GLS
 
-    n_xi = domain.n_xi
-    n_theta = domain.n_theta
-    i_w = domain.i_wall
     i_f = domain.i_far
+    rhs = np.zeros((domain.n_xi, domain.n_theta))
 
-    rhs = np.zeros((n_xi, n_theta))
-
-    # innere Punkte: quellterm der poissongleichung 
+    # innere Punkte: quellterm der poissongleichung
     rhs[1:i_f, :] = -omega[1:i_f, :]
 
     # wand dirichlet zielwert = 0 -> rhs bleibt 0
@@ -53,9 +48,12 @@ def build_rhs(domain, omega):
 
     return domain.flatten(rhs)
 
+
 class PoissonSolver:
-    # LR - zerlegung nach dem prinzip aus den Vorlesungen
-    #als klasse weil wir es nur einmal brauchen und ne normale funktion zwischen verschiedenen aufrufen keine daten speichert/ beibehält
+    # LR-zerlegung nach dem prinzip aus den vorlesungen
+    # als klasse, weil die zerlegung nur einmal im konstruktor berechnet und dann
+    # fuer jeden aufruf von löse wiederverwendet wird (eine normale funktion
+    # koennte sie zwischen den aufrufen nicht behalten)
 
     def __init__(self, domain):
         self.domain = domain
@@ -63,13 +61,8 @@ class PoissonSolver:
         self.lu = spla.splu(A.tocsc())   #LR zerlegung für die matrix A (splu erwartet csc)
 
     def löse(self, omega):
-        # löst die poissongleichung für ein gegebenes omega
+        # löst die poissongleichung für ein gegebenes omega.
+        # es gehen nur die inneren zeilen von omega ein, die randzeilen nicht
         rhs = build_rhs(self.domain, omega)
         psi_flat = self.lu.solve(rhs)
         return self.domain.unflatten(psi_flat)
-
-    
-
- 
-
-

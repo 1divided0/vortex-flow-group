@@ -7,14 +7,15 @@ from config import Config
 from domain import Domain
 from Poisson import PoissonSolver
 from Randbedingungen import apply_bc
-from zeitintegration import build_alle_operatoren,  geschwindigkeit, cfl_zeitschritt, rk4
+from zeitintegration import build_alle_operatoren, geschwindigkeit, cfl_zeitschritt, rk4
 
-def Anfangsbedingungen(domain, cfg, stoerung=0.5):
 
-    R_grid = domain.r[:, None]
-    Theta_grid = domain.theta[None, :]
-    psi = cfg.U_inf * np.sin(Theta_grid) * (R_grid - cfg.R**2 / R_grid)
-    omega = np.zeros_like(psi)
+def Anfangsbedingungen(domain, cfg, löser, stoerung=0.5):
+    # startzustand: potentialstroemung plus kleine stoerung in omega.
+    # psi wird ueber poisson aus omega berechnet, damit psi und omega von anfang
+    # an zueinander passen (das setzt rk4 voraus). bei omega = 0 liefert poisson
+    # wegen des dirichlet-fernrands genau die diskrete potentialstroemung
+    omega = np.zeros((domain.n_xi, domain.n_theta))
 
     # gewollte kleine stoerung: gitter und randbedingungen sind spiegelsymmetrisch,
     # ohne stoerung bleibt die loesung symmetrisch und es gibt keine wirbelstrasse.
@@ -24,9 +25,11 @@ def Anfangsbedingungen(domain, cfg, stoerung=0.5):
     x0, y0, breite = 1.5 * cfg.D, 0.3 * cfg.D, 0.1 * cfg.D**2
     omega += stoerung * np.exp(-((X - x0)**2 + (Y - y0)**2) / breite)
 
+    psi = löser.löse(omega)
     return apply_bc(psi, omega, domain)
 
-def  eine_Schleife(cfg, t_end, max_steps = None, Snapshotrange=50, verbose=True, t_speicher=0.0):
+
+def eine_Schleife(cfg, t_end, max_steps=None, Snapshotrange=50, verbose=True, t_speicher=0.0):
     # t_speicher: snapshots erst ab dieser zeit sichern. der anlauf bis zur
     # periodischen abloesung (bei Re=100 etwa t=50) wird fuer die auswertung
     # nicht gebraucht und wuerde die snapshot-datei nur unnoetig aufblaehen
@@ -34,11 +37,11 @@ def  eine_Schleife(cfg, t_end, max_steps = None, Snapshotrange=50, verbose=True,
     löser = PoissonSolver(domain)
     ops = build_alle_operatoren(domain)
 
-    psi, omega = Anfangsbedingungen(domain, cfg)
+    psi, omega = Anfangsbedingungen(domain, cfg, löser)
 
     snapshots = {"t": [], "psi": [], "omega": []}
     t = 0.0
-    step = 0    # int, sonst bricht die ausgabe mit {step:6d} beim 100. schritt ab
+    step = 0    # int, sonst bricht die ausgabe mit {step:6d} beim 1000. schritt ab
     t_start_uhr = time.time()
 
     while t < t_end:
@@ -67,28 +70,20 @@ def  eine_Schleife(cfg, t_end, max_steps = None, Snapshotrange=50, verbose=True,
     if verbose:
         elapsed = time.time() - t_start_uhr
         print(f"Fertig: {step} Schritte, t={t:.5f}, Rechenzeit={elapsed:.1f}s")
-    return domain, snapshots, psi, omega 
-
-
-
-# TEstt_bereich
+    return domain, snapshots, psi, omega
 
 
 if __name__ == "__main__":
-    # Testkonfiguration mit bewusst KLEINEM Gitter und kurzer Simulations-
-    # zeit -- reiner Funktionstest, dass die komplette Kette (Domain,
-    # Solver, Zeitintegration) durchlaeuft. Fuer eine physikalisch
-    # aussagekraeftige Simulation (z.B. um die Karmansche Wirbelstrasse
-    # bei Re~100 zu sehen) braucht es ein feineres Gitter und eine viel
-    # laengere Simulationszeit (mehrere Ablösezyklen) -- das dauert
-    # entsprechend deutlich laenger und sollte lokal, nicht als
-    # Schnelltest, laufen.
     # dt ist nur die obergrenze, der cfl-schritt bestimmt den tatsaechlichen schritt.
     #
-    #   python main.py        schnelltest (kleines gitter, ~1000 schritte, wenige sekunden)
-    #   python main.py lang   produktionslauf fuer visualisation.py: wirbelstrasse bei
-    #         cd                Re=100, gitter 80x160, t=0..100, snapshots ab t=60
+    #   python main.py        schnelltest: kleines gitter, t = 0..12 (~1000 schritte,
+    #                         wenige sekunden). prueft nur, dass die kette durchlaeuft
+    #   python main.py lang   produktionslauf fuer Animation.py: wirbelstrasse bei
+    #                         Re=100, gitter 80x160, t=0..100, snapshots ab t=60
     #                         (dauert ca. 2-3 minuten, datei ca. 40 MB)
+    #
+    # achtung: beide varianten schreiben nach simulation_snapshots.npz, der
+    # schnelltest ueberschreibt also einen vorhandenen produktionslauf
     if len(sys.argv) > 1 and sys.argv[1] == "lang":
         cfg = Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=80, n_theta=160, dt=0.05, cfl_target=0.5)
         domain, snapshots, psi_final, omega_final = eine_Schleife(
@@ -99,36 +94,28 @@ if __name__ == "__main__":
         domain, snapshots, psi_final, omega_final = eine_Schleife(
             cfg, t_end=12.0, Snapshotrange=10, verbose=True
         )
- 
+
     print()
     print(f"Anzahl gespeicherter Snapshots: {len(snapshots['t'])}")
     print(f"psi an der Wand am Ende exakt 0: {np.allclose(psi_final[domain.i_wall, :], 0.0, atol=1e-10)}")
     print(f"alle Werte endlich: {np.all(np.isfinite(psi_final)) and np.all(np.isfinite(omega_final))}")
- 
-    # Snapshots auf die Festplatte sichern, damit postprocessing.py sie
-    # spaeter laden kann, OHNE die Simulation nochmal laufen lassen zu
-    # muessen (siehe Diskussion: Simulieren und Visualisieren als zwei
-    # getrennte Phasen)
+
+    # snapshots auf die festplatte sichern, damit Animation.py sie spaeter laden
+    # kann, ohne die simulation nochmal laufen zu lassen (simulieren und
+    # auswerten sind zwei getrennte phasen)
     skript_ordner = os.path.dirname(os.path.abspath(__file__))
     pfad = os.path.join(skript_ordner, "simulation_snapshots.npz")
 
-    # die config wird mitgespeichert, damit visualisation.py das gitter exakt
+    # die config wird mitgespeichert, damit Animation.py das gitter exakt
     # rekonstruieren kann. float32 halbiert die dateigroesse und reicht fuer
     # die auswertung voellig aus
     np.savez(
-    pfad,
-    t=np.array(snapshots["t"]),
-    psi=np.array(snapshots["psi"], dtype=np.float32),
-    omega=np.array(snapshots["omega"], dtype=np.float32),
-    R=cfg.R, r_max=cfg.r_max, U_inf=cfg.U_inf, Re=cfg.Re,
-    n_xi=cfg.n_xi, n_theta=cfg.n_theta, dt=cfg.dt, cfl_target=cfg.cfl_target,
+        pfad,
+        t=np.array(snapshots["t"]),
+        psi=np.array(snapshots["psi"], dtype=np.float32),
+        omega=np.array(snapshots["omega"], dtype=np.float32),
+        R=cfg.R, r_max=cfg.r_max, U_inf=cfg.U_inf, Re=cfg.Re,
+        n_xi=cfg.n_xi, n_theta=cfg.n_theta, dt=cfg.dt, cfl_target=cfg.cfl_target,
     )
-    
+
     print("Snapshots gespeichert in simulation_snapshots.npz")
-                
-        
-
-
-
-
-    
