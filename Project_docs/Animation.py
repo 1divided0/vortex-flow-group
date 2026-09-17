@@ -13,7 +13,7 @@ from zeitintegration import build_alle_operatoren, geschwindigkeit
 
 
 def lade_snapshots(pfad):
-    daten = np.load("pfad")
+    daten = np.load(pfad)
     if "R" not in daten.files:
       raise ValueError(
             f"{pfad} enthält keine Gitterparameter"
@@ -21,7 +21,7 @@ def lade_snapshots(pfad):
 
     cfg = Config(
         R = float(daten["R"]), r_max = float(daten["r_max"]),
-        u_inf = float(daten["u_inf"]), Re = float(daten["Re"]), 
+        U_inf = float(daten["U_inf"]), Re = float(daten["Re"]),
         n_xi = int(daten["n_xi"]), n_theta = int(daten["n_theta"]),
         dt = float(daten["dt"]), cfl_target = float(daten["cfl_target"])
     )
@@ -67,7 +67,7 @@ def strouhal_zahl(t, signal, cfg):
       return np.nan
 
    t_null = t[k] - s[k] * (t[k + 1] - t[k]) / (s[k + 1] - s[k])
-   periode = np.mean(np.null(t_null))
+   periode = np.mean(np.diff(t_null))
    return cfg.D / (periode * cfg.U_inf)
 
 
@@ -306,7 +306,7 @@ if __name__ == "__main__":
     print(f"{len(t)} Snapshots geladen, t = {t[0]:.1f} ... {t[-1]:.1f}, "
           f"Gitter {cfg.n_xi}x{cfg.n_theta}, Re = {cfg.Re:.0f}")
 
-    ux, uy, u_theta_alle = kartesische_geschwindigkeiten(domain, psi)
+    ux, uy, u_theta_alle = kartesische_geschwindigkeit(domain, psi)
 
     signal, r_sonde = sonden_signal(domain, cfg, u_theta_alle)
     St = strouhal_zahl(t, signal, cfg)
