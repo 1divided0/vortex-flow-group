@@ -25,15 +25,12 @@ def apply_farfield_bc(psi, omega, domain):
     inflow = domain.is_inflow
     outflow = domain.is_outflow
 
-    #psi wird auf dem GANZEN fernrand per dirichlet gesetzt. psi ist der
-    #volumenstrom - laesst man es am ausstrom frei schwimmen (nullgradient),
-    #ist die durchstroemung nicht mehr festgelegt und dpsi/dr = 0 erzwingt
-    #ausserdem u_theta = 0, also rein radiales ausstroemen.
+    #psi: auf dem ganzen fernrand potentialströmung (passend zu Poisson.py),
+    #denn psi legt den durchfluss fest
     psi[i_f, :] = psi_potential
 
-    #nur omega unterscheidet ein- und ausstrom: am einstrom ist die stroemung
-    #ungestoert, am ausstrom muss wirbelstaerke das gebiet verlassen duerfen,
-    #ohne reflektiert zu werden
+    #omega: nur hier ein-/ausstrom unterscheiden. einströmseite ungestört,
+    #ausströmseite nullgradient, damit wirbelstärke das gebiet verlassen kann
     omega[i_f, inflow] = 0.0
     omega[i_f, outflow] = omega[i_f - 1, outflow]
 

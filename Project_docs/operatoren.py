@@ -14,7 +14,7 @@ def build_D_xi(domain):
     ) / (2.0 * h)
 
     #einseitige differenzen 2. ordnung am rand, damit die fehlerordnung
-    #des gesamten operators bei 2 bleibt (an der wand wird daraus u_theta berechnet)
+    #des gesamten operators bei 2 bleibt
     D[0, 0] = -3.0 / (2.0 * h)
     D[0, 1] = 4.0 / (2.0 * h)
     D[0, 2] = -1.0 / (2.0 * h)
@@ -38,11 +38,10 @@ def build_D2_xi(domain):
         format='lil'
     ) / (h**2)
 
-    #WICHTIG: hier duerfen keine randbedingungen stehen. frueher stand hier eine
-    #identitaetszeile fuer dirichlet - die wurde aber in build_laplacian durch
-    #kron(I_xi, D2_theta) wieder ueberschrieben und zusaetzlich mit 1/r^2 skaliert.
-    #die randbedingungen setzt jetzt build_poisson_matrix ueber boolesche masken.
-    #hier stehen einseitige differenzen 2. ordnung: (2f0 - 5f1 + 4f2 - f3)/h^2
+    #hier keine identitaetszeilen fuer dirichlet eintragen: in build_laplacian
+    #wuerde kron(I_xi, D2_theta) sie wieder verfaelschen und die metrik sie mit
+    #1/r^2 skalieren. die randzeilen ersetzt Poisson.build_poisson_matrix komplett.
+    #einseitige zweite ableitung 2. ordnung: (2f0 - 5f1 + 4f2 - f3)/h^2
     D2[0, 0] = 2.0 / h**2
     D2[0, 1] = -5.0 / h**2
     D2[0, 2] = 4.0 / h**2
@@ -96,10 +95,9 @@ def build_upwind_xi(domain):
     n = domain.n_xi
     h = domain.dxi
 
-    #in xi richtung gibt es keine periodizitaet, also fehlt der vorwaertsdifferenz
-    #in der letzten zeile der nachbar (und der rueckwaertsdifferenz in der ersten).
-    #ohne korrektur waere die zeilensumme dort ungleich null, d.h. ein konstantes
-    #feld haette eine ableitung ungleich null -> kuenstliche konvektion am rand
+    #in xi richtung gibt es keine periodizitaet: der vorwaertsdifferenz fehlt in
+    #der letzten zeile der nachbar, der rueckwaertsdifferenz in der ersten.
+    #ohne korrektur waere die zeilensumme dort ungleich null
     forward = sp.diags([-1.0, 1.0], [0, 1], shape=(n, n), format='lil') / h
     forward[-1, -1] = 1.0 / h
     forward[-1, -2] = -1.0 / h
@@ -143,51 +141,6 @@ def build_laplacian(domain):
     return metric_diag @ L_uniform
 
 
-def build_randmasken(domain):
-    #boolesche masken der randtypen, schon geflattet.
-    #psi wird am gesamten fernfeld per dirichlet gesetzt: psi kodiert den
-    #volumenstrom, laesst man es am ausstrom frei schwimmen, ist die
-    #durchstroemung nicht mehr festgelegt. die unterscheidung ein-/ausstrom
-    #gilt nur fuer omega (siehe Randbedingungen.apply_farfield_bc)
-    n_xi, n_theta = domain.n_xi, domain.n_theta
-
-    dirichlet = np.zeros((n_xi, n_theta), dtype=bool)
-    dirichlet[domain.i_wall, :] = True      #wand: psi = 0
-    dirichlet[domain.i_far, :] = True       #fernfeld: potentialstroemung
-
-    #vorgehalten fuer eine spaetere konvektive ausstrombedingung
-    neumann = np.zeros((n_xi, n_theta), dtype=bool)
-
-    return domain.flatten(dirichlet), domain.flatten(neumann)
-
-
-def build_poisson_matrix(domain, L=None):
-    """systemmatrix fuer nabla^2 psi = -omega inklusive randbedingungen.
-
-    innenzeilen: laplace-operator
-    dirichlet:   psi_k = psi_rand_k
-    neumann:     psi_k - psi_(k-1 in xi) = 0   (nullgradient nach aussen)
-
-    rueckgabe: (A, dirichlet_maske, neumann_maske)
-    """
-    if L is None:
-        L = build_laplacian(domain)
-
-    dirichlet, neumann = build_randmasken(domain)
-    rand = dirichlet | neumann
-
-    A = (sp.diags((~rand).astype(float)) @ L
-         + sp.diags(dirichlet.astype(float))).tolil()
-
-    #ein schritt in xi-richtung ueberspringt eine ganze theta-zeile,
-    #weil flatten zeilenweise ueber (n_xi, n_theta) laeuft
-    for k in np.flatnonzero(neumann):
-        A[k, k] = 1.0
-        A[k, k - domain.n_theta] = -1.0
-
-    return A.tocsr(), dirichlet, neumann
-
-
 
 
 
@@ -217,8 +170,8 @@ if __name__ == "__main__":
     df_numeric = dom.unflatten(D_xi_full @ dom.flatten(f))
     df_analytic = 3.0 * dom.xi[:, None]**2
  
-    # ALLE Punkte inklusive Rand vergleichen. frueher wurden die randzeilen
-    # per slice(1,-1) ausgeklammert - genau dort sassen aber die fehler
+    # ALLE Punkte inklusive Rand vergleichen - wer die randzeilen ausklammert,
+    # uebersieht genau die fehler, die dort sitzen
     err_D_xi = np.max(np.abs(df_numeric - df_analytic))
     print(f"max Fehler D_xi (inkl. Rand, f=xi^3):  {err_D_xi:.6f}")
 
@@ -258,31 +211,24 @@ if __name__ == "__main__":
     print(f"max Fehler Laplace-Operator (inkl. Rand):  {err_L:.6f}")
 
     # --- Test 4: Zeilensummen der Upwind-Matrizen ---
-    # eine ableitungsmatrix muss ein konstantes feld auf null abbilden,
-    # sonst entsteht am rand kuenstliche konvektion
+    # eine ableitungsmatrix muss ein konstantes feld auf null abbilden
     for name, (fw, bw) in (("xi", build_upwind_xi(dom)), ("theta", build_upwind_theta(dom))):
         s = max(np.abs(np.asarray(fw.sum(axis=1))).max(),
                 np.abs(np.asarray(bw.sum(axis=1))).max())
         print(f"max |Zeilensumme| Upwind {name} (soll 0):  {s:.2e}")
 
-    # --- Test 5: Abnahmetest der Poisson-Matrix ---
-    # bei omega = 0 muss exakt die Potentialstroemung herauskommen. das prueft
-    # gitter, metrik, operator und randbedingungen in einem durchgang
-    import scipy.sparse.linalg as spla
-    from Randbedingungen import potential_flow_psi
+    # --- Test 5: Abnahmetest Poisson-Loeser + Geschwindigkeiten ---
+    # bei omega = 0 muss exakt die Potentialstroemung herauskommen, an der
+    # Zylinderwand gilt dann analytisch u_theta = -2 U sin(theta)
+    from Poisson import PoissonSolver
+    from zeitintegration import build_alle_operatoren, geschwindigkeit
 
-    A, dirichlet, neumann = build_poisson_matrix(dom)
-
-    psi_rand = np.zeros((dom.n_xi, dom.n_theta))
-    psi_rand[dom.i_far] = potential_flow_psi(dom, dom.r[dom.i_far])
-    psi_rand[dom.i_wall] = 0.0
-
-    rhs = np.where(dirichlet, dom.flatten(psi_rand), 0.0)
-    rhs[neumann] = 0.0
-    psi = dom.unflatten(spla.spsolve(A.tocsc(), rhs))
-
+    psi = PoissonSolver(dom).löse(np.zeros((dom.n_xi, dom.n_theta)))
     R_grid, T_grid = np.meshgrid(dom.r, dom.theta, indexing="ij")
     psi_exakt = cfg.U_inf * np.sin(T_grid) * (R_grid - cfg.R**2 / R_grid)
-
-    print(f"psi an der Wand (soll 0):  {np.max(np.abs(psi[dom.i_wall])):.2e}")
     print(f"max Fehler Poisson gegen Potentialstroemung:  {np.max(np.abs(psi - psi_exakt)):.6f}")
+
+    u_r, u_theta = geschwindigkeit(psi, dom, build_alle_operatoren(dom))
+    err_wand = np.max(np.abs(u_theta[dom.i_wall] + 2.0 * cfg.U_inf * np.sin(dom.theta)))
+    print(f"max Fehler u_theta an der Wand (gegen -2U sin(theta)):  {err_wand:.6f}")
+ 

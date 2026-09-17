@@ -22,25 +22,18 @@ def build_poisson_matrix(domain):
         A.rows[idx] = [idx]
         A.data[idx] = [1.0]
 
-    # fernfeld
+    # fernfeld: auf dem GANZEN rand dirichlet mit der potentialstroemung.
+    # psi gibt den volumenstrom vor - mit nullgradient am ausstrom waere der
+    # durchfluss nicht festgelegt (bei omega = 0 kam an der wand u_theta = 1.55
+    # statt 2.0 heraus). ein-/ausstrom wird nur fuer omega unterschieden.
     for j in range(n_theta):
         idx = i_f * n_theta + j
-        if domain.is_inflow[j]:
-            # inflow: dirichlet wie bei der wand
-            A.rows[idx] = [idx]
-            A.data[idx] = [1.0]
-        else:
-            # Neumann nullgradient aus der Formel mit psi[i_far] - psi[i_far-1] = 0
-            idx_next = (i_f - 1) * n_theta + j
-
-            cols = sorted([idx, idx_next])
-            vals = [1.0 if c == idx else -1.0 for c in cols]
-            A.rows[idx] = cols
-            A.data[idx] = vals
+        A.rows[idx] = [idx]
+        A.data[idx] = [1.0]
 
     return A.tocsr() #csr (compressed sparse row format ist wichtig für später)
 
-def build_rhs(domain, psi):
+def build_rhs(domain, omega):
     #rechte seite des GLS 
 
     n_xi = domain.n_xi
@@ -55,12 +48,8 @@ def build_rhs(domain, psi):
 
     # wand dirichlet zielwert = 0 -> rhs bleibt 0
 
-    #fernfeld, einströmseite -> dirichlet zielwert = potentialströmung
-
-    psi_potential = potential_flow_psi(domain, domain.r[i_f], domain.r[i_f])
-    rhs[i_f, domain.is_inflow] = psi_potential[domain.is_inflow]
-
-    #fernfeld, ausstömseite -> neumann zielwert = 0 (rhs bleibt 0)
+    #fernfeld (ganzer rand) -> dirichlet zielwert = potentialströmung
+    rhs[i_f, :] = potential_flow_psi(domain, domain.r[i_f])
 
     return domain.flatten(rhs)
 
@@ -71,18 +60,16 @@ class PoissonSolver:
     def __init__(self, domain):
         self.domain = domain
         A = build_poisson_matrix(domain)
-        self.lu = spla.splu(A)   #LR zerlegung für die matrix A
+        self.lu = spla.splu(A.tocsc())   #LR zerlegung für die matrix A (splu erwartet csc)
 
     def löse(self, omega):
         # löst die poissongleichung für ein gegebenes omega
-        rhs = buildrhs(self.domain, omega)
+        rhs = build_rhs(self.domain, omega)
         psi_flat = self.lu.solve(rhs)
         return self.domain.unflatten(psi_flat)
 
     
 
  
-
-
 
 

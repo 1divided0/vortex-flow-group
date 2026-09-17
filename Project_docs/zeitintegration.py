@@ -60,5 +60,69 @@ def berechne_rhs(omega, psi, domain, cfg, ops):  #rhs sthet hier für die rechte
     # u.grad(omega) = 1/r *(u_r * domega/dxi + u_theta * domega/dtheta)
     #Diffusion mit nu * Laplace(omega) 
 
-    u_r, u_theta = geschwindigkeit(psi, domain, ops) #ops auch hier erst später definiert 
-    domega 
+    u_r, u_theta = geschwindigkeit(psi, domain, ops) #ops auch hier erst später definiert
+
+    # zentrale differenzen statt upwind: upwind 1. ordnung wirkt wie eine
+    # kuenstliche viskositaet ~ |u|*h/2. weil das log-gitter nach aussen groeber
+    # wird, war die im nachlauf mehrfach so gross wie nu -> effektiv Re ~ 20,
+    # und darunter loesen sich keine wirbel ab. rk4 ist mit zentralen
+    # differenzen bei Re = 100 stabil. upwind_ableitung bleibt fuer ein
+    # spaeteres hybridschema bei hoeheren Re erhalten.
+    domega_dxi = domain.unflatten(ops["D_xi"] @ domain.flatten(omega))
+    domega_dtheta = domain.unflatten(ops["D_theta"] @ domain.flatten(omega))
+
+    r = domain.r[:, None]
+
+    advektion = (u_r * domega_dxi + u_theta * domega_dtheta) / r
+
+    diffusion = domain.unflatten(ops["L"] @ domain.flatten(omega)) * cfg.nu
+
+    rhs = -advektion + diffusion
+
+    return rhs
+
+def cfl_zeitschritt(u_r, u_theta, domain, cfg):
+    # advektiv:  dt <= cfl_target * dx_phys / |u|
+    # diffusiv:  dt <= cfl_target * dx_phys^2 / (4*nu)
+    # dx_phys ist physikalischer gitterabstand
+    # in xi richtung: r*dxi (weil dr = r*dxi)
+    # in theta richtung: r*dtheta 
+    # eps verhindert divison durch 0, weil mathe sagt nein
+
+    eps = 1e-10
+    r = domain.r[:, None]
+
+    dx_xi_phys = r * domain.dxi
+    dx_dtheta_phys = r * domain.dtheta 
+
+    dt_adv_xi = cfg.cfl_target * dx_xi_phys / (np.abs(u_r) + eps)
+    dt_adv_theta = cfg.cfl_target * dx_dtheta_phys / (np.abs(u_theta) + eps)
+
+    dx_min_phys = np.minimum(dx_xi_phys, dx_dtheta_phys)
+    dt_diff = cfg.cfl_target * dx_min_phys**2 / (4.0 * cfg.nu)
+
+    return float(np.min([dt_adv_xi.min(), dt_adv_theta.min(), dt_diff.min()]))
+
+def rk4(psi, omega, cfg, poisson_solver, ops, dt, domain):
+
+
+
+    def berechne(omega_stage):
+        psi_stage = poisson_solver.löse(omega_stage)
+        psi_stage, omega_stage = apply_bc(psi_stage, omega_stage, domain)
+        k = berechne_rhs(omega_stage, psi_stage, domain, cfg, ops)
+        return psi_stage, omega_stage, k
+
+    _, omega0, k1 = berechne(omega)
+    _, _, k2 = berechne(omega0 + 0.5 * dt * k1)
+    _, _, k3 = berechne(omega0 + 0.5 * dt * k2)
+    _, _, k4 = berechne(omega0 + dt * k3)
+
+    omega_next = omega0 + (dt / 6.0) * (k1 + 2.0 * k2 + 2.0 * k3 + k4)
+
+    psi_next = poisson_solver.löse(omega_next)
+    psi_next, omega_next = apply_bc(psi_next, omega_next, domain)
+
+    return psi_next, omega_next
+
+
