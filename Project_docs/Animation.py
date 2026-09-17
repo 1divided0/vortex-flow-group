@@ -135,7 +135,162 @@ def wirbelstaerke_animation(pfad, domain, cfg, t, omega, max_bilder=100, fps=15)
 # ljapunow-exponent (FTLE)
 # ---------------------------------------------------------------------------
 
-#...
+def geschwindigkeit_bei(domain, cfg, ux, uy, x, y):
+    """
+    bilineare interpolation eines geschwindigkeitsfeldes vom (xi, theta)-gitter
+    auf beliebige kartesische punkte.
+    """
+    r = np.hypot(x, y)
+    theta = np.mod(np.arctan2(y, x), 2.0 * np.pi)
+    xi = np.log(np.maximum(r, 1e-12) / cfg.R)
+
+    #theta ist periodisch: der rechte nachbar von n_theta-1 ist wieder 0
+    jt = theta / domain.dtheta
+    j0 = np.floor(jt).astype(int) % domain.n_theta
+    j1 = (j0 + 1) % domain.n_theta
+    wj = jt - np.floor(jt)
+
+    it = np.clip(xi / domain.dxi, 0.0, domain.n_xi - 1 - 1e-9)
+    i0 = np.floor(it).astype(int)
+    i1 = i0 + 1
+    wi = it - i0
+
+    def bilinear(F):
+        return ((1 - wi) * (1 - wj) * F[i0, j0] + (1 - wi) * wj * F[i0, j1]
+                + wi * (1 - wj) * F[i1, j0] + wi * wj * F[i1, j1])
+
+    vx, vy = bilinear(ux), bilinear(uy)
+
+    #im zylinder haftbedingung, ausserhalb des rechengebiets ungestoerte anstroemung
+    innen = r < cfg.R
+    aussen = r > cfg.r_max
+    vx[innen], vy[innen] = 0.0, 0.0
+    vx[aussen], vy[aussen] = cfg.U_inf, 0.0
+    return vx, vy
+
+
+def flussabbildung(domain, cfg, t, ux, uy, n_start, schritte, X0, Y0, richtung):
+    """
+    transportiert ein partikelgitter ueber `schritte` snapshot-intervalle.
+    """
+    X, Y = X0.copy(), Y0.copy()
+    for k in range(schritte):
+        n = n_start + richtung * k
+        m = n + richtung
+        h = t[m] - t[n]    #bei rueckwaerts negativ
+
+        vx1, vy1 = geschwindigkeit_bei(domain, cfg, ux[n], uy[n], X, Y)
+        vx2, vy2 = geschwindigkeit_bei(domain, cfg, ux[m], uy[m], X + h * vx1, Y + h * vy1)
+
+        X += 0.5 * h * (vx1 + vx2)
+        Y += 0.5 * h * (vy1 + vy2)
+    return X, Y
+
+
+def ljapunow_exponent(X, Y, delta, T):
+    """
+    sigma = 1/|T| * ln( sqrt( lambda_max(J^T J) ) )
+    """
+    J11 = np.gradient(X, delta, axis=1)   #dX/dx0
+    J12 = np.gradient(X, delta, axis=0)   #dX/dy0
+    J21 = np.gradient(Y, delta, axis=1)   #dY/dx0
+    J22 = np.gradient(Y, delta, axis=0)   #dY/dy0
+
+    a = J11**2 + J21**2
+    b = J11 * J12 + J21 * J22
+    d = J12**2 + J22**2
+    lambda_max = 0.5 * (a + d) + np.sqrt((0.5 * (a - d))**2 + b**2)
+
+    return np.log(np.sqrt(np.maximum(lambda_max, 1e-30))) / abs(T)
+
+
+def _normieren(sigma):
+    """skalierung auf [0, 1]: der median wird zu 0, die obersten 0.5 %
+    werden gekappt, damit einzelne extremwerte die farbskala nicht dominieren."""
+    werte = sigma[np.isfinite(sigma)]
+    unten, oben = np.percentile(werte, [50, 99.5])
+    return np.nan_to_num(np.clip((sigma - unten) / (oben - unten), 0.0, 1.0))
+
+
+def ftle_felder(domain, cfg, t, ux, uy, T=8.0, delta_in_D=0.04, anzahl=12, St=np.nan):
+    """berechnet FTLE-felder fuer mehrere startzeiten t0 ueber eine abloeseperiode."""
+    D = cfg.D
+    x0 = np.arange(-1.5 * D, 12.0 * D, delta_in_D * D)
+    y0 = np.arange(-3.0 * D, 3.0 * D + 1e-9, delta_in_D * D)
+    X0, Y0 = np.meshgrid(x0, y0)
+    im_zylinder = np.hypot(X0, Y0) < cfg.R
+
+    abstand = np.mean(np.diff(t))
+    schritte = int(round(T / abstand))
+    if 2 * schritte >= len(t):
+        raise ValueError(
+            f"fuer T = {T} werden {2 * schritte + 1} snapshots gebraucht, vorhanden "
+            f"sind {len(t)}. laengeren lauf speichern oder T verkleinern."
+        )
+
+    #startzeiten: nur dort, wo vorwaerts und rueckwaerts genug snapshots liegen,
+    #und moeglichst genau eine abloeseperiode, damit die animation sich wiederholt
+    n_min, n_max = schritte, len(t) - 1 - schritte
+    periode = D / (St * cfg.U_inf) if np.isfinite(St) else t[n_max] - t[n_min]
+    t_bis = min(t[n_min] + periode, t[n_max])
+    startzeiten = np.linspace(t[n_min], t_bis, anzahl, endpoint=np.isnan(St))
+
+    felder = []
+    for t_start in startzeiten:
+        n0 = int(np.argmin(np.abs(t - t_start)))
+        n0 = min(max(n0, n_min), n_max)
+
+        Xv, Yv = flussabbildung(domain, cfg, t, ux, uy, n0, schritte, X0, Y0, +1)
+        Xr, Yr = flussabbildung(domain, cfg, t, ux, uy, n0, schritte, X0, Y0, -1)
+
+        sigma_vor = ljapunow_exponent(Xv, Yv, delta_in_D * D, T)
+        sigma_rueck = ljapunow_exponent(Xr, Yr, delta_in_D * D, T)
+        sigma_vor[im_zylinder] = np.nan
+        sigma_rueck[im_zylinder] = np.nan
+
+        felder.append((t[n0], _normieren(sigma_vor), _normieren(sigma_rueck)))
+        print(f"  FTLE bei t0 = {t[n0]:.2f} berechnet")
+
+    ausdehnung = [x0[0], x0[-1], y0[0], y0[-1]]
+    return felder, ausdehnung, T
+
+
+def _ftle_rgb(sigma_vor, sigma_rueck):
+    """
+    ueberlagert beide felder: weiss als hintergrund, vorwaerts (instabil)
+    nimmt blau und gruen weg -> rot, rueckwaerts (stabil) nimmt rot und gruen
+    weg -> blau.
+    """
+    R = 1.0 - sigma_rueck
+    G = 1.0 - 0.85 * sigma_vor - 0.85 * sigma_rueck
+    B = 1.0 - sigma_vor
+    return np.clip(np.dstack([R, G, B]), 0.0, 1.0)
+
+
+def zeichne_ftle(ax, cfg, feld, ausdehnung, T):
+    t0, sigma_vor, sigma_rueck = feld
+    ax.imshow(_ftle_rgb(sigma_vor, sigma_rueck), origin="lower",
+              extent=ausdehnung, interpolation="bilinear")
+    ax.add_patch(plt.Circle((0, 0), cfg.R, color="k"))
+    ax.set_aspect("equal")
+    ax.set_xlabel("$x$")
+    ax.set_ylabel("$y$")
+    ax.set_title(fr"Ljapunow-Exponent,  Re = {cfg.Re:.0f},  $t_0 = {t0:.1f}$,  $T = \pm{T:.0f}$")
+
+
+def ftle_ausgabe(pfad_png, pfad_gif, cfg, felder, ausdehnung, T, fps=6):
+    fig, ax = plt.subplots(figsize=(10, 4.8))
+    zeichne_ftle(ax, cfg, felder[0], ausdehnung, T)
+    fig.tight_layout()
+    fig.savefig(pfad_png, dpi=130)
+
+    def bild(k):
+        ax.clear()
+        zeichne_ftle(ax, cfg, felder[k], ausdehnung, T)
+
+    animation = FuncAnimation(fig, bild, frames=len(felder))
+    animation.save(pfad_gif, writer=PillowWriter(fps=fps), dpi=90)
+    plt.close(fig)
 
 # ---------------------------------------------------------------------------
 # hauptprogramm
