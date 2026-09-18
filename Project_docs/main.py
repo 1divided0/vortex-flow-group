@@ -3,11 +3,24 @@ import time
 import os
 import sys
 
-from config import Config
-from domain import Domain
-from Poisson import PoissonSolver
-from Randbedingungen import apply_bc
-from zeitintegration import build_alle_operatoren, geschwindigkeit, cfl_zeitschritt, rk4
+from gitter import Config, Domain
+from loeser import PoissonSolver, apply_bc, build_alle_operatoren, geschwindigkeit, cfl_zeitschritt, rk4
+
+
+#voreinstellungen fuer einzellaeufe, beschrieben in README.md.
+#die serien des benchmarks stehen in benchmark/presets.py
+EINZELLAEUFE = {
+    "schnell": dict(
+        beschreibung="funktionstest: kleines gitter, t = 0..12, wenige sekunden",
+        cfg=Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=50, n_theta=100, dt=0.05, cfl_target=0.5),
+        t_end=12.0, Snapshotrange=10, t_speicher=0.0,
+    ),
+    "lang": dict(
+        beschreibung="produktionslauf fuer Animation.py: Re = 100, 80x160, t = 0..100, snapshots ab t = 60",
+        cfg=Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=80, n_theta=160, dt=0.05, cfl_target=0.5),
+        t_end=100.0, Snapshotrange=20, t_speicher=60.0,
+    ),
+}
 
 
 def Anfangsbedingungen(domain, cfg, löser, stoerung=0.5):
@@ -29,15 +42,20 @@ def Anfangsbedingungen(domain, cfg, löser, stoerung=0.5):
     return apply_bc(psi, omega, domain)
 
 
-def eine_Schleife(cfg, t_end, max_steps=None, Snapshotrange=50, verbose=True, t_speicher=0.0):
+def eine_Schleife(cfg, t_end, max_steps=None, Snapshotrange=50, verbose=True, t_speicher=0.0, messung=None):
     # t_speicher: snapshots erst ab dieser zeit sichern. der anlauf bis zur
     # periodischen abloesung (bei Re=100 etwa t=50) wird fuer die auswertung
     # nicht gebraucht und wuerde die snapshot-datei nur unnoetig aufblaehen
+    # messung: optionales objekt mit start(domain, löser, psi, omega) und
+    # schritt(t, dt, psi, omega), z.b. aus benchmark.py. es darf psi und omega nur
+    # lesen. ohne messung (None) laeuft die schleife exakt wie vorher
     domain = Domain(cfg)
     löser = PoissonSolver(domain)
     ops = build_alle_operatoren(domain)
 
     psi, omega = Anfangsbedingungen(domain, cfg, löser)
+    if messung is not None:
+        messung.start(domain, löser, psi, omega)
 
     snapshots = {"t": [], "psi": [], "omega": []}
     t = 0.0
@@ -57,6 +75,9 @@ def eine_Schleife(cfg, t_end, max_steps=None, Snapshotrange=50, verbose=True, t_
         t += dt
         step += 1
 
+        if messung is not None:
+            messung.schritt(t, dt, psi, omega)
+
         if step % Snapshotrange == 0 and t >= t_speicher:
             snapshots["t"].append(t)
             snapshots["psi"].append(psi.copy())
@@ -74,26 +95,27 @@ def eine_Schleife(cfg, t_end, max_steps=None, Snapshotrange=50, verbose=True, t_
 
 
 if __name__ == "__main__":
+    # die voreinstellungen stehen oben in EINZELLAEUFE und in README.md.
     # dt ist nur die obergrenze, der cfl-schritt bestimmt den tatsaechlichen schritt.
     #
-    #   python main.py        schnelltest: kleines gitter, t = 0..12 (~1000 schritte,
-    #                         wenige sekunden). prueft nur, dass die kette durchlaeuft
-    #   python main.py lang   produktionslauf fuer Animation.py: wirbelstrasse bei
-    #                         Re=100, gitter 80x160, t=0..100, snapshots ab t=60
-    #                         (dauert ca. 2-3 minuten, datei ca. 40 MB)
+    #   python main.py          = python main.py schnell (funktionstest, wenige sekunden)
+    #   python main.py lang     produktionslauf fuer Animation.py (ca. 2-3 minuten, datei ca. 40 MB)
     #
-    # achtung: beide varianten schreiben nach simulation_snapshots.npz, der
+    # achtung: alle varianten schreiben nach simulation_snapshots.npz, der
     # schnelltest ueberschreibt also einen vorhandenen produktionslauf
-    if len(sys.argv) > 1 and sys.argv[1] == "lang":
-        cfg = Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=80, n_theta=160, dt=0.05, cfl_target=0.5)
-        domain, snapshots, psi_final, omega_final = eine_Schleife(
-            cfg, t_end=100.0, Snapshotrange=20, verbose=True, t_speicher=60.0
-        )
-    else:
-        cfg = Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=50, n_theta=100, dt=0.05, cfl_target=0.5)
-        domain, snapshots, psi_final, omega_final = eine_Schleife(
-            cfg, t_end=12.0, Snapshotrange=10, verbose=True
-        )
+    name = sys.argv[1] if len(sys.argv) > 1 else "schnell"
+    if name not in EINZELLAEUFE:
+        print(f"unbekannte voreinstellung '{name}'. vorhanden:")
+        for n, p in EINZELLAEUFE.items():
+            print(f"  {n:10s} {p['beschreibung']}")
+        sys.exit(1)
+
+    preset = EINZELLAEUFE[name]
+    cfg = preset["cfg"]
+    domain, snapshots, psi_final, omega_final = eine_Schleife(
+        cfg, t_end=preset["t_end"], Snapshotrange=preset["Snapshotrange"],
+        verbose=True, t_speicher=preset["t_speicher"]
+    )
 
     print()
     print(f"Anzahl gespeicherter Snapshots: {len(snapshots['t'])}")

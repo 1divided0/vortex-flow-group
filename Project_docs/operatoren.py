@@ -148,8 +148,7 @@ def build_laplacian(domain):
 
 #test bereich
 if __name__ == "__main__":
-    from config import Config
-    from domain import Domain
+    from gitter import Config, Domain
 
     cfg = Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=80, n_theta=160, dt=1e-3)
     dom = Domain(cfg)
@@ -221,8 +220,7 @@ if __name__ == "__main__":
     # --- Test 5: Abnahmetest Poisson-Loeser + Geschwindigkeiten ---
     # bei omega = 0 muss exakt die Potentialstroemung herauskommen, an der
     # Zylinderwand gilt dann analytisch u_theta = -2 U sin(theta)
-    from Poisson import PoissonSolver
-    from zeitintegration import build_alle_operatoren, geschwindigkeit
+    from loeser import PoissonSolver, build_alle_operatoren, geschwindigkeit
 
     psi = PoissonSolver(dom).löse(np.zeros((dom.n_xi, dom.n_theta)))
     R_grid, T_grid = np.meshgrid(dom.r, dom.theta, indexing="ij")

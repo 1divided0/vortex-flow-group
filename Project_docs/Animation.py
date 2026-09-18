@@ -7,9 +7,8 @@ matplotlib.use("Agg")   #ohne fenster rendern, die bilder werden nur gespeichert
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation, PillowWriter
 
-from config import Config
-from domain import Domain
-from zeitintegration import build_alle_operatoren, geschwindigkeit
+from gitter import Config, Domain
+from loeser import build_alle_operatoren, geschwindigkeit
 
 
 def lade_snapshots(pfad):
