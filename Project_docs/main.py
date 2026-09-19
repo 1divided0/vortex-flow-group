@@ -4,7 +4,7 @@ import os
 import sys
 
 from gitter import Config, Domain
-from loeser import PoissonSolver, apply_bc, build_alle_operatoren, geschwindigkeit, cfl_zeitschritt, rk4
+from loeser import wähle_poisson_löser, apply_bc, build_alle_operatoren, geschwindigkeit, cfl_zeitschritt, rk4
 
 
 #voreinstellungen fuer einzellaeufe, beschrieben in README.md.
@@ -17,7 +17,7 @@ EINZELLAEUFE = {
     ),
     "lang": dict(
         beschreibung="produktionslauf fuer Animation.py: Re = 100, 80x160, t = 0..100, snapshots ab t = 60",
-        cfg=Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=80, n_theta=160, dt=0.05, cfl_target=0.5),
+        cfg=Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=160, n_theta=320, dt=0.05, cfl_target=0.5),
         t_end=100.0, Snapshotrange=20, t_speicher=60.0,
     ),
 }
@@ -50,7 +50,7 @@ def eine_Schleife(cfg, t_end, max_steps=None, Snapshotrange=50, verbose=True, t_
     # schritt(t, dt, psi, omega), z.b. aus benchmark.py. es darf psi und omega nur
     # lesen. ohne messung (None) laeuft die schleife exakt wie vorher
     domain = Domain(cfg)
-    löser = PoissonSolver(domain)
+    löser = wähle_poisson_löser(domain)
     ops = build_alle_operatoren(domain)
 
     psi, omega = Anfangsbedingungen(domain, cfg, löser)

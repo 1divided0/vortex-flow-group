@@ -8,6 +8,7 @@ import scipy.sparse.linalg as spla
 
 from operatoren import build_D_xi, build_D_theta
 from operatoren import build_upwind_xi, build_upwind_theta, build_laplacian
+from operatoren import build_D2_xi, build_D2_theta 
 
 
 # ---------------------------------------------------------------------------
@@ -126,6 +127,61 @@ class PoissonSolver:
         rhs = build_rhs(self.domain, omega)
         psi_flat = self.lu.solve(rhs)
         return self.domain.unflatten(psi_flat)
+
+class PoissonLoeserFFT:
+
+    def __init__(self, domain):
+        self.domain = domain
+        n_xi = domain.n_xi
+        n_theta = domain.n_theta
+        i_w = domain.i_wall
+        i_f = domain.i_far
+
+        D2_theta = build_D2_theta(domain)
+        erste_zeile = np.asarray(D2_theta[0, :].todense()).ravel()
+
+        alle_eigenwerte = np.fft.fft(erste_zeile).real
+        self.eigenwerte = alle_eigenwerte[: n_theta // 2+1]
+
+        D2_xi = build_D2_xi(domain)
+        I_xi = sp.identity(n_xi, format="csr")
+        metrisch_diag = sp.diags(domain.vorfaktor, format="csr")
+
+        self.löser_pro_mode = []
+        for lam in self.eigenwerte:
+            A_m = (metrisch_diag @ (D2_xi + lam * I_xi)).tolil()
+
+            A_m.rows[i_w] = [i_w]
+            A_m.data[i_w] = [1.0]
+            A_m.rows[i_f] = [i_f]
+            A_m.data[i_f] = [1.0]
+
+            self.löser_pro_mode.append(spla.splu(A_m.tocsc()))
+
+    def löse(self, omega):
+        domain = self.domain
+        i_f = domain.i_far
+
+        rhs = np.zeros((domain.n_xi, domain.n_theta))
+        rhs[1:i_f, :] = -omega[1:i_f, :]
+        rhs[i_f, :] = potential_flow_psi(domain, domain.r[i_f])
+
+        rhs_dach = np.fft.rfft(rhs, axis=1)
+
+        psi_dach = np.empty_like(rhs_dach)
+        for m, lu in enumerate(self.löser_pro_mode):
+            psi_dach[:, m] = lu.solve(rhs_dach[:, m].real) + 1j * lu.solve(rhs_dach[:, m].imag)
+
+        psi = np.fft.irfft(psi_dach, n=domain.n_theta, axis=1)
+        return psi
+def wähle_poisson_löser(domain, schwelle = 100 * 200):
+    if domain.n_xi * domain.n_theta > schwelle:
+        return PoissonLoeserFFT(domain)
+    return PoissonSolver(domain)
+    
+
+
+
 
 
 # ---------------------------------------------------------------------------
