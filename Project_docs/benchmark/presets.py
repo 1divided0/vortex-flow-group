@@ -1,4 +1,4 @@
-#voreinstellungen der benchmark-serien, beschrieben in README.md
+#voreinstellungen der benchmark-serien, beschrieben in README_Presets.md
 #(die einzellaeufe von main.py stehen dort in EINZELLAEUFE)
 
 import math

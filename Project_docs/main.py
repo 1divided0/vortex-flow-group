@@ -7,7 +7,7 @@ from gitter import Config, Domain
 from loeser import wähle_poisson_löser, apply_bc, build_alle_operatoren, geschwindigkeit, cfl_zeitschritt, rk4
 
 
-#voreinstellungen fuer einzellaeufe, beschrieben in README.md.
+#voreinstellungen fuer einzellaeufe, beschrieben in README_Presets.md.
 #die serien des benchmarks stehen in benchmark/presets.py
 EINZELLAEUFE = {
     "schnell": dict(
@@ -16,7 +16,9 @@ EINZELLAEUFE = {
         t_end=12.0, Snapshotrange=10, t_speicher=0.0,
     ),
     "lang": dict(
-        beschreibung="produktionslauf fuer Animation.py: Re = 100, 80x160, t = 0..100, snapshots ab t = 60",
+        beschreibung=("produktionslauf fuer Animation.py: Re = 100, 160x320, t = 0..100, "
+                      "snapshots ab t = 60. ca. 15 min, ~83000 schritte, ~1660 snapshots "
+                      "-> datei ca. 680 MB, Animation.py braucht dann mehrere GB RAM"),
         cfg=Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=160, n_theta=320, dt=0.05, cfl_target=0.5),
         t_end=100.0, Snapshotrange=20, t_speicher=60.0,
     ),
@@ -95,11 +97,11 @@ def eine_Schleife(cfg, t_end, max_steps=None, Snapshotrange=50, verbose=True, t_
 
 
 if __name__ == "__main__":
-    # die voreinstellungen stehen oben in EINZELLAEUFE und in README.md.
+    # die voreinstellungen stehen oben in EINZELLAEUFE und in README_Presets.md.
     # dt ist nur die obergrenze, der cfl-schritt bestimmt den tatsaechlichen schritt.
     #
     #   python main.py          = python main.py schnell (funktionstest, wenige sekunden)
-    #   python main.py lang     produktionslauf fuer Animation.py (ca. 2-3 minuten, datei ca. 40 MB)
+    #   python main.py lang     produktionslauf fuer Animation.py (ca. 15 minuten, datei ca. 680 MB)
     #
     # achtung: alle varianten schreiben nach simulation_snapshots.npz, der
     # schnelltest ueberschreibt also einen vorhandenen produktionslauf

@@ -1,6 +1,6 @@
 """
 benchmark: serien von laeufen mit veraenderter orts- und zeitaufloesung sowie
-gebietsgroesse. die serien und stufen stehen in presets.py, die beschreibung in README.md.
+gebietsgroesse. die serien und stufen stehen in presets.py, die beschreibung in README_Presets.md.
 
   python benchmark.py                          uebersicht ueber serien und stufen
   python benchmark.py gitter                   serie "gitter", stufe "schnell"
@@ -288,6 +288,13 @@ def messe_loesezeit(löser, domain, mindestdauer=0.3):
     return (time.perf_counter() - uhr) / anzahl
 
 
+def zerlegung_groesse(löser):
+    #eintraege in den LR-faktoren. der FFT-loeser haelt statt einer grossen zerlegung
+    #viele kleine (eine je fourier-mode)
+    zerlegungen = [löser.lu] if hasattr(löser, "lu") else löser.löser_pro_mode
+    return int(sum(z.L.nnz + z.U.nnz for z in zerlegungen))
+
+
 def _json_wert(x):
     if isinstance(x, float) and not math.isfinite(x):
         return None
@@ -332,8 +339,7 @@ def fuehre_lauf_aus(name, cfg_werte, t_end, ordner, parallel, ausgabe=True):
     ms_pro_schritt = 1e3 * t_schleife / max(schritte, 1)
     t_loese_ms = 1e3 * messe_loesezeit(messung.löser, domain)
     dt_mittel = t[-1] / max(schritte, 1)
-    lu = messung.löser.lu
-    nnz_lu = int(lu.L.nnz + lu.U.nnz)
+    nnz_lu = zerlegung_groesse(messung.löser)
 
     ergebnis = dict(
         format_version=FORMAT_VERSION,
@@ -356,6 +362,7 @@ def fuehre_lauf_aus(name, cfg_werte, t_end, ordner, parallel, ausgabe=True):
         poisson_anteil=4.0 * t_loese_ms / ms_pro_schritt,
         rechenzeit_pro_periode_s=ms_pro_schritt * 1e-3 * auswertung["periode"] / dt_mittel,
         unbekannte=cfg.n_xi * cfg.n_theta,
+        poisson_loeser=type(messung.löser).__name__,
         nnz_LU=nnz_lu,
         speicher_LU_MB=nnz_lu * 12 / 1e6,     #8 byte wert + 4 byte index je eintrag
         parallel=parallel,
@@ -391,8 +398,13 @@ def kurzbericht(e):
     St = f"{e['St']:.4f}" if e["St"] is not None else "  -   "
     winkel = f"{e['abloesewinkel']:.1f}°" if e["abloesewinkel"] is not None else "  -  "
     return (f"{e['name']}: {e['status']}, St = {St}, abloesewinkel = {winkel}, "
-            f"{e['schritte']} schritte, {e['ms_pro_schritt']:.2f} ms/schritt, "
-            f"gesamt {e['t_aufbau_s'] + e['t_schleife_s']:.0f} s")
+            f"{e['schritte']} schritte, {e['ms_pro_schritt']:.2f} ms/schritt "
+            f"({poisson_kurz(e.get('poisson_loeser'))}), gesamt {e['t_aufbau_s'] + e['t_schleife_s']:.0f} s")
+
+
+def poisson_kurz(name):
+    #kurzname des poisson-loesers fuer tabelle und meldungen
+    return {"PoissonSolver": "LR", "PoissonSolverFFT": "FFT"}.get(name, name or "?")
 
 
 # ---------------------------------------------------------------------------
@@ -403,8 +415,8 @@ CSV_SPALTEN = ["name", "x", "stufe", "n_xi", "n_theta", "cfl_target", "r_max", "
                "periode_streuung", "amplitude", "abloesewinkel", "abloesewinkel_oben",
                "abloesewinkel_unten", "t_einsatz", "n_perioden", "instabil_bei_t", "schritte",
                "dt_mittel", "t_aufbau_s", "t_schleife_s", "ms_pro_schritt", "t_loese_ms",
-               "poisson_anteil", "rechenzeit_pro_periode_s", "unbekannte", "nnz_LU",
-               "zeitmessung_vergleichbar"]
+               "poisson_anteil", "rechenzeit_pro_periode_s", "unbekannte", "poisson_loeser",
+               "nnz_LU", "zeitmessung_vergleichbar"]
 
 
 def lade_serie(serie, t_end, laufordner):
@@ -437,14 +449,16 @@ def werte_serie_aus(serie, t_end, ordner):
 
     print(f"\nserie {serie} ({SERIEN[serie]['beschreibung']})")
     print(f"  {SERIEN[serie]['x_name']:>10s}  {'status':16s} {'St':>7s} {'amplitude':>9s} "
-          f"{'winkel':>7s} {'einsatz':>7s} {'perioden':>8s} {'dt_mittel':>9s} {'ms/schr.':>8s} {'gesamt':>8s}")
+          f"{'winkel':>7s} {'einsatz':>7s} {'perioden':>8s} {'dt_mittel':>9s} {'ms/schr.':>8s} "
+          f"{'gesamt':>8s} {'poisson':>7s}")
     for z in zeilen:
         def f(wert, format_):
             return format_.format(wert) if wert is not None else "-"
         print(f"  {z['x']:>10.4g}  {z['status']:16s} {f(z['St'], '{:.4f}'):>7s} "
               f"{f(z['amplitude'], '{:.4f}'):>9s} {f(z['abloesewinkel'], '{:.1f}'):>7s} "
               f"{f(z['t_einsatz'], '{:.1f}'):>7s} {z['n_perioden']:>8d} {z['dt_mittel']:>9.2e} "
-              f"{z['ms_pro_schritt']:>8.2f} {z['t_aufbau_s'] + z['t_schleife_s']:>7.0f}s")
+              f"{z['ms_pro_schritt']:>8.2f} {z['t_aufbau_s'] + z['t_schleife_s']:>7.0f}s "
+              f"{poisson_kurz(z.get('poisson_loeser')):>7s}")
 
     zusatz = ""
     if serie == "gitter":
@@ -553,7 +567,7 @@ def uebersicht():
 
 
 def main():
-    parser = argparse.ArgumentParser(description="benchmark-serien, siehe README.md")
+    parser = argparse.ArgumentParser(description="benchmark-serien, siehe README_Presets.md")
     parser.add_argument("serie", nargs="?", choices=list(SERIEN) + ["alle", "selbsttest"])
     parser.add_argument("--stufe", choices=STUFEN, default="schnell")
     parser.add_argument("--parallel", type=int, default=1, help="anzahl gleichzeitiger laeufe")

@@ -8,7 +8,7 @@ import scipy.sparse.linalg as spla
 
 from operatoren import build_D_xi, build_D_theta
 from operatoren import build_upwind_xi, build_upwind_theta, build_laplacian
-from operatoren import build_D2_xi, build_D2_theta 
+from operatoren import build_D2_xi, build_D2_theta
 
 
 # ---------------------------------------------------------------------------
@@ -128,25 +128,36 @@ class PoissonSolver:
         psi_flat = self.lu.solve(rhs)
         return self.domain.unflatten(psi_flat)
 
-class PoissonLoeserFFT:
+class PoissonSolverFFT:
+    """
+    poisson-loeser ueber eine FFT in theta. loest exakt dasselbe gleichungssystem wie
+    PoissonSolver, nur anders zerlegt:
+    theta ist periodisch und aequidistant, damit ist D2_theta eine zyklische matrix und
+    wird von der diskreten fourier-transformation diagonalisiert. die metrik 1/r^2 haengt
+    nur von xi ab, und die dirichlet-randzeilen sind in theta diagonal - deshalb zerfaellt
+    das 2d-system in n_theta/2+1 unabhaengige 1d-systeme in xi, eines je fourier-mode.
+    das gilt nur fuer ein gleichmaessiges, periodisches theta-gitter; wird daran etwas
+    geaendert, ist nur noch PoissonSolver gueltig.
+    """
 
     def __init__(self, domain):
         self.domain = domain
-        n_xi = domain.n_xi
-        n_theta = domain.n_theta
         i_w = domain.i_wall
         i_f = domain.i_far
 
+        #eigenwerte von D2_theta: bei einer zyklischen matrix sind das die
+        #fourier-koeffizienten der ersten zeile. rfft liefert nur die haelfte der
+        #moden (reelles feld), entsprechend werden auch nur diese gebraucht
         D2_theta = build_D2_theta(domain)
         erste_zeile = np.asarray(D2_theta[0, :].todense()).ravel()
-
-        alle_eigenwerte = np.fft.fft(erste_zeile).real
-        self.eigenwerte = alle_eigenwerte[: n_theta // 2+1]
+        self.eigenwerte = np.fft.fft(erste_zeile).real[: domain.n_theta // 2 + 1]
 
         D2_xi = build_D2_xi(domain)
-        I_xi = sp.identity(n_xi, format="csr")
+        I_xi = sp.identity(domain.n_xi, format="csr")
         metrisch_diag = sp.diags(domain.vorfaktor, format="csr")
 
+        #je mode eine kleine (n_xi x n_xi)-matrix, mit denselben dirichlet-randzeilen
+        #wie in build_poisson_matrix
         self.löser_pro_mode = []
         for lam in self.eigenwerte:
             A_m = (metrisch_diag @ (D2_xi + lam * I_xi)).tolil()
@@ -159,29 +170,33 @@ class PoissonLoeserFFT:
             self.löser_pro_mode.append(spla.splu(A_m.tocsc()))
 
     def löse(self, omega):
-        domain = self.domain
-        i_f = domain.i_far
-
-        rhs = np.zeros((domain.n_xi, domain.n_theta))
-        rhs[1:i_f, :] = -omega[1:i_f, :]
-        rhs[i_f, :] = potential_flow_psi(domain, domain.r[i_f])
-
+        #dieselbe rechte seite wie beim LR-loeser, nur modenweise geloest
+        rhs = self.domain.unflatten(build_rhs(self.domain, omega))
         rhs_dach = np.fft.rfft(rhs, axis=1)
 
         psi_dach = np.empty_like(rhs_dach)
         for m, lu in enumerate(self.löser_pro_mode):
-            psi_dach[:, m] = lu.solve(rhs_dach[:, m].real) + 1j * lu.solve(rhs_dach[:, m].imag)
+            #die matrizen sind reell: real- und imaginaerteil zusammen in einem
+            #aufruf loesen spart gegenueber zwei aufrufen rund 20 % (ergebnis identisch)
+            x = lu.solve(np.column_stack([rhs_dach[:, m].real, rhs_dach[:, m].imag]))
+            psi_dach[:, m] = x[:, 0] + 1j * x[:, 1]
 
-        psi = np.fft.irfft(psi_dach, n=domain.n_theta, axis=1)
-        return psi
-def wähle_poisson_löser(domain, schwelle = 100 * 200):
+        return np.fft.irfft(psi_dach, n=self.domain.n_theta, axis=1)
+
+
+#ab dieser anzahl unbekannter ist der FFT-loeser schneller. gemessen auf einem
+#Ryzen 7 9800X3D: bei 81x160 = 12960 unbekannten ist LR noch 20 % schneller
+#(der FFT-loeser ruft pro loesung n_theta/2 mal SuperLU auf), bei 121x240 = 29040
+#ist FFT 30 % schneller, bei 161x320 = 51520 fast doppelt so schnell
+FFT_AB_UNBEKANNTEN = 20_000
+
+
+def wähle_poisson_löser(domain, schwelle=FFT_AB_UNBEKANNTEN):
+    #beide loeser loesen dasselbe gleichungssystem (abweichung ~1e-12), die wahl
+    #aendert die ergebnisse also nicht, nur die rechenzeit
     if domain.n_xi * domain.n_theta > schwelle:
-        return PoissonLoeserFFT(domain)
+        return PoissonSolverFFT(domain)
     return PoissonSolver(domain)
-    
-
-
-
 
 
 # ---------------------------------------------------------------------------
@@ -312,3 +327,26 @@ def rk4(psi, omega, cfg, poisson_solver, ops, dt, domain):
     psi_next, omega_next = apply_bc(psi_next, omega_next, domain)
 
     return psi_next, omega_next
+
+
+#test bereich
+if __name__ == "__main__":
+    #die beiden poisson-loeser muessen dasselbe gleichungssystem loesen
+    from gitter import Config, Domain
+
+    for n_xi, n_theta in ((41, 80), (81, 160), (121, 240)):
+        cfg = Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=n_xi, n_theta=n_theta, dt=0.05)
+        dom = Domain(cfg)
+        omega = np.random.default_rng(0).standard_normal((n_xi, n_theta))
+
+        psi_lr = PoissonSolver(dom).löse(omega)
+        psi_fft = PoissonSolverFFT(dom).löse(omega)
+
+        #residuum im urspruenglichen gleichungssystem (nicht nur vergleich der beiden)
+        A = build_poisson_matrix(dom)
+        rhs = build_rhs(dom, omega)
+        res = np.abs(A @ dom.flatten(psi_fft) - rhs).max()
+
+        print(f"{n_xi:4d}x{n_theta:<4d} max|psi_FFT - psi_LR| = {np.abs(psi_fft - psi_lr).max():.1e} "
+              f"(|psi| bis {np.abs(psi_lr).max():6.2f}),  residuum FFT = {res:.1e},  "
+              f"automatisch gewaehlt: {type(wähle_poisson_löser(dom)).__name__}")
