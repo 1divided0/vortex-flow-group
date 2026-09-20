@@ -7,17 +7,16 @@ matplotlib.use("Agg")   #ohne fenster rendern, die bilder werden nur gespeichert
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation, PillowWriter
 
-from config import Config
-from domain import Domain
-from zeitintegration import build_alle_operatoren, geschwindigkeit
+from gitter import Config, Domain
+from loeser import build_alle_operatoren, geschwindigkeit
+from signalauswertung import sonden_lage, werte_signal_aus
 
 
 def lade_snapshots(pfad):
+    #snapshot-datei aus main.py laden und daraus gitter und config rekonstruieren
     daten = np.load(pfad)
     if "R" not in daten.files:
-      raise ValueError(
-            f"{pfad} enthält keine Gitterparameter"
-        )
+        raise ValueError(f"{pfad} enthält keine Gitterparameter")
 
     cfg = Config(
         R = float(daten["R"]), r_max = float(daten["r_max"]),
@@ -27,7 +26,7 @@ def lade_snapshots(pfad):
     )
     domain = Domain(cfg)
 
-#umwandeln in float64
+    #umwandeln in float64
     t = daten["t"].astype(float)
     psi = daten["psi"].astype(float)
     omega = daten["omega"].astype(float)
@@ -35,6 +34,7 @@ def lade_snapshots(pfad):
     return cfg, domain, t, psi, omega
 
 def kartesische_geschwindigkeit(domain, psi_snapshots):
+    #u_x, u_y aus u_r, u_theta fuer alle snapshots
     ops = build_alle_operatoren(domain)
     cos_t = np.cos(domain.theta)[None, :]
     sin_t = np.sin(domain.theta)[None, :]
@@ -44,31 +44,24 @@ def kartesische_geschwindigkeit(domain, psi_snapshots):
     u_theta_alle = np.empty_like(psi_snapshots)
 
     for n, psi in enumerate(psi_snapshots):
-       u_r, u_theta = geschwindigkeit(psi, domain, ops)
-       ux[n] = u_r * cos_t - u_theta * sin_t
-       uy[n] = u_r * sin_t + u_theta * cos_t
-       u_theta_alle[n] = u_theta
+        u_r, u_theta = geschwindigkeit(psi, domain, ops)
+        ux[n] = u_r * cos_t - u_theta * sin_t
+        uy[n] = u_r * sin_t + u_theta * cos_t
+        u_theta_alle[n] = u_theta
 
     return ux, uy, u_theta_alle
 
 
 def sonden_signal(domain, cfg, u_theta_alle, abstand_in_D=2.0):
-   """quergeschwindigkeit auf der symmetrieachse hinter dem zylinder"""
-
-   i_sonde = int(np.argmin(np.abs(domain.r - abstand_in_D * cfg.D)))
-
-   return u_theta_alle[:, i_sonde, 0], domain.r[i_sonde]
-
-
-def strouhal_zahl(t, signal, cfg):
-   s = signal - np.mean(signal)
-   k = np.where((s[:-1] < 0) & (s[1:] >= 0))[0]
-   if len(k) < 3:
-      return np.nan
-
-   t_null = t[k] - s[k] * (t[k + 1] - t[k]) / (s[k + 1] - s[k])
-   periode = np.mean(np.diff(t_null))
-   return cfg.D / (periode * cfg.U_inf)
+    """
+    quergeschwindigkeit auf der symmetrieachse hinter dem zylinder.
+    die lage wird zwischen zwei xi-zeilen interpoliert (sonden_lage) statt auf den
+    naechsten gitterpunkt gerundet - damit misst diese sonde auf jedem gitter an
+    derselben stelle, und an genau derselben wie die sonde des benchmarks
+    """
+    i, w = sonden_lage(domain, cfg, abstand_in_D)
+    signal = (1.0 - w) * u_theta_alle[:, i, 0] + w * u_theta_alle[:, i + 1, 0]
+    return signal, abstand_in_D * cfg.D
 
 
 # ---------------------------------------------------------------------------
@@ -100,16 +93,28 @@ def zeichne_wirbelstaerke(ax, domain, cfg, omega, t, skala=3.0):
     ax.set_title(fr"Wirbelstärke $\omega$,  Re = {cfg.Re:.0f},  $t = {t:.1f}$")
 
 
-def wirbelstaerke_bild(pfad, domain, cfg, t, omega, signal, r_sonde, St):
+def wirbelstaerke_bild(pfad, domain, cfg, t, omega, signal, r_sonde, auswertung):
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), gridspec_kw={"height_ratios": [1.4, 1]})
     zeichne_wirbelstaerke(ax1, domain, cfg, omega[-1], t[-1])
 
     ax2.plot(t, signal, lw=1.2)
     ax2.axhline(0, color="0.7", lw=0.8)
+    #das ausgewertete periodenfenster sichtbar machen - die strouhal-zahl stammt
+    #nur von dort und nicht vom ganzen signal
+    St = auswertung["St"]
+    if np.isfinite(St):
+        ax2.axvspan(auswertung["t_fenster_start"], auswertung["t_fenster_ende"],
+                    color="C1", alpha=0.12, lw=0, label="Auswertefenster")
+        ax2.legend(fontsize=8, loc="lower right")
     ax2.set_xlabel("$t$")
     ax2.set_ylabel(fr"$u_\theta$ bei $r = {r_sonde:.2f}$, $\theta = 0$")
     titel = "Quergeschwindigkeit im Nachlauf"
-    ax2.set_title(titel + (f",  St = {St:.3f}" if np.isfinite(St) else ",  keine periodische Ablösung"))
+    if np.isfinite(St):
+        titel += (f",  St = {St:.4f},  Amplitude = {auswertung['amplitude']:.3f}"
+                  f"  ({auswertung['n_perioden']} Perioden)")
+    else:
+        titel += f",  keine periodische Ablösung (Status {auswertung['status']})"
+    ax2.set_title(titel, fontsize=10)
 
     fig.tight_layout()
     fig.savefig(pfad, dpi=130)
@@ -297,6 +302,13 @@ def ftle_ausgabe(pfad_png, pfad_gif, cfg, felder, ausdehnung, T, fps=6):
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
+    #umlaute sollen auch dann funktionieren, wenn die ausgabe in eine datei umgeleitet
+    #wird - windows faellt sonst auf cp1252 zurueck und bricht mit UnicodeEncodeError ab
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except (AttributeError, OSError):
+        pass
+
     skript_ordner = os.path.dirname(os.path.abspath(__file__))
     pfad_daten = sys.argv[1] if len(sys.argv) > 1 else os.path.join(skript_ordner, "simulation_snapshots.npz")
     ordner = os.path.join(skript_ordner, "ergebnisse")
@@ -309,14 +321,21 @@ if __name__ == "__main__":
     ux, uy, u_theta_alle = kartesische_geschwindigkeit(domain, psi)
 
     signal, r_sonde = sonden_signal(domain, cfg, u_theta_alle)
-    St = strouhal_zahl(t, signal, cfg)
+    #dieselbe auswertung wie im benchmark: sie sucht sich das periodenfenster am
+    #ende des signals selbst. wird der anlauf mitgemittelt, liegt St bis zu 2 % zu tief
+    auswertung = werte_signal_aus(t, signal, cfg.D, cfg.U_inf)
+    St = auswertung["St"]
     if np.isfinite(St):
-        print(f"Strouhal-Zahl: St = {St:.3f}")
+        print(f"Strouhal-Zahl: St = {St:.4f}  (Amplitude {auswertung['amplitude']:.3f}, "
+              f"{auswertung['n_perioden']} Perioden aus t = {auswertung['t_fenster_start']:.1f} "
+              f"... {auswertung['t_fenster_ende']:.1f})")
     else:
-        print("Keine periodische Ablösung erkennbar (Lauf zu kurz oder Re zu klein).")
+        print(f"Keine periodische Ablösung auswertbar (Status {auswertung['status']}): "
+              f"Lauf zu kurz, Re zu klein oder zu wenig Snapshots nach dem Einschwingen.")
 
     print("Wirbelstärke: Bild und Animation ...")
-    wirbelstaerke_bild(os.path.join(ordner, "wirbelstaerke.png"), domain, cfg, t, omega, signal, r_sonde, St)
+    wirbelstaerke_bild(os.path.join(ordner, "wirbelstaerke.png"), domain, cfg, t, omega,
+                       signal, r_sonde, auswertung)
     wirbelstaerke_animation(os.path.join(ordner, "wirbelstaerke.gif"), domain, cfg, t, omega)
 
     print("Ljapunow-Exponent (FTLE) ...")
