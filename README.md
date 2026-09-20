@@ -10,12 +10,34 @@ Methodik und Diskussion der Ergebnisse liegt in [**`Projektbericht.pdf`**](Proje
 diese README beschreibt den Code und wie man ihn ausführt.
 
 > **Diese Abgabe ist ein Abzug des Git-Repositories**
-> **<https://github.com/1divided0/vortex-flow-group>** — Branch **`1.0`**.
+> **<https://github.com/1divided0/vortex-flow-group>** — Branch **`main`**.
 >
-> Das ZIP ist eine Momentaufnahme dieses Branches. Im Repository liegen zusätzlich die
-> vollständige Entwicklungsgeschichte, die Vorgängerstände `0.1` bis `0.4` und die
-> Kursunterlagen auf `main`, die auf `1.0` bewusst entfernt wurden, damit der Branch nur
-> den abzugebenden Code und die Ergebnisse enthält.
+> Das ZIP ist eine Momentaufnahme dieses Branches. `main` trägt den fertigen Abgabestand;
+> er entstand aus dem Entwicklungsbranch `1.0`, der auf den abzugebenden Code und die
+> Ergebnisse reduziert wurde. Die Vorgängerstände `0.1` bis `0.4` bestehen weiterhin und
+> dokumentieren die Entwicklung — dort liegen auch die Kursunterlagen mit der
+> theoretischen Herleitung, die auf dem Abgabestand bewusst nicht mehr enthalten sind.
+
+### Was im ZIP fehlt
+
+Die Abgabe ist auf 20 MB begrenzt, die Ergebnisse sind zusammen rund 44 MB groß. **Der
+komplette Ordner `Project_docs/ergebnisse/` ist deshalb nicht im ZIP.** Auch die beiden
+Bilder, die diese README einbindet, werden daher nur auf GitHub angezeigt — in der lokalen
+Kopie erscheinen an ihrer Stelle Platzhalter.
+
+Im Repository unter `Project_docs/ergebnisse/` vollständig enthalten:
+
+| | Größe | Inhalt |
+|---|---|---|
+| `wirbelstaerke.png`, `ftle.png` | 1,3 MB | die beiden Bilder dieser README |
+| `wirbelstaerke.gif` | 12 MB | Animation der Wirbelstraße, 100 Bilder |
+| `ftle.gif` | 6 MB | Animation des Ljapunow-Exponenten über eine Ablöseperiode |
+| `benchmark/` | 25 MB | Diagramme und CSV-Messwerte aller fünf Serien, dazu die Rohdaten der 58 Einzelläufe |
+
+**Diese Ergebnisse müssen nicht neu gerechnet werden.** Sie liegen fertig im Repository —
+alle Zahlen in dieser README und im Projektbericht stammen aus genau diesen Läufen. Der
+Abschnitt [Schnellstart](#schnellstart) beschreibt nur, wie man sie bei Bedarf reproduziert;
+zum Nachvollziehen der Ergebnisse genügt ein Blick ins Repository.
 
 ![Wirbelstärke und Sondensignal](Project_docs/ergebnisse/wirbelstaerke.png)
 
@@ -85,6 +107,9 @@ das Gitter logarithmisch-polar ist, kostet 20 D → 50,3 D nur 40 zusätzliche R
 | `wirbelstaerke.gif` | Animation der Wirbelstraße, 100 Bilder |
 | `ftle.png` | Ljapunow-Exponent (FTLE): die Transportbarrieren der Strömung |
 | `ftle.gif` | dieselbe Größe über eine volle Ablöseperiode, 30 Bilder |
+
+Alle vier liegen fertig im Repository und sind aus Platzgründen nicht im ZIP, siehe
+[Was im ZIP fehlt](#was-im-zip-fehlt).
 
 ![FTLE](Project_docs/ergebnisse/ftle.png)
 
@@ -160,8 +185,9 @@ python Validierung/benchmark.py gitter --nur-auswerten      # nur Diagramm neu z
 Fertige Läufe werden gespeichert und beim nächsten Aufruf übersprungen, ein abgebrochener
 Durchlauf lässt sich also einfach fortsetzen.
 
-Alle Serien sind auf der Stufe `voll` **bereits gerechnet**; die Diagramme, Messwerte und
-Rohdaten liegen in `Project_docs/ergebnisse/benchmark/`.
+Alle Serien sind auf der Stufe `voll` **bereits gerechnet** — niemand muss sie nachrechnen.
+Diagramme, Messwerte und Rohdaten liegen im Repository unter `Project_docs/ergebnisse/benchmark/`
+und sind aus Platzgründen nicht im ZIP, siehe [Was im ZIP fehlt](#was-im-zip-fehlt).
 
 ## Projektstruktur
 
