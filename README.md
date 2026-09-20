@@ -5,7 +5,17 @@ Gelöst wird die **Wirbeltransportgleichung in der Wirbelstärke-Stromfunktions-
 auf einem **logarithmisch-polaren Gitter** mit Finiten Differenzen 2. Ordnung und einem
 expliziten **RK4**-Zeitschritt. Bei Re = 100 bildet sich die Kármánsche Wirbelstraße aus.
 
-Studienprojekt zum Kurs *Numerische Methoden*.
+Studienprojekt zum Kurs *Numerische Methoden*. Der ausformulierte Bericht mit Herleitung,
+Methodik und Diskussion der Ergebnisse liegt in [**`Projektbericht.pdf`**](Projektbericht.pdf);
+diese README beschreibt den Code und wie man ihn ausführt.
+
+> **Diese Abgabe ist ein Abzug des Git-Repositories**
+> **<https://github.com/1divided0/vortex-flow-group>** — Branch **`1.0`**.
+>
+> Das ZIP ist eine Momentaufnahme dieses Branches. Im Repository liegen zusätzlich die
+> vollständige Entwicklungsgeschichte, die Vorgängerstände `0.1` bis `0.4` und die
+> Kursunterlagen auf `main`, die auf `1.0` bewusst entfernt wurden, damit der Branch nur
+> den abzugebenden Code und die Ergebnisse enthält.
 
 ![Wirbelstärke und Sondensignal](Project_docs/ergebnisse/wirbelstaerke.png)
 
