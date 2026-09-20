@@ -117,7 +117,9 @@ def wirbelstaerke_bild(pfad, domain, cfg, t, omega, signal, r_sonde, auswertung)
     ax2.set_title(titel, fontsize=10)
 
     fig.tight_layout()
-    fig.savefig(pfad, dpi=130)
+    #dpi bestimmt allein die pixelzahl der abgabe-bilder und kostet keine rechenzeit:
+    #200 dpi ergeben bei figsize (10, 8) genau 2000x1600 px
+    fig.savefig(pfad, dpi=200)
     plt.close(fig)
 
 
@@ -132,7 +134,10 @@ def wirbelstaerke_animation(pfad, domain, cfg, t, omega, max_bilder=100, fps=15)
         zeichne_wirbelstaerke(ax, domain, cfg, omega[n], t[n])
 
     animation = FuncAnimation(fig, bild, frames=len(auswahl))
-    animation.save(pfad, writer=PillowWriter(fps=fps), dpi=80)
+    #dpi 80 ergab nur 720x384 px, 130 dpi sind 1170x624 px. gemessen an der
+    #hauptloesung waechst das gif dadurch von etwa 7 auf 12.6 MB bei 100 bildern -
+    #wird das zu gross, max_bilder senken statt dpi
+    animation.save(pfad, writer=PillowWriter(fps=fps), dpi=130)
     plt.close(fig)
 
 
@@ -217,8 +222,16 @@ def _normieren(sigma):
     return np.nan_to_num(np.clip((sigma - unten) / (oben - unten), 0.0, 1.0))
 
 
-def ftle_felder(domain, cfg, t, ux, uy, T=8.0, delta_in_D=0.04, anzahl=12, St=np.nan):
-    """berechnet FTLE-felder fuer mehrere startzeiten t0 ueber eine abloeseperiode."""
+def ftle_felder(domain, cfg, t, ux, uy, T=8.0, delta_in_D=0.01, anzahl=30, St=np.nan):
+    """berechnet FTLE-felder fuer mehrere startzeiten t0 ueber eine abloeseperiode.
+
+    delta_in_D ist die aufloesung des *partikelgitters* und damit die bildaufloesung
+    des FTLE-bildes - sie haengt nicht am CFD-gitter. mit 0.04 waren es 338x151
+    datenpunkte, die imshow auf ~1100 px hochinterpoliert hat (faktor 3.3, sichtbar
+    unscharf). 0.01 ergibt 1350x601 punkte, also 16-mal so viele partikel.
+    kosten: gut 45 s je feld, mit anzahl = 30 also etwa 25 min. wird das zu lang,
+    zuerst anzahl senken (weniger gif-phasen), erst danach delta_in_D erhoehen
+    """
     D = cfg.D
     x0 = np.arange(-1.5 * D, 12.0 * D, delta_in_D * D)
     y0 = np.arange(-3.0 * D, 3.0 * D + 1e-9, delta_in_D * D)
@@ -283,18 +296,20 @@ def zeichne_ftle(ax, cfg, feld, ausdehnung, T):
     ax.set_title(fr"Ljapunow-Exponent,  Re = {cfg.Re:.0f},  $t_0 = {t0:.1f}$,  $T = \pm{T:.0f}$")
 
 
-def ftle_ausgabe(pfad_png, pfad_gif, cfg, felder, ausdehnung, T, fps=6):
+def ftle_ausgabe(pfad_png, pfad_gif, cfg, felder, ausdehnung, T, fps=12):
+    #fps 6 bei 12 phasen war eine 2-sekunden-schleife und ruckelte sichtbar.
+    #30 phasen bei 12 fps ergeben 2.5 s je abloeseperiode und laufen rund
     fig, ax = plt.subplots(figsize=(10, 4.8))
     zeichne_ftle(ax, cfg, felder[0], ausdehnung, T)
     fig.tight_layout()
-    fig.savefig(pfad_png, dpi=130)
+    fig.savefig(pfad_png, dpi=200)
 
     def bild(k):
         ax.clear()
         zeichne_ftle(ax, cfg, felder[k], ausdehnung, T)
 
     animation = FuncAnimation(fig, bild, frames=len(felder))
-    animation.save(pfad_gif, writer=PillowWriter(fps=fps), dpi=90)
+    animation.save(pfad_gif, writer=PillowWriter(fps=fps), dpi=130)
     plt.close(fig)
 
 # ---------------------------------------------------------------------------

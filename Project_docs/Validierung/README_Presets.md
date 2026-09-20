@@ -63,27 +63,61 @@ gegeneinander.
 
 ```
 python main.py            # = python main.py schnell
+python main.py haupt
 python main.py lang
 ```
 
-| Preset | Gitter | Zeit | Snapshots | Dauer | Zweck |
-|---|---|---|---|---|---|
-| `schnell` | 50×100 | t = 0 … 12 | alle 10 Schritte | ≈ 1 s | Funktionstest |
-| `lang` | 160×320 | t = 0 … 100 | alle 20 Schritte ab t = 60 | ≈ 15 min | Produktionslauf für `Animation.py` |
+| Preset | Gitter | Gebiet | Zeit | Snapshots | Dauer | Zweck |
+|---|---|---|---|---|---|---|
+| `schnell` | 50×100 | 20 D | t = 0 … 12 | alle 10 Schritte | ≈ 1 s | Funktionstest |
+| **`haupt`** | **201×320** | **50,3 D** | **t = 0 … 150** | **alle 50 Schritte ab t = 80** | **≈ 21 min** | **Hauptlösung der Abgabe** |
+| `lang` | 160×320 | 20 D | t = 0 … 100 | alle 20 Schritte ab t = 60 | ≈ 15 min | älterer Produktionslauf |
 
-Beide schreiben nach `simulation_snapshots.npz` – der Schnelltest überschreibt also einen
+Alle drei schreiben nach `simulation_snapshots.npz` – der Schnelltest überschreibt also einen
 vorhandenen Produktionslauf.
 
-**Achtung bei `lang`:** Das Gitter 160×320 erzwingt dt ≈ 1,2·10⁻³, also rund 83 000 Zeitschritte
-und etwa 1 660 Snapshots. Die Snapshot-Datei wird damit **ca. 680 MB** groß, und `Animation.py`
-lädt sie als float64 – dafür sind mehrere GB Arbeitsspeicher nötig. Wer das vermeiden will, setzt
-`Snapshotrange` höher (z. B. 100 statt 20 → ca. 140 MB) oder rechnet auf 80×160.
+**Warum `haupt` so aussieht, wie es aussieht.** Das Gitter ist genau der feinste Lauf der
+Benchmark-Serie `gitter_fern`. Die Hauptlösung steht damit am Ende der Konvergenzstudie und
+ihr Fehler ist durch die eigene Serie beziffert: St = 0,16336, Richardson (p = 2,34) ergibt
+St(h → 0) = 0,1637, Literatur 0,16434.
+
+Entscheidend ist dabei das **Gebiet**, nicht die Gitterweite: der Fernfeldrand ist die größte
+Fehlerquelle (bei 160×320 auf 20 D sind es +1,6 %, auf 50,3 D nur −0,6 %), und 20 D → 50,3 D
+kostet wegen des log-polaren Gitters nur 40 zusätzliche Radialzeilen, also +16 % Rechenzeit.
+Eine weitere Halbierung der Gitterweite (401×640) würde dagegen **22×** kosten – der
+Zeitschritt ist an der Wand diffusiv begrenzt (`dt ≤ cfl·Δx²/(4ν)`), bei halbiertem h viertelt
+sich dt also – und St nur um +0,17 % verschieben, weniger als die Periodenstreuung von 0,1 %.
+
+**Dateigröße:** dt ≈ 1,2·10⁻³ bedeutet rund 124 500 Zeitschritte und etwa 1 160 Snapshots, die
+Datei wird **ca. 600 MB** groß und `Animation.py` braucht etwa 2 GB Arbeitsspeicher. Wer das
+vermeiden will, setzt `Snapshotrange` höher (100 statt 50 → ca. 300 MB); unter etwa 0,12
+Zeiteinheiten Abstand leidet aber die FTLE-Integration.
+
+**Achtung bei `lang`:** dieselbe Rechnung mit etwa 1 660 Snapshots à 160×320 → **ca. 680 MB**.
 
 Danach:
 
 ```
 python Animation.py       # schreibt ergebnisse/wirbelstaerke.png/.gif, ftle.png/.gif
 ```
+
+Auflösung der Abgabe-Bilder:
+
+| Datei | Größe | bestimmt durch |
+|---|---|---|
+| `wirbelstaerke.png` | 2000×1600 px | `dpi=200` in `wirbelstaerke_bild` |
+| `wirbelstaerke.gif` | 1170×624 px, 100 Bilder | `dpi=130`, `max_bilder` in `wirbelstaerke_animation` |
+| `ftle.png` | 2000×960 px | `dpi=200` **und** `delta_in_D` |
+| `ftle.gif` | 1300×624 px, 30 Bilder | `dpi=130`, `anzahl` in `ftle_felder` |
+
+Beim FTLE hängt die Bildschärfe **nicht am CFD-Gitter**, sondern am Partikelgitter
+`delta_in_D` in `ftle_felder`: 0,01 ergibt 1350×601 Datenpunkte (mit dem früheren Wert 0,04
+waren es 338×151, die `imshow` um den Faktor 3,3 hochinterpoliert hat). Das kostet gut 45 s
+je Feld, mit `anzahl = 30` also etwa 25 Minuten reine Nachbearbeitung – unabhängig davon,
+wie fein die Simulation gerechnet wurde. Wird das zu lang, zuerst `anzahl` senken.
+
+Die höhere DPI schlägt sich kaum in der Dateigröße nieder: das Wirbelstärke-GIF wächst
+trotz 2,6-facher Pixelzahl nur von etwa 7 auf 12,6 MB, weil die GIF-Palette gut komprimiert.
 
 ## Selbsttests und Validierung (`Validierung/`)
 
