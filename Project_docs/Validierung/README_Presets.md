@@ -16,10 +16,12 @@ Alle Befehle werden im Ordner `Project_docs` ausgeführt.
 | `operatoren.py` | Sparse-Differenzenmatrizen und Laplace-Operator, Selbsttest |
 | `loeser.py` | Randbedingungen (Wand/Thom, Fernfeld), Poisson-Löser ∇²ψ = −ω (LR-Zerlegung und FFT, siehe unten), Geschwindigkeiten, rechte Seite, CFL-Zeitschritt, RK4 |
 | `main.py` | Anfangszustand, Zeitschleife `eine_Schleife`, Presets `EINZELLAEUFE` |
+| `signalauswertung.py` | Periodenfenster, Strouhal-Zahl, Amplitude, Restschwankung und Sondenlage – **gemeinsam** von `Animation.py` und dem Benchmark benutzt |
 | `Animation.py` | Auswertung eines Einzellaufs: Wirbelstärke, Strouhal-Zahl, FTLE |
-| `Validierung/benchmark.py` | Benchmark-Serien (Orts-/Zeit-/Gebiets-/Reynolds-Serie) |
+| `Validierung/benchmark.py` | Benchmark-Serien (Orts-/Zeit-/Gebiets-/Kreuz-/Reynolds-Serie) |
 | `Validierung/presets.py` | Voreinstellungen der Benchmark-Serien |
 | `Validierung/taylor_green.py` | Validierung am Taylor-Green-Wirbel (exakte Lösung) |
+| `Validierung/mms_logpolar.py` | Manufactured Solution auf dem log-polaren Gitter: Metrik, Advektion, Diffusion, Thom-Formel |
 | `Validierung/selbsttest_operatoren.py` | Differenzenmatrizen gegen analytische Ableitungen |
 | `Validierung/selbsttest_loeser.py` | Poisson-Löser gegen die Potentialströmung, FFT gegen LR |
 | `Validierung/selbsttest_alle.py` | führt alle schnellen Prüfprogramme aus |
@@ -98,6 +100,7 @@ Einzeln:
 python Validierung/selbsttest_operatoren.py   # Differenzenmatrizen gegen analytische Ableitungen
 python Validierung/selbsttest_loeser.py       # Poisson gegen Potentialströmung, Ordnung, FFT gegen LR
 python Validierung/taylor_green.py            # Taylor-Green-Wirbel: exakte Lösung, Ordnung, nu = 0
+python Validierung/mms_logpolar.py            # Manufactured Solution auf dem log-polaren Gitter
 python Validierung/benchmark.py selbsttest    # Sonde und Auswertung des Benchmarks
 ```
 
@@ -127,16 +130,38 @@ die Thom-Formel, die Fernfeld-Randbedingung und die einseitigen Randzeilen von
 identisch verschwindet, sagt er über die Genauigkeit des Advektionsterms nichts aus – dafür
 steht der separate Test mit einer Lösung, bei der ω kein Vielfaches von ψ ist. Die
 zylinderspezifischen Teile decken `selbsttest_loeser.py` (Abnahmetest gegen die
-Potentialströmung) und die Benchmark-Serie `reynolds` (Literaturvergleich) ab.
+Potentialströmung), `mms_logpolar.py` (siehe unten) und die Benchmark-Serie `reynolds`
+(Literaturvergleich) ab.
+
+### Manufactured Solution auf dem log-polaren Gitter
+
+Schließt genau die Lücke, die der Taylor-Green-Test bauartbedingt lässt: Statt eine Lösung zu
+suchen, wird eine beliebige glatte Funktion **vorgegeben**, in die diskreten Operatoren
+eingesetzt und mit der analytisch differenzierten verglichen. Das läuft auf dem Gitter der
+Zylinderrechnung, die Metrik 1/r² ist also aktiv. ω ist bewusst kein Vielfaches von ψ, damit
+der Advektionsterm nicht wie beim Taylor-Green-Wirbel identisch verschwindet.
+
+| Prüfung | Ergebnis |
+|---|---|
+| `berechne_rhs` (Metrik + Advektion + Diffusion), n_xi = 41/81/161 | 7,9·10⁻³ / 2,0·10⁻³ / 5,0·10⁻⁴ → **Ordnung 2,00** |
+| nur Advektion (ν = 0) | Ordnung 2,00 |
+| nur Diffusion (ψ = 0) | Ordnung 2,00 |
+| Thom-Formel an der Wand | 8,8·10⁻² / 4,5·10⁻² / 2,3·10⁻² → **Ordnung 0,97** |
+
+Die letzte Zeile ist kein Fehler, sondern der Nachweis der bekannten Eigenschaft: Die
+Thom-Formel ist erster Ordnung und damit die einzige Stelle des Lösers, die nicht zweiter
+Ordnung ist. Ergänzend prüft `selbsttest_operatoren.py` die einseitigen Randzeilen von
+`build_D_xi`/`build_D2_xi` an einer nicht-polynomialen Funktion (exp) – an ξ³ allein sind
+die einseitigen Formeln exakt und ihre Ordnung bliebe ungeprüft.
 
 ## Benchmark (`Validierung/benchmark.py`)
 
 Die Serien stehen in `Validierung/presets.py`, die Auswertung in `Validierung/benchmark.py`.
 Der Benchmark rechnet Serien von Läufen, in denen jeweils **ein** Parameter verändert wird,
-und bestimmt für jeden Lauf Genauigkeits- und Aufwandsgrößen. Die Serien `gitter`, `zeit` und
-`gebiet` verändern nur die **Numerik** (bei Re = 100) und prüfen damit, ob die Lösung
-gitter-, zeitschritt- und gebietsunabhängig ist; die Serie `reynolds` verändert die **Physik**
-und vergleicht mit Literaturwerten. Alle Läufe gehen bis t = 150. Basis ist das Gitter 81×160, r_max = 20 D,
+und bestimmt für jeden Lauf Genauigkeits- und Aufwandsgrößen. Die Serien `gitter`, `zeit`,
+`gebiet` und `gitter_fern` verändern nur die **Numerik** (bei Re = 100) und prüfen damit, ob die
+Lösung gitter-, zeitschritt- und gebietsunabhängig ist; die Serie `reynolds` verändert die
+**Physik** und vergleicht mit Literaturwerten. Alle Läufe gehen bis t = 150. Basis ist das Gitter 81×160, r_max = 20 D,
 `cfl_target` = 0,5 (81 statt 80 Punkte, damit sich die Gitterweite bei 41 → 81 → 161 exakt
 halbiert).
 
@@ -212,6 +237,44 @@ nur n_xi ändert sich. Zeigt den Einfluss der Fernfeld-Randbedingung.
 | mittel | 101×160 | 50,3 D | ≈ 2 min |
 | voll | 121×160 | 126,5 D | ≈ 2,5 min |
 
+**`gitter_fern` – Kreuzprobe Gitter × Gebiet.** Dieselbe Verfeinerung wie `gitter`, aber auf
+dem größeren Gebiet r_max = 50,3 D (dξ und dθ jeweils wie im zugehörigen 20-D-Lauf, das
+20-D-Gitter ist genau der innere Teil des größeren).
+
+| Stufe | n_xi × n_theta | entspricht in `gitter` | Dauer |
+|---|---|---|---|
+| schnell | 51×80 | 41×80 | ≈ 10 s |
+| schnell | 76×120 | 61×120 | ≈ 40 s |
+| mittel | 101×160 | 81×160 | (= `gebiet` 50,3 D) |
+| voll | 151×240 | 121×240 | ≈ 10 min |
+| voll | 201×320 | 161×320 | ≈ 40 min |
+
+**Wozu die Serie da ist.** `gitter` und `gebiet` allein sagen nichts darüber, ob sich Orts- und
+Gebietsfehler **addieren**. Täten sie es, wäre der Abstand zwischen dieser Kurve und der von
+`gitter` konstant. Gemessen wächst er:
+
+| n_theta | St bei 20 D | St bei 50,3 D | Differenz |
+|---|---|---|---|
+| 80 | 0,156894 | 0,155171 | −0,00172 |
+| 120 | 0,162064 | 0,160251 | −0,00181 |
+| 160 | 0,164418 | 0,162007 | −0,00241 |
+| 240 | 0,166464 | 0,163060 | −0,00340 |
+| 320 | 0,166926 | 0,163361 | −0,00357 |
+
+Die Fehler sind also **nicht separierbar**, und dass sich bei 81×160 / 20 D ein Wert nahe der
+Literatur ergibt, ist kein Argument, sondern auflösungsabhängige Kompensation. Entscheidend ist
+die Gitterkonvergenz auf dem großen Gebiet (Richardson 80/160/320):
+
+| | p | St(h → 0) | vs. Williamson 0,16434 |
+|---|---|---|---|
+| `gitter` (20 D) | 1,58 | 0,1682 | +2,4 % |
+| `gitter_fern` (50,3 D) | **2,34** | **0,1637** | **−0,4 %** |
+
+Die dominante Fehlerquelle ist damit die Fernfeld-Randbedingung, nicht das Gitter – und das
+p = 1,58 der Serie `gitter` entsteht dadurch, dass der Gebietsfehler selbst gitterabhängig ist
+und die Richardson-Extrapolation verunreinigt. Auf dem großen Gebiet erreicht der Löser
+praktisch die nominelle Ordnung 2.
+
 **`reynolds` – Reynolds-Zahl.** Einzige physikalische Serie: Gitter 81×160, r_max = 20 D,
 `cfl_target` = 0,5, nur Re ändert sich. Unterhalb von Re ≈ 47 bildet sich ein **stationäres**
 Wirbelpaar, darüber löst der Nachlauf periodisch ab. Kleines Re bedeutet großes ν, der
@@ -234,8 +297,9 @@ Literaturvergleich eingezeichnet (gestrichelte Kurve bzw. Sterne). Die Grenzschi
 skaliert mit Re^(−1/2): das Gitter 81×160 ist für Re = 200 nur noch knapp ausreichend, der
 Lauf gehört mit zur Aussage.
 
-**Gesamtdauer** (alle Serien, gemeinsame Läufe nur einmal): Stufe `schnell` ≈ 4,5 min (gemessen),
-`mittel` ≈ 12 min, `voll` ≈ 65 min.
+**Gesamtdauer** (alle Serien, gemeinsame Läufe nur einmal): Stufe `schnell` ≈ 5 min,
+`mittel` ≈ 13 min, `voll` ≈ 2 h (davon rund 75 min für die beiden feinsten Läufe
+161×320 und 201×320).
 
 ### Ergebnisse
 
@@ -285,6 +349,12 @@ abweicht – der Anlauf fällt damit automatisch heraus. `periodisch` erfordert 
   davon nicht betroffen. Für die Aufwandsauswertung seriell rechnen und den Rechner währenddessen
   nicht anderweitig belasten.
 - Die Sonde sitzt auf jedem Gitter an exakt derselben Stelle (lineare Interpolation in ξ), die
-  Werte verschiedener Gitter sind also direkt vergleichbar.
+  Werte verschiedener Gitter sind also direkt vergleichbar. `Animation.py` benutzt über
+  `signalauswertung.py` dieselbe Sondenlage **und** dasselbe Periodenfenster; Bild und Benchmark
+  liefern damit dieselbe Messvorschrift (Differenz für 81×160: 0,02 %, Periodenstreuung 0,1 %).
+- **Ergebnisformat:** `format_version` in der json steht auf 2. Ältere Läufe (Version 1) werden
+  nicht übersprungen, sondern neu gerechnet – ihnen fehlen `rueckstroemlaenge`, `fenster_art`,
+  `restschwankung` und `poisson_loeser`, und die Rückströmlänge lässt sich aus der alten npz
+  nicht nachtragen (sie enthält `xi` und `achse_mittel` noch nicht).
 - Die Messung ändert die Rechnung nicht (Endzustand bitgleich mit und ohne Messung) und kostet
   weniger als 1 % Rechenzeit.

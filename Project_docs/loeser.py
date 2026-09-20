@@ -203,8 +203,12 @@ def wähle_poisson_löser(domain, schwelle=FFT_AB_UNBEKANNTEN):
 # zeitintegration
 # ---------------------------------------------------------------------------
 
-def build_alle_operatoren(domain):
-    #sammelt alle operatoren (auf volle feldgroesse n_xi*n_theta gebracht) in nem dictionary
+def build_alle_operatoren(domain, mit_upwind=False):
+    #sammelt alle operatoren (auf volle feldgroesse n_xi*n_theta gebracht) in nem dictionary.
+    #die upwind-matrizen bleiben standardmaessig weg: berechne_rhs rechnet zentral und
+    #braucht sie nicht, auf feinen gittern kosten die vier zusaetzlichen kronecker-produkte
+    #aber spuerbar aufbauzeit und speicher. mit_upwind=True liefert sie fuer ein
+    #spaeteres hybridschema (siehe upwind_ableitung)
 
     n_theta = domain.n_theta
     n_xi = domain.n_xi
@@ -213,18 +217,24 @@ def build_alle_operatoren(domain):
 
     D_xi = build_D_xi(domain)
     D_theta = build_D_theta(domain)
-    fwd_xi, bwd_xi = build_upwind_xi(domain)
-    fwd_theta, bwd_theta = build_upwind_theta(domain)
 
-    return {
+    ops = {
         "D_xi": sp.kron(D_xi, I_theta, format='csr'),
         "D_theta": sp.kron(I_xi, D_theta, format='csr'),
-        "fwd_xi": sp.kron(fwd_xi, I_theta, format='csr'),
-        "bwd_xi": sp.kron(bwd_xi, I_theta, format='csr'),
-        "fwd_theta": sp.kron(I_xi, fwd_theta, format='csr'),
-        "bwd_theta": sp.kron(I_xi, bwd_theta, format='csr'),
         "L": build_laplacian(domain),
     }
+
+    if mit_upwind:
+        fwd_xi, bwd_xi = build_upwind_xi(domain)
+        fwd_theta, bwd_theta = build_upwind_theta(domain)
+        ops.update({
+            "fwd_xi": sp.kron(fwd_xi, I_theta, format='csr'),
+            "bwd_xi": sp.kron(bwd_xi, I_theta, format='csr'),
+            "fwd_theta": sp.kron(I_xi, fwd_theta, format='csr'),
+            "bwd_theta": sp.kron(I_xi, bwd_theta, format='csr'),
+        })
+
+    return ops
 
 
 def geschwindigkeit(psi, domain, ops):

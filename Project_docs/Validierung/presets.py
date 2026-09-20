@@ -37,6 +37,21 @@ def _gebiet(n_xi):
     return dict(n_xi=n_xi, r_max=round(b.R * math.exp(dxi * (n_xi - 1)), 10))
 
 
+#gebietsgroesse der kreuzserie "gitter_fern": derselbe wert, den _gebiet(101) liefert,
+#damit der lauf 101x160 in beiden serien derselbe ist und nur einmal gerechnet wird
+GEBIET_FERN = _gebiet(101)["r_max"]
+
+
+def _fern(n_xi_bei_20D, n_theta):
+    #derselbe gitterabstand dxi/dtheta wie der lauf (n_xi_bei_20D, n_theta) der serie
+    #"gitter", aber das gebiet reicht bis GEBIET_FERN statt bis 20 D. weil dxi gleich
+    #bleibt, ist das 20-D-gitter genau der innere teil des groesseren
+    b = BENCHMARK_BASIS
+    dxi = math.log(b.r_max / b.R) / (n_xi_bei_20D - 1)
+    n_xi = round(math.log(GEBIET_FERN / b.R) / dxi) + 1
+    return dict(n_xi=n_xi, n_theta=n_theta, r_max=round(b.R * math.exp(dxi * (n_xi - 1)), 10))
+
+
 #empirische St-Re-kurve der laminaren, parallelen wirbelabloesung (Williamson 1988).
 #dient als literaturvergleich im diagramm der serie "reynolds"
 WILLIAMSON_GUELTIG = (47.0, 180.0)
@@ -95,6 +110,28 @@ SERIEN = {
             dict(stufe="schnell", aenderung=_gebiet(81)),    #r_max =  20.0 D (basis)
             dict(stufe="mittel", aenderung=_gebiet(101)),    #r_max =  50.3 D
             dict(stufe="voll", aenderung=_gebiet(121)),      #r_max = 126.5 D
+        ],
+    ),
+    "gitter_fern": dict(
+        #kreuzserie zu "gitter": dieselbe verfeinerung, aber auf dem groesseren gebiet.
+        #die serien "gitter" und "gebiet" allein sagen noch nicht, ob sich orts- und
+        #gebietsfehler addieren. taeten sie es, waere der abstand zwischen dieser kurve
+        #und der von "gitter" konstant. gemessen waechst er von -0.0017 (n_theta = 80)
+        #auf -0.0034 (n_theta = 240): die fehler sind NICHT separierbar, eine
+        #kompensation bei 81x160 / 20 D ist also auflösungsabhaengig und kein argument.
+        #hier ist auch die gitterkonvergenz sauber (p = 2.2 ... 2.5 statt 1.58 bei 20 D)
+        beschreibung=("ortsaufloesung auf dem grossen gebiet (r_max = 50.3 D): kreuzprobe "
+                      "zu den serien gitter und gebiet"),
+        x=lambda cfg: cfg.n_theta, x_name="n_theta",
+        referenz=dict(St=lambda n: williamson_st(BENCHMARK_BASIS.Re)),
+        laeufe=[
+            dict(stufe="schnell", aenderung=_fern(41, 80)),
+            dict(stufe="schnell", aenderung=_fern(61, 120)),
+            dict(stufe="mittel", aenderung=_fern(81, 160)),     #= _gebiet(101), faellt mit "gebiet" zusammen
+            dict(stufe="voll", aenderung=_fern(121, 240)),
+            #der lauf, mit dem orts- UND gebietsfehler gleichzeitig klein sind. er
+            #vervollstaendigt zugleich das richardson-tripel 80/160/320 auf diesem gebiet
+            dict(stufe="voll", aenderung=_fern(161, 320)),
         ],
     ),
     "reynolds": dict(

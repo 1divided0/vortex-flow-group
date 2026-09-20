@@ -44,18 +44,22 @@ def Anfangsbedingungen(domain, cfg, löser, stoerung=0.5):
     return apply_bc(psi, omega, domain)
 
 
-def eine_Schleife(cfg, t_end, max_steps=None, Snapshotrange=50, verbose=True, t_speicher=0.0, messung=None):
+def eine_Schleife(cfg, t_end, max_steps=None, Snapshotrange=50, verbose=True, t_speicher=0.0,
+                  messung=None, stoerung=0.5):
     # t_speicher: snapshots erst ab dieser zeit sichern. der anlauf bis zur
     # periodischen abloesung (bei Re=100 etwa t=50) wird fuer die auswertung
     # nicht gebraucht und wuerde die snapshot-datei nur unnoetig aufblaehen
     # messung: optionales objekt mit start(domain, löser, psi, omega) und
     # schritt(t, dt, psi, omega), z.b. aus benchmark.py. es darf psi und omega nur
     # lesen. ohne messung (None) laeuft die schleife exakt wie vorher
+    # stoerung: amplitude der anfangsstoerung, die die symmetrie bricht (0 schaltet sie ab).
+    # der grenzzyklus haengt nicht davon ab - zwischen 0.125 und 2.0 aendert sich St um
+    # 0.03 %, nur der einsatzzeitpunkt verschiebt sich
     domain = Domain(cfg)
     löser = wähle_poisson_löser(domain)
     ops = build_alle_operatoren(domain)
 
-    psi, omega = Anfangsbedingungen(domain, cfg, löser)
+    psi, omega = Anfangsbedingungen(domain, cfg, löser, stoerung=stoerung)
     if messung is not None:
         messung.start(domain, löser, psi, omega)
 
@@ -64,13 +68,17 @@ def eine_Schleife(cfg, t_end, max_steps=None, Snapshotrange=50, verbose=True, t_
     step = 0    # int, sonst bricht die ausgabe mit {step:6d} beim 1000. schritt ab
     t_start_uhr = time.time()
 
+    dt_gedeckelt = 0     #wie oft cfg.dt und nicht die cfl-bedingung den schritt bestimmt hat
+
     while t < t_end:
         if max_steps is not None and step >= max_steps:
             break
 
         u_r, u_theta = geschwindigkeit(psi, domain, ops)
-        dt = cfl_zeitschritt(u_r, u_theta, domain, cfg)
-        dt = min(dt, cfg.dt, t_end - t)
+        dt_cfl = cfl_zeitschritt(u_r, u_theta, domain, cfg)
+        dt = min(dt_cfl, cfg.dt, t_end - t)
+        if cfg.dt < min(dt_cfl, t_end - t):
+            dt_gedeckelt += 1
 
         psi, omega = rk4(psi, omega, cfg, löser, ops, dt, domain)
 
@@ -93,6 +101,12 @@ def eine_Schleife(cfg, t_end, max_steps=None, Snapshotrange=50, verbose=True, t_
     if verbose:
         elapsed = time.time() - t_start_uhr
         print(f"Fertig: {step} Schritte, t={t:.5f}, Rechenzeit={elapsed:.1f}s")
+    if dt_gedeckelt:
+        # cfg.dt ist als obergrenze gedacht. greift sie, ist nicht mehr cfl_target der
+        # zeitschritt-parameter, und eine serie ueber cfl_target misst etwas anderes,
+        # als sie zu messen glaubt
+        print(f"Hinweis: cfg.dt = {cfg.dt:g} hat in {dt_gedeckelt} von {step} Schritten den "
+              f"CFL-Schritt begrenzt. Fuer eine reine cfl_target-Studie cfg.dt erhoehen.")
     return domain, snapshots, psi, omega
 
 

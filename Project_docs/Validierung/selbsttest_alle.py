@@ -14,6 +14,7 @@ import time
 from pruefung import Pruefung      #setzt den suchpfad auf Project_docs
 
 import benchmark
+import mms_logpolar
 import selbsttest_loeser
 import selbsttest_operatoren
 import taylor_green
@@ -22,6 +23,7 @@ PROGRAMME = (
     ("operatoren", selbsttest_operatoren.main),
     ("loeser", selbsttest_loeser.main),
     ("taylor-green", taylor_green.main),
+    ("MMS log-polar", mms_logpolar.main),
     ("benchmark (auswertung)", benchmark.selbsttest),
 )
 

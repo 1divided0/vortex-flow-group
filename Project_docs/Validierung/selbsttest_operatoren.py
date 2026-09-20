@@ -45,6 +45,27 @@ def main():
     #uebrig bleibt nur rundungsfehler, durch 1/h^2 verstaerkt
     p.pruefe(fehler < 1e-6, f"D2_xi: max fehler {fehler:.2e} (fuer kubische funktionen exakt)")
 
+    # --- dasselbe an einer NICHT-polynomialen funktion: ordnung der randzeilen ---------
+    #xi^3 macht die einseitigen formeln exakt und prueft ihre ordnung deshalb nicht.
+    #mit g = exp(0.7 xi) bleibt ein echter abbruchfehler uebrig, der sich bei
+    #halbierter gitterweite vervierfachen muss (2. ordnung) - genau das war in diesem
+    #projekt zweimal die fehlerquelle
+    p.abschnitt("randzeilen in xi an einer nicht-polynomialen funktion (g = exp(0.7 xi))")
+    fehler_rand = {"D_xi": [], "D2_xi": []}
+    for n in (41, 81, 161):
+        dd = Domain(Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0,
+                           n_xi=n, n_theta=2 * (n - 1), dt=1e-3))
+        g_feld = np.exp(0.7 * dd.xi)
+        for name, matrix, exakt in (("D_xi", build_D_xi(dd), 0.7 * g_feld),
+                                    ("D2_xi", build_D2_xi(dd), 0.49 * g_feld)):
+            abw = np.abs(matrix @ g_feld - exakt)
+            fehler_rand[name].append(max(abw[0], abw[-1]))     #nur die beiden randzeilen
+    for name, werte in fehler_rand.items():
+        ordnung = [np.log2(werte[k] / werte[k + 1]) for k in range(len(werte) - 1)]
+        p.pruefe(1.8 < min(ordnung) and max(ordnung) < 2.2,
+                 f"{name:5s} randzeilen: fehler {werte[0]:.2e} / {werte[1]:.2e} / {werte[2]:.2e}, "
+                 f"ordnung {ordnung[0]:.2f} / {ordnung[1]:.2f} (soll 2)")
+
     # --- ableitungen in theta: g = sin(theta), periodisch --------------------
     p.abschnitt("ableitungen in theta (g = sin(theta), periodisch)")
     g = np.tile(np.sin(dom.theta)[None, :], (dom.n_xi, 1))
