@@ -1,6 +1,16 @@
 .ipynb_checkpoints
 __pycache__/
 .pytest_cache/
-*.npz
-ergebnisse/
 KONTEXT.md
+
+# Die Ergebnisse gehoeren zur Abgabe und werden mitversioniert:
+# ergebnisse/*.png und *.gif        Bilder der Hauptloesung
+# ergebnisse/benchmark/*.csv/.png   Messwerte und Diagramme der Serien
+# ergebnisse/benchmark/laeufe/      Rohdaten der einzelnen Benchmark-Laeufe (je ~2,5 MB)
+
+# Ausnahme: die Snapshot-Datei der Hauptloesung ist ca. 600 MB gross und damit
+# groesser als das GitHub-Limit von 100 MB je Datei. Sie wird bewusst nicht
+# versioniert und der Abgabe spaeter lokal beigelegt. Sie ist ein Zwischen-
+# ergebnis und laesst sich mit "python main.py haupt" in rund 21 Minuten neu
+# erzeugen; die daraus erzeugten Bilder liegen in ergebnisse/ und sind dabei.
+simulation_snapshots.npz

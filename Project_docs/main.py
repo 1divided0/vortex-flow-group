@@ -15,8 +15,26 @@ EINZELLAEUFE = {
         cfg=Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=50, n_theta=100, dt=0.05, cfl_target=0.5),
         t_end=12.0, Snapshotrange=10, t_speicher=0.0,
     ),
+    "haupt": dict(
+        beschreibung=("hauptloesung der abgabe: 201x320 auf r_max = 50.3 D, t = 0..150, "
+                      "snapshots ab t = 80. ca. 21 min, ~124500 schritte, ~1160 snapshots "
+                      "-> datei ca. 600 MB, Animation.py braucht dann ~2 GB RAM"),
+        #das gitter ist genau der feinste lauf der benchmark-serie "gitter_fern"
+        #(Validierung/presets.py). damit steht die hauptloesung am ende der
+        #konvergenzstudie und ihr fehler ist durch die serie beziffert:
+        #St = 0.16336, richardson (p = 2.34) gibt St(h->0) = 0.1637.
+        #r_max ist nicht rund, weil dxi exakt dem 20-D-gitter entsprechen muss -
+        #der wert ist aus presets.py uebernommen und nicht importiert, damit der
+        #rechnende code nicht von Validierung/ abhaengt.
+        #das grosse gebiet ist der eigentliche gewinn: der fernfeldrand ist die
+        #groesste fehlerquelle, und 20 D -> 50.3 D kostet nur 40 zusaetzliche
+        #radialzeilen, weil das gitter log-polar ist
+        cfg=Config(R=0.5, r_max=50.2973371873, U_inf=1.0, Re=100.0,
+                   n_xi=201, n_theta=320, dt=0.05, cfl_target=0.5),
+        t_end=150.0, Snapshotrange=50, t_speicher=80.0,
+    ),
     "lang": dict(
-        beschreibung=("produktionslauf fuer Animation.py: Re = 100, 160x320, t = 0..100, "
+        beschreibung=("aelterer produktionslauf auf dem kleineren gebiet (20 D): Re = 100, 160x320, t = 0..100, "
                       "snapshots ab t = 60. ca. 15 min, ~83000 schritte, ~1660 snapshots "
                       "-> datei ca. 680 MB, Animation.py braucht dann mehrere GB RAM"),
         cfg=Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=160, n_theta=320, dt=0.05, cfl_target=0.5),
@@ -115,7 +133,8 @@ if __name__ == "__main__":
     # dt ist nur die obergrenze, der cfl-schritt bestimmt den tatsaechlichen schritt.
     #
     #   python main.py          = python main.py schnell (funktionstest, wenige sekunden)
-    #   python main.py lang     produktionslauf fuer Animation.py (ca. 15 minuten, datei ca. 680 MB)
+    #   python main.py haupt    hauptloesung der abgabe (ca. 21 minuten, datei ca. 600 MB)
+    #   python main.py lang     aelterer produktionslauf auf 20 D (ca. 15 minuten, datei ca. 680 MB)
     #
     # achtung: alle varianten schreiben nach simulation_snapshots.npz, der
     # schnelltest ueberschreibt also einen vorhandenen produktionslauf
