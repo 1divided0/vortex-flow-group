@@ -37,6 +37,25 @@ def _gebiet(n_xi):
     return dict(n_xi=n_xi, r_max=round(b.R * math.exp(dxi * (n_xi - 1)), 10))
 
 
+#empirische St-Re-kurve der laminaren, parallelen wirbelabloesung (Williamson 1988).
+#dient als literaturvergleich im diagramm der serie "reynolds"
+WILLIAMSON_GUELTIG = (47.0, 180.0)
+
+
+def williamson_st(Re):
+    if not WILLIAMSON_GUELTIG[0] <= Re <= WILLIAMSON_GUELTIG[1]:
+        return math.nan     #ausserhalb des gueltigkeitsbereichs keine kurve zeichnen
+    return -3.3265 / Re + 0.1816 + 1.6e-4 * Re
+
+
+#literaturwerte des stationaeren nachlaufwirbels (Re < 47): rueckstroemlaenge L/D ab der
+#zylinderrueckseite und abloesewinkel vom vorderen staupunkt aus.
+#Re = 20 / 40 aus Coutanceau & Bouard (1977) und Fornberg (1980), streuung der quellen
+#etwa +-5 % bei L/D; der zeitgemittelte winkel bei Re = 100 aus Williamson (1996)
+LITERATUR_LAENGE = {20.0: 0.93, 40.0: 2.24}
+LITERATUR_WINKEL = {20.0: 136.3, 40.0: 126.5, 100.0: 117.0}
+
+
 SERIEN = {
     "gitter": dict(
         beschreibung="ortsaufloesung: gitter verfeinern, seitenverhaeltnis n_theta = 2*(n_xi - 1) bleibt fest",
@@ -76,6 +95,30 @@ SERIEN = {
             dict(stufe="schnell", aenderung=_gebiet(81)),    #r_max =  20.0 D (basis)
             dict(stufe="mittel", aenderung=_gebiet(101)),    #r_max =  50.3 D
             dict(stufe="voll", aenderung=_gebiet(121)),      #r_max = 126.5 D
+        ],
+    ),
+    "reynolds": dict(
+        #physikalische serie (die drei anderen serien veraendern nur die numerik): unterhalb
+        #Re ~ 47 ist der nachlauf stationaer, darueber loest er periodisch ab. die kurve St(Re)
+        #laesst sich direkt mit der literatur vergleichen, das stationaere wirbelpaar ueber
+        #rueckstroemlaenge und abloesewinkel
+        beschreibung="reynolds-zahl: vom stationaeren wirbelpaar bis zur ausgepraegten wirbelstrasse",
+        x=lambda cfg: cfg.Re, x_name="Re",
+        #statt der amplitude die rueckstroemlaenge zeigen, sie ist auch ohne abloesung definiert
+        panels=("St", "rueckstroemlaenge", "abloesewinkel"),
+        referenz=dict(St=williamson_st, rueckstroemlaenge=LITERATUR_LAENGE,
+                      abloesewinkel=LITERATUR_WINKEL),
+        laeufe=[
+            #kleines Re heisst grosses nu: der zeitschritt ist diffusionsbegrenzt und wird
+            #kleiner, Re = 20 kostet daher etwa das fuenffache von Re = 100
+            dict(stufe="schnell", aenderung=dict(Re=40.0)),
+            dict(stufe="schnell", aenderung=dict(Re=60.0)),
+            dict(stufe="schnell", aenderung=dict(Re=100.0)),    #basis, faellt mit den anderen serien zusammen
+            dict(stufe="mittel", aenderung=dict(Re=20.0)),
+            dict(stufe="mittel", aenderung=dict(Re=150.0)),
+            #bei Re = 200 ist die grenzschicht duenner (~Re^-1/2), das gitter 81x160 also
+            #knapp: der lauf gehoert zur aussage "ab hier reicht die aufloesung nicht mehr"
+            dict(stufe="voll", aenderung=dict(Re=200.0)),
         ],
     ),
 }

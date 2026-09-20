@@ -84,9 +84,11 @@ python benchmark/benchmark.py selbsttest   # Sonde und Auswertung des Benchmarks
 ## Benchmark (`benchmark/benchmark.py`)
 
 Die Serien stehen in `benchmark/presets.py`, die Auswertung in `benchmark/benchmark.py`.
-Der Benchmark rechnet Serien von Läufen, in denen jeweils **ein** numerischer Parameter
-verändert wird, und bestimmt für jeden Lauf Genauigkeits- und Aufwandsgrößen.
-Alle Serien laufen bei Re = 100 bis t = 150. Basis ist das Gitter 81×160, r_max = 20 D,
+Der Benchmark rechnet Serien von Läufen, in denen jeweils **ein** Parameter verändert wird,
+und bestimmt für jeden Lauf Genauigkeits- und Aufwandsgrößen. Die Serien `gitter`, `zeit` und
+`gebiet` verändern nur die **Numerik** (bei Re = 100) und prüfen damit, ob die Lösung
+gitter-, zeitschritt- und gebietsunabhängig ist; die Serie `reynolds` verändert die **Physik**
+und vergleicht mit Literaturwerten. Alle Läufe gehen bis t = 150. Basis ist das Gitter 81×160, r_max = 20 D,
 `cfl_target` = 0,5 (81 statt 80 Punkte, damit sich die Gitterweite bei 41 → 81 → 161 exakt
 halbiert).
 
@@ -162,6 +164,28 @@ nur n_xi ändert sich. Zeigt den Einfluss der Fernfeld-Randbedingung.
 | mittel | 101×160 | 50,3 D | ≈ 2 min |
 | voll | 121×160 | 126,5 D | ≈ 2,5 min |
 
+**`reynolds` – Reynolds-Zahl.** Einzige physikalische Serie: Gitter 81×160, r_max = 20 D,
+`cfl_target` = 0,5, nur Re ändert sich. Unterhalb von Re ≈ 47 bildet sich ein **stationäres**
+Wirbelpaar, darüber löst der Nachlauf periodisch ab. Kleines Re bedeutet großes ν, der
+Zeitschritt ist diffusionsbegrenzt und wird dadurch kleiner – Re = 20 kostet etwa das
+Fünffache von Re = 100.
+
+| Stufe | Re | Erwartung | Dauer |
+|---|---|---|---|
+| mittel | 20 | stationär, L/D ≈ 0,93, Ablösewinkel ≈ 136° | ≈ 8 min |
+| schnell | 40 | stationär, L/D ≈ 2,24, Ablösewinkel ≈ 126,5° | ≈ 4 min |
+| schnell | 60 | Wirbelstraße, St ≈ 0,136 | ≈ 3 min |
+| schnell | 100 | Wirbelstraße, St ≈ 0,164 | (wie oben) |
+| mittel | 150 | Wirbelstraße, St ≈ 0,183 | ≈ 1,5 min |
+| voll | 200 | St ≈ 0,197; Auflösung wird knapp | ≈ 1,5 min |
+
+Vergleichswerte: die Kurve St(Re) = −3,3265/Re + 0,1816 + 1,6·10⁻⁴·Re (Williamson 1988,
+gültig 47 < Re < 180) und für das stationäre Wirbelpaar Rückströmlänge und Ablösewinkel nach
+Coutanceau & Bouard (1977) bzw. Fornberg (1980). Beides wird im Diagramm automatisch als
+Literaturvergleich eingezeichnet (gestrichelte Kurve bzw. Sterne). Die Grenzschichtdicke
+skaliert mit Re^(−1/2): das Gitter 81×160 ist für Re = 200 nur noch knapp ausreichend, der
+Lauf gehört mit zur Aussage.
+
 **Gesamtdauer** (alle Serien, gemeinsame Läufe nur einmal): Stufe `schnell` ≈ 4,5 min (gemessen),
 `mittel` ≈ 12 min, `voll` ≈ 65 min.
 
@@ -169,9 +193,13 @@ nur n_xi ändert sich. Zeigt den Einfluss der Fernfeld-Randbedingung.
 
 In `ergebnisse/benchmark/`:
 - `laeufe/<lauf>.json` – alle Kennzahlen eines Laufs inkl. Konfiguration und Rechnerdaten,
-  `laeufe/<lauf>.npz` – Sondensignal (jeder Zeitschritt) und gemittelte Wandwirbelstärke
+  `laeufe/<lauf>.npz` – Sondensignal (jeder Zeitschritt), gemittelte Wandwirbelstärke und
+  gemittelte Längsgeschwindigkeit auf der Nachlaufachse (mit `theta` bzw. `xi` dazu)
 - `<serie>.csv` – Tabelle aller vorhandenen Läufe der Serie
-- `<serie>.png` – Diagramm: St, Amplitude, Ablösewinkel und Rechenaufwand über dem Parameter
+- `<serie>.png` – Diagramm: drei Genauigkeitsgrößen und der Rechenaufwand über dem Parameter.
+  Standard sind St, Amplitude und Ablösewinkel; eine Serie kann in `presets.py` über `panels`
+  andere wählen (`reynolds` zeigt statt der Amplitude die Rückströmlänge, weil es die auch ohne
+  Ablösung gibt) und über `referenz` Literaturwerte eintragen
 
 ### Messgrößen
 
@@ -181,6 +209,9 @@ In `ergebnisse/benchmark/`:
 | `St` | Strouhal-Zahl D/(U·T) aus der mittleren Periode T im Auswertefenster |
 | `periode_streuung` | relative Standardabweichung der Perioden im Fenster |
 | `amplitude` | Amplitude der Quergeschwindigkeit u_θ an der Sonde (r = 2 D, θ = 0, x = 1,5 D hinter dem Zylinder) |
+| `rueckstroemlaenge` | Länge L/D des Rückströmgebiets ab der Zylinderrückseite: erster Vorzeichenwechsel der zeitgemittelten Längsgeschwindigkeit auf der Nachlaufachse (θ = 0), linear in ξ interpoliert. `nan`, wenn die Strömung direkt hinter dem Zylinder schon nach außen zeigt |
+| `restschwankung` | größte Abweichung des Sondensignals vom Endwert in den letzten 10 Zeiteinheiten, bezogen auf U. Klein (< 10⁻³) heißt: der Lauf ist stationär eingelaufen, `keine_abloesung` ist dann das physikalische Ergebnis und kein unfertiger Anlauf |
+| `fenster_art` | `perioden` (Mittelung über das Periodenfenster) oder `ende` (über die letzten 10 Zeiteinheiten, wenn es keine Perioden gibt) |
 | `abloesewinkel` | zeitlich gemittelter Ablösewinkel, gemessen vom vorderen Staupunkt (Vorzeichenwechsel der mittleren Wandwirbelstärke); `_oben`/`_unten` einzeln |
 | `t_einsatz` | Zeitpunkt, an dem das Sondensignal die halbe Endamplitude erreicht |
 | `n_perioden`, `t_fenster_start/-ende` | Auswertefenster |
@@ -191,7 +222,7 @@ In `ergebnisse/benchmark/`:
 | `rechenzeit_pro_periode_s` | Rechenzeit für eine Ablöseperiode |
 | `nnz_LU`, `speicher_LU_MB` | Größe der Zerlegung (beim FFT-Löser Summe über alle Moden) |
 
-**Auswertefenster:** Aus den Aufwärts-Nulldurchgängen des Sondensignals werden Periode und
+**Auswertefenster:** Ablösewinkel und Rückströmlänge sind Zeitmittel. Aus den Aufwärts-Nulldurchgängen des Sondensignals werden Periode und
 Amplitude jeder Schwingung bestimmt. Das Fenster umfasst die letzten Perioden, deren Dauer um
 höchstens 1 % und deren Amplitude um höchstens 2 % vom Median der letzten drei Perioden
 abweicht – der Anlauf fällt damit automatisch heraus. `periodisch` erfordert mindestens

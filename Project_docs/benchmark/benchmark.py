@@ -40,6 +40,10 @@ SKRIPT_ORDNER = os.path.dirname(os.path.abspath(__file__))
 STANDARD_AUSGABE = os.path.join(os.path.dirname(SKRIPT_ORDNER), "ergebnisse", "benchmark")
 FORMAT_VERSION = 1
 
+#zeitfenster am laufende, ueber das gemittelt wird, wenn es keine perioden gibt
+#(stationaerer nachlauf bei kleinem Re). auch fuer die restschwankung
+FENSTER_ENDE = 10.0
+
 
 # ---------------------------------------------------------------------------
 # messung waehrend des laufs
@@ -56,6 +60,7 @@ class Messung:
     wird an eine_Schleife uebergeben und zeichnet waehrend des laufs auf:
     - quergeschwindigkeit u_theta an der sonde (r = 2D, theta = 0) nach jedem schritt
     - zeitintegral der wandwirbelstaerke (fuer den zeitlich gemittelten abloesewinkel)
+    - zeitintegral der geschwindigkeit u_r auf der nachlaufachse (fuer die rueckstroemlaenge)
     psi und omega werden nur gelesen, der lauf selbst bleibt unveraendert.
     """
 
@@ -90,6 +95,13 @@ class Messung:
         self.wand_integral = np.zeros(domain.n_theta)
         self.kontroll_t = [0.0]
         self.kontroll_integral = [self.wand_integral.copy()]
+
+        #geschwindigkeit auf der nachlaufachse (theta = 0), genauso als laufendes integral.
+        #daraus folgt spaeter die laenge des rueckstroemgebiets hinter dem zylinder
+        self.achse_alt = self.achsengeschwindigkeit(psi)
+        self.achse_integral = np.zeros(domain.n_xi)
+        self.kontroll_achse = [self.achse_integral.copy()]
+
         self.naechste_kontrolle = self.dt_kontrolle
         self.naechste_meldung = self.dt_meldung
 
@@ -100,6 +112,13 @@ class Messung:
         u_j = -(psi[i + 2, 0] - psi[i, 0]) / (2.0 * d.dxi * d.r[i + 1])
         return float((1.0 - w) * u_i + w * u_j)
 
+    def achsengeschwindigkeit(self, psi):
+        #u_r = (1/r) * dpsi/dtheta auf der achse theta = 0, zentrale differenzen wie ops["D_theta"].
+        #dort zeigt die radiale richtung in x-richtung, u_r ist also die laengsgeschwindigkeit
+        #im nachlauf: u_r < 0 heisst rueckstroemung
+        d = self.domain
+        return (psi[:, 1] - psi[:, -1]) / (2.0 * d.dtheta * d.r)
+
     def schritt(self, t, dt, psi, omega):
         u = self.sonde(psi)
         self.t.append(t)
@@ -108,6 +127,10 @@ class Messung:
         wand = omega[self.domain.i_wall]
         self.wand_integral += 0.5 * dt * (self.wand_alt + wand)
         self.wand_alt = wand.copy()
+
+        achse = self.achsengeschwindigkeit(psi)
+        self.achse_integral += 0.5 * dt * (self.achse_alt + achse)
+        self.achse_alt = achse
 
         if not math.isfinite(u) or abs(u) > 1e3:
             raise Instabil(t)
@@ -118,6 +141,7 @@ class Messung:
                 raise Instabil(t)
             self.kontroll_t.append(t)
             self.kontroll_integral.append(self.wand_integral.copy())
+            self.kontroll_achse.append(self.achse_integral.copy())
             while self.naechste_kontrolle <= t:
                 self.naechste_kontrolle += self.dt_kontrolle
 
@@ -132,6 +156,7 @@ class Messung:
         if self.kontroll_t[-1] < self.t[-1]:
             self.kontroll_t.append(self.t[-1])
             self.kontroll_integral.append(self.wand_integral.copy())
+            self.kontroll_achse.append(self.achse_integral.copy())
 
 
 # ---------------------------------------------------------------------------
@@ -254,6 +279,38 @@ def abloesewinkel(theta, omega_wand):
     return winkel_oben, winkel_unten
 
 
+def rueckstroemlaenge(xi, u_achse, R, D):
+    """
+    laenge des rueckstroemgebiets hinter dem zylinder, ab der zylinderrueckseite und in D.
+    u_achse ist die laengsgeschwindigkeit auf der nachlaufachse theta = 0 ueber xi = ln(r/R).
+    direkt an der wand ist u = 0 (haftbedingung), das gebiet beginnt also bei i = 1; gesucht
+    ist der erste vorzeichenwechsel von rueckstroemung (u < 0) zu abstroemung (u >= 0).
+    nan, wenn die stroemung schon am ersten punkt nach aussen zeigt (kein wirbelpaar).
+    """
+    u = np.asarray(u_achse)
+    if len(u) < 3 or not (u[1] < 0.0):
+        return math.nan
+    for i in range(1, len(u) - 1):
+        if u[i] < 0.0 <= u[i + 1]:
+            #linear in xi interpolieren (dort liegen die punkte aequidistant), dann zurueck auf r
+            w = u[i] / (u[i] - u[i + 1])
+            xi_null = xi[i] + w * (xi[i + 1] - xi[i])
+            return float((R * math.exp(xi_null) - R) / D)
+    return math.nan
+
+
+def restschwankung(t, u, fenster=10.0):
+    """
+    groesste abweichung des sondensignals vom endwert innerhalb der letzten <fenster>
+    zeiteinheiten. klein heisst: der lauf ist in einen stationaeren zustand gelaufen und
+    der status "keine_abloesung" ist physikalisch (kein anlauf, der noch nicht fertig ist)
+    """
+    t = np.asarray(t, dtype=float)
+    u = np.asarray(u, dtype=float)
+    spaet = t >= t[-1] - fenster
+    return float(np.max(np.abs(u[spaet] - u[-1])))
+
+
 def richardson(h, f):
     """
     beobachtete konvergenzordnung p und extrapolierter wert fuer h -> 0 aus drei gittern mit
@@ -326,13 +383,27 @@ def fuehre_lauf_aus(name, cfg_werte, t_end, ordner, parallel, ausgabe=True):
     else:
         auswertung = leere_auswertung("instabil")
 
-    wand_mittel = None
-    winkel_oben = winkel_unten = math.nan
-    if auswertung["status"] == "periodisch":
-        wand_mittel = mittel_aus_integral(messung.kontroll_t, messung.kontroll_integral,
-                                          auswertung["t_fenster_start"], auswertung["t_fenster_ende"])
+    #zeitmittel von wandwirbelstaerke und achsengeschwindigkeit. bei periodischer abloesung
+    #ueber das periodenfenster, sonst (stationaerer nachlauf) ueber die letzten FENSTER_ENDE
+    #zeiteinheiten - so sind abloesewinkel und rueckstroemlaenge auch unterhalb der
+    #kritischen reynolds-zahl definiert
+    wand_mittel = achse_mittel = None
+    winkel_oben = winkel_unten = laenge = math.nan
+    fenster_art = "keins"
+    if math.isnan(instabil_bei):
+        if auswertung["status"] == "periodisch":
+            t_a, t_b = auswertung["t_fenster_start"], auswertung["t_fenster_ende"]
+            fenster_art = "perioden"
+        else:
+            t_b = float(t[-1])
+            t_a = max(t_b - FENSTER_ENDE, 0.5 * t_b)
+            fenster_art = "ende"
+        wand_mittel = mittel_aus_integral(messung.kontroll_t, messung.kontroll_integral, t_a, t_b)
+        achse_mittel = mittel_aus_integral(messung.kontroll_t, messung.kontroll_achse, t_a, t_b)
         if wand_mittel is not None:
             winkel_oben, winkel_unten = abloesewinkel(domain.theta, wand_mittel)
+        if achse_mittel is not None:
+            laenge = rueckstroemlaenge(domain.xi, achse_mittel, cfg.R, cfg.D)
 
     t_aufbau = messung.uhr_start - uhr0
     t_schleife = uhr1 - messung.uhr_start
@@ -351,6 +422,10 @@ def fuehre_lauf_aus(name, cfg_werte, t_end, ordner, parallel, ausgabe=True):
         abloesewinkel_oben=winkel_oben,
         abloesewinkel_unten=winkel_unten,
         abloesewinkel=0.5 * (winkel_oben + winkel_unten),
+        rueckstroemlaenge=laenge,
+        fenster_art=fenster_art,
+        #restschwankung relativ zu U_inf: < 1e-4 heisst stationaer eingelaufen
+        restschwankung=restschwankung(t, u, FENSTER_ENDE) / cfg.U_inf if schritte > 0 else math.nan,
         schritte=schritte,
         t_erreicht=float(t[-1]),
         dt_mittel=dt_mittel,
@@ -374,8 +449,9 @@ def fuehre_lauf_aus(name, cfg_werte, t_end, ordner, parallel, ausgabe=True):
     ergebnis = {k: _json_wert(v) for k, v in ergebnis.items()}
 
     os.makedirs(ordner, exist_ok=True)
-    np.savez(os.path.join(ordner, name + ".npz"), t=t, u=u, theta=domain.theta,
-             wand_mittel=wand_mittel if wand_mittel is not None else np.array([]))
+    np.savez(os.path.join(ordner, name + ".npz"), t=t, u=u, theta=domain.theta, xi=domain.xi,
+             wand_mittel=wand_mittel if wand_mittel is not None else np.array([]),
+             achse_mittel=achse_mittel if achse_mittel is not None else np.array([]))
     #erst in eine temporaere datei, damit ein abbruch keine halbe json hinterlaesst
     pfad = os.path.join(ordner, name + ".json")
     with open(pfad + ".tmp", "w", encoding="utf-8") as datei:
@@ -397,7 +473,8 @@ def ist_fertig(ordner, name, cfg, t_end):
 def kurzbericht(e):
     St = f"{e['St']:.4f}" if e["St"] is not None else "  -   "
     winkel = f"{e['abloesewinkel']:.1f}°" if e["abloesewinkel"] is not None else "  -  "
-    return (f"{e['name']}: {e['status']}, St = {St}, abloesewinkel = {winkel}, "
+    laenge = f"{e['rueckstroemlaenge']:.3f}" if e.get("rueckstroemlaenge") is not None else "  -  "
+    return (f"{e['name']}: {e['status']}, St = {St}, abloesewinkel = {winkel}, L/D = {laenge}, "
             f"{e['schritte']} schritte, {e['ms_pro_schritt']:.2f} ms/schritt "
             f"({poisson_kurz(e.get('poisson_loeser'))}), gesamt {e['t_aufbau_s'] + e['t_schleife_s']:.0f} s")
 
@@ -411,9 +488,10 @@ def poisson_kurz(name):
 # serien: ausfuehren, tabelle, diagramm
 # ---------------------------------------------------------------------------
 
-CSV_SPALTEN = ["name", "x", "stufe", "n_xi", "n_theta", "cfl_target", "r_max", "status", "St",
-               "periode_streuung", "amplitude", "abloesewinkel", "abloesewinkel_oben",
-               "abloesewinkel_unten", "t_einsatz", "n_perioden", "instabil_bei_t", "schritte",
+CSV_SPALTEN = ["name", "x", "stufe", "n_xi", "n_theta", "cfl_target", "r_max", "Re", "status", "St",
+               "periode_streuung", "amplitude", "rueckstroemlaenge", "abloesewinkel",
+               "abloesewinkel_oben", "abloesewinkel_unten", "restschwankung", "fenster_art",
+               "t_einsatz", "n_perioden", "instabil_bei_t", "schritte",
                "dt_mittel", "t_aufbau_s", "t_schleife_s", "ms_pro_schritt", "t_loese_ms",
                "poisson_anteil", "rechenzeit_pro_periode_s", "unbekannte", "poisson_loeser",
                "nnz_LU", "zeitmessung_vergleichbar"]
@@ -430,6 +508,9 @@ def lade_serie(serie, t_end, laufordner):
             e = json.load(datei)
         e.update(x=SERIEN[serie]["x"](cfg), stufe=stufe, **dataclasses.asdict(cfg))
         zeilen.append(e)
+    #nach dem serienparameter sortieren, nicht in der reihenfolge aus presets.py:
+    #sonst laufen die linien im diagramm hin und her
+    zeilen.sort(key=lambda e: e["x"])
     return zeilen
 
 
@@ -449,13 +530,14 @@ def werte_serie_aus(serie, t_end, ordner):
 
     print(f"\nserie {serie} ({SERIEN[serie]['beschreibung']})")
     print(f"  {SERIEN[serie]['x_name']:>10s}  {'status':16s} {'St':>7s} {'amplitude':>9s} "
-          f"{'winkel':>7s} {'einsatz':>7s} {'perioden':>8s} {'dt_mittel':>9s} {'ms/schr.':>8s} "
-          f"{'gesamt':>8s} {'poisson':>7s}")
+          f"{'L/D':>6s} {'winkel':>7s} {'einsatz':>7s} {'perioden':>8s} {'dt_mittel':>9s} "
+          f"{'ms/schr.':>8s} {'gesamt':>8s} {'poisson':>7s}")
     for z in zeilen:
         def f(wert, format_):
             return format_.format(wert) if wert is not None else "-"
         print(f"  {z['x']:>10.4g}  {z['status']:16s} {f(z['St'], '{:.4f}'):>7s} "
-              f"{f(z['amplitude'], '{:.4f}'):>9s} {f(z['abloesewinkel'], '{:.1f}'):>7s} "
+              f"{f(z['amplitude'], '{:.4f}'):>9s} {f(z.get('rueckstroemlaenge'), '{:.3f}'):>6s} "
+              f"{f(z['abloesewinkel'], '{:.1f}'):>7s} "
               f"{f(z['t_einsatz'], '{:.1f}'):>7s} {z['n_perioden']:>8d} {z['dt_mittel']:>9.2e} "
               f"{z['ms_pro_schritt']:>8.2f} {z['t_aufbau_s'] + z['t_schleife_s']:>7.0f}s "
               f"{poisson_kurz(z.get('poisson_loeser')):>7s}")
@@ -484,6 +566,28 @@ def werte_serie_aus(serie, t_end, ordner):
     print(f"  gespeichert: {pfad_csv}, {pfad_png}")
 
 
+#die ersten drei felder des diagramms. eine serie kann in presets.py mit "panels"
+#andere groessen waehlen (die serie "reynolds" z.b. die rueckstroemlaenge)
+STANDARD_PANELS = ("St", "amplitude", "abloesewinkel")
+PANEL_TITEL = {
+    "St": "Strouhal-Zahl",
+    "amplitude": r"Amplitude $u_	heta$ bei $r = 2D$",
+    "abloesewinkel": "Ablösewinkel [°] (vom Staupunkt)",
+    "rueckstroemlaenge": "Rückströmlänge $L/D$ (ab Zylinderrückseite)",
+}
+
+
+def zeichne_referenz(ax, referenz, x):
+    """literaturvergleich einzeichnen: kurve (aufrufbar) oder einzelne punkte (dict)"""
+    if callable(referenz):
+        xr = np.linspace(x.min(), x.max(), 200)
+        yr = np.array([referenz(v) for v in xr])
+        if np.any(np.isfinite(yr)):
+            ax.plot(xr, yr, "k--", lw=1.2, zorder=0, label="Literatur")
+    else:
+        ax.plot(list(referenz), list(referenz.values()), "k*", ms=11, zorder=0, label="Literatur")
+
+
 def zeichne_serie(pfad, serie, zeilen, zusatz):
     import matplotlib
     matplotlib.use("Agg")
@@ -494,19 +598,23 @@ def zeichne_serie(pfad, serie, zeilen, zusatz):
     status = [z["status"] for z in zeilen]
 
     def werte(schluessel):
-        return np.array([np.nan if z[schluessel] is None else z[schluessel] for z in zeilen], dtype=float)
+        #.get, weil aeltere ergebnisdateien neuere groessen noch nicht enthalten
+        return np.array([np.nan if z.get(schluessel) is None else z[schluessel] for z in zeilen],
+                        dtype=float)
 
+    referenzen = SERIEN[serie].get("referenz", {})
     fig, achsen = plt.subplots(2, 2, figsize=(11, 7.5))
-    for ax, (schluessel, titel) in zip(achsen.flat[:3], [("St", "Strouhal-Zahl"),
-                                                         ("amplitude", r"Amplitude $u_\theta$ bei $r = 2D$"),
-                                                         ("abloesewinkel", "Ablösewinkel [°] (vom Staupunkt)")]):
+    for ax, schluessel in zip(achsen.flat[:3], SERIEN[serie].get("panels", STANDARD_PANELS)):
         y = werte(schluessel)
         periodisch = np.array([s == "periodisch" for s in status])
         ax.plot(x[periodisch], y[periodisch], "o-", color="C0", label="periodisch")
         andere = ~periodisch & np.isfinite(y)
         if andere.any():
-            ax.plot(x[andere], y[andere], "o", mfc="none", color="C1", label="nicht periodisch")
-        ax.set_title(titel)
+            ax.plot(x[andere], y[andere], "o", mfc="none", color="C1", label="ohne Ablösung")
+        if schluessel in referenzen:
+            zeichne_referenz(ax, referenzen[schluessel], x)
+            ax.legend(fontsize=8)
+        ax.set_title(PANEL_TITEL.get(schluessel, schluessel))
 
     def y_achse(achse, y):
         #logarithmisch nur, wenn die werte ueber mehr als eine groessenordnung reichen
@@ -542,12 +650,18 @@ def zeichne_serie(pfad, serie, zeilen, zusatz):
         ax.set_xlabel(SERIEN[serie]["x_name"])
         ax.grid(alpha=0.3)
     for z in zeilen:
-        if z["status"] in ("instabil", "keine_abloesung"):
-            achsen.flat[0].axvline(z["x"], color="C3", ls=":", lw=1)
-            achsen.flat[0].annotate(z["status"].replace("_", " "), (z["x"], 0.02),
-                                    xycoords=("data", "axes fraction"), rotation=90, fontsize=8,
-                                    color="C3", ha="right")
-    achsen.flat[0].legend(fontsize=8)
+        if z["status"] in ("instabil", "keine_abloesung", "nicht_periodisch"):
+            #"keine_abloesung" ist bei kleinem Re das physikalisch richtige ergebnis und kein
+            #fehlschlag - dann grau und als "stationaer" beschriften, sofern eingelaufen
+            stationaer = (z["status"] != "instabil"
+                          and (z.get("restschwankung") or 1.0) < 1e-3)
+            farbe = "C7" if stationaer else "C3"
+            text = "stationär" if stationaer else z["status"].replace("_", " ")
+            achsen.flat[0].axvline(z["x"], color=farbe, ls=":", lw=1)
+            achsen.flat[0].annotate(text, (z["x"], 0.02), xycoords=("data", "axes fraction"),
+                                    rotation=90, fontsize=8, color=farbe, ha="right")
+    if "St" not in SERIEN[serie].get("referenz", {}):
+        achsen.flat[0].legend(fontsize=8)
 
     fig.suptitle(f"Benchmark „{serie}“: {SERIEN[serie]['beschreibung']}" + (f"\n{zusatz}" if zusatz else ""),
                  fontsize=10)
@@ -576,8 +690,10 @@ def main():
     parser.add_argument("--t-end", type=float, default=BENCHMARK_T_END)
     parser.add_argument("--ausgabe", default=STANDARD_AUSGABE, help="ergebnisordner")
     args = parser.parse_args()
-    #zeilenweise ausgeben, sonst mischen sich im parallelbetrieb die ausgaben der prozesse falsch
-    sys.stdout.reconfigure(line_buffering=True)
+    #zeilenweise ausgeben, sonst mischen sich im parallelbetrieb die ausgaben der prozesse falsch.
+    #utf-8, damit grad- und pfeilzeichen auch beim umleiten in eine datei funktionieren
+    #(sonst faellt windows auf cp1252 zurueck und die ausgabe bricht mit UnicodeEncodeError ab)
+    sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
 
     if args.serie is None:
         uebersicht()
@@ -705,6 +821,35 @@ def selbsttest():
            f"vorgegebene abloesung bei 117°: oben {oben:.3f}°, unten {unten:.3f}°")
     oben, unten = abloesewinkel(d.theta, -np.sin(d.theta))
     pruefe(math.isnan(oben) and math.isnan(unten), "anliegende stroemung ohne vorzeichenwechsel: keine abloesung")
+
+    print("rueckstroemlaenge:")
+    d = Domain(BENCHMARK_BASIS)
+    #u linear in xi mit nulldurchgang bei r = R + 1.0 D: die lineare interpolation in xi
+    #muss diesen punkt exakt treffen
+    xi_null = math.log((BENCHMARK_BASIS.R + BENCHMARK_BASIS.D) / BENCHMARK_BASIS.R)
+    u_achse = d.xi - xi_null
+    u_achse[0] = 0.0                      #an der wand gilt die haftbedingung
+    L = rueckstroemlaenge(d.xi, u_achse, BENCHMARK_BASIS.R, BENCHMARK_BASIS.D)
+    pruefe(abs(L - 1.0) < 1e-12, f"vorgegebener nulldurchgang bei L/D = 1: gemessen {L:.12f}")
+
+    ohne = np.ones(d.n_xi)
+    ohne[0] = 0.0
+    pruefe(math.isnan(rueckstroemlaenge(d.xi, ohne, BENCHMARK_BASIS.R, BENCHMARK_BASIS.D)),
+           "stroemung ueberall nach aussen: keine rueckstroemlaenge")
+
+    #eine negative zone weiter aussen, die den zylinder nicht beruehrt, zaehlt nicht
+    getrennt = np.ones(d.n_xi)
+    getrennt[0] = 0.0
+    getrennt[20:30] = -1.0
+    pruefe(math.isnan(rueckstroemlaenge(d.xi, getrennt, BENCHMARK_BASIS.R, BENCHMARK_BASIS.D)),
+           "abgeloeste negative zone ohne wandkontakt: keine rueckstroemlaenge")
+
+    print("restschwankung:")
+    t_s = np.arange(0.0, 150.0, 0.005)
+    rest_ab = restschwankung(t_s, 0.3 * np.exp(-t_s / 10.0) * np.sin(2 * math.pi * 0.1644 * t_s))
+    rest_per = restschwankung(t_s, 0.55 * np.sin(2 * math.pi * 0.1644 * t_s))
+    pruefe(rest_ab < 1e-4, f"abgeklungenes signal: restschwankung {rest_ab:.2e} (soll klein)")
+    pruefe(rest_per > 0.9 * 0.55, f"periodisches signal: restschwankung {rest_per:.4f} (soll ~ amplitude)")
 
     print("richardson:")
     p, extra = richardson([1.0, 0.5, 0.25], [0.17 - 0.02 * hh**2 for hh in (1.0, 0.5, 0.25)])
