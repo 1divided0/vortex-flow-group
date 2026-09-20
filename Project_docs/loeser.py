@@ -304,8 +304,11 @@ def cfl_zeitschritt(u_r, u_theta, domain, cfg):
     return float(np.min([dt_adv_xi.min(), dt_adv_theta.min(), dt_diff.min()]))
 
 
-def rk4(psi, omega, cfg, poisson_solver, ops, dt, domain):
+def rk4(psi, omega, cfg, poisson_solver, ops, dt, domain, randbedingungen=apply_bc):
     # klassisches runge-kutta 4. ordnung fuer omega, psi folgt in jeder stufe aus poisson.
+    # randbedingungen ist die funktion, die nach jeder poisson-loesung die raender setzt.
+    # voreinstellung ist apply_bc (zylinder); ein periodisches gebiet braucht keine und
+    # uebergibt eine funktion, die psi und omega unveraendert zurueckgibt
     # voraussetzung: psi passt zu omega (psi aus poisson, randbedingungen gesetzt).
     # das gilt fuer den anfangszustand aus main.Anfangsbedingungen und fuer jedes
     # ergebnis von rk4. deshalb braucht stufe 1 keine eigene poisson-loesung -
@@ -313,7 +316,7 @@ def rk4(psi, omega, cfg, poisson_solver, ops, dt, domain):
 
     def berechne(omega_stage):
         psi_stage = poisson_solver.löse(omega_stage)
-        psi_stage, omega_stage = apply_bc(psi_stage, omega_stage, domain)
+        psi_stage, omega_stage = randbedingungen(psi_stage, omega_stage, domain)
         return berechne_rhs(omega_stage, psi_stage, domain, cfg, ops)
 
     k1 = berechne_rhs(omega, psi, domain, cfg, ops)
@@ -324,29 +327,6 @@ def rk4(psi, omega, cfg, poisson_solver, ops, dt, domain):
     omega_next = omega + (dt / 6.0) * (k1 + 2.0 * k2 + 2.0 * k3 + k4)
 
     psi_next = poisson_solver.löse(omega_next)
-    psi_next, omega_next = apply_bc(psi_next, omega_next, domain)
+    psi_next, omega_next = randbedingungen(psi_next, omega_next, domain)
 
     return psi_next, omega_next
-
-
-#test bereich
-if __name__ == "__main__":
-    #die beiden poisson-loeser muessen dasselbe gleichungssystem loesen
-    from gitter import Config, Domain
-
-    for n_xi, n_theta in ((41, 80), (81, 160), (121, 240)):
-        cfg = Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=n_xi, n_theta=n_theta, dt=0.05)
-        dom = Domain(cfg)
-        omega = np.random.default_rng(0).standard_normal((n_xi, n_theta))
-
-        psi_lr = PoissonSolver(dom).löse(omega)
-        psi_fft = PoissonSolverFFT(dom).löse(omega)
-
-        #residuum im urspruenglichen gleichungssystem (nicht nur vergleich der beiden)
-        A = build_poisson_matrix(dom)
-        rhs = build_rhs(dom, omega)
-        res = np.abs(A @ dom.flatten(psi_fft) - rhs).max()
-
-        print(f"{n_xi:4d}x{n_theta:<4d} max|psi_FFT - psi_LR| = {np.abs(psi_fft - psi_lr).max():.1e} "
-              f"(|psi| bis {np.abs(psi_lr).max():6.2f}),  residuum FFT = {res:.1e},  "
-              f"automatisch gewaehlt: {type(wähle_poisson_löser(dom)).__name__}")

@@ -8,7 +8,7 @@ from loeser import wähle_poisson_löser, apply_bc, build_alle_operatoren, gesch
 
 
 #voreinstellungen fuer einzellaeufe, beschrieben in README_Presets.md.
-#die serien des benchmarks stehen in benchmark/presets.py
+#die serien des benchmarks stehen in Validierung/presets.py
 EINZELLAEUFE = {
     "schnell": dict(
         beschreibung="funktionstest: kleines gitter, t = 0..12, wenige sekunden",

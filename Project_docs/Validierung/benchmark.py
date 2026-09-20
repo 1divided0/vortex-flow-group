@@ -1,14 +1,15 @@
 """
 benchmark: serien von laeufen mit veraenderter orts- und zeitaufloesung sowie
 gebietsgroesse. die serien und stufen stehen in presets.py, die beschreibung in README_Presets.md.
+die schnellen pruefprogramme dieses ordners startet selbsttest_alle.py.
 
-  python benchmark.py                          uebersicht ueber serien und stufen
-  python benchmark.py gitter                   serie "gitter", stufe "schnell"
-  python benchmark.py gitter --stufe voll      alle laeufe der serie
-  python benchmark.py alle --stufe mittel      alle serien
-  python benchmark.py zeit --parallel 4        laeufe parallel (zeitmessung dann nicht vergleichbar)
-  python benchmark.py gitter --nur-auswerten   csv und diagramm aus vorhandenen ergebnissen
-  python benchmark.py selbsttest               prueft sonde und auswertung an bekannten faellen
+  python Validierung/benchmark.py                          uebersicht ueber serien und stufen
+  python Validierung/benchmark.py gitter                   serie "gitter", stufe "schnell"
+  python Validierung/benchmark.py gitter --stufe voll      alle laeufe der serie
+  python Validierung/benchmark.py alle --stufe mittel      alle serien
+  python Validierung/benchmark.py zeit --parallel 4        laeufe parallel (zeitmessung dann nicht vergleichbar)
+  python Validierung/benchmark.py gitter --nur-auswerten   csv und diagramm aus vorhandenen ergebnissen
+  python Validierung/benchmark.py selbsttest               prueft sonde und auswertung an bekannten faellen
 
 fertige laeufe werden gespeichert und beim naechsten aufruf uebersprungen (--neu erzwingt
 eine neue rechnung). laeufe, die in mehreren serien vorkommen, werden nur einmal gerechnet.
@@ -29,7 +30,7 @@ import numpy as np
 import scipy
 
 #der loeser liegt eine ebene hoeher (Project_docs). der eintrag macht ihn importierbar,
-#egal aus welchem ordner heraus benchmark/benchmark.py aufgerufen wird
+#egal aus welchem ordner heraus Validierung/benchmark.py aufgerufen wird
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from gitter import Config
@@ -751,14 +752,10 @@ def selbsttest():
     from gitter import Domain
     from loeser import build_alle_operatoren, geschwindigkeit
 
-    alles_ok = True
+    from pruefung import Pruefung
 
-    def pruefe(bedingung, text):
-        nonlocal alles_ok
-        alles_ok &= bool(bedingung)
-        print(f"  [{'ok' if bedingung else 'FEHLER'}] {text}")
-
-    print("sonde:")
+    pr = Pruefung()
+    pr.abschnitt("sonde")
     #1) auf einer gitterzeile (w = 0) muss die sonde exakt geschwindigkeit() entsprechen
     cfg = Config(R=0.5, r_max=20.0, U_inf=1.0, Re=100.0, n_xi=81, n_theta=160, dt=0.05)
     d = Domain(cfg)
@@ -768,7 +765,7 @@ def selbsttest():
     _, u_theta = geschwindigkeit(psi, d, build_alle_operatoren(d))
     m.i_sonde, m.w_sonde = 30, 0.0
     abw = abs(m.sonde(psi) - u_theta[30, 0])
-    pruefe(abw < 1e-12 * max(1.0, abs(u_theta[30, 0])), f"gitterzeile gegen geschwindigkeit(): abweichung {abw:.1e}")
+    pr.pruefe(abw < 1e-12 * max(1.0, abs(u_theta[30, 0])), f"gitterzeile gegen geschwindigkeit(): abweichung {abw:.1e}")
 
     #2) psi = r^3 -> u_theta = -dpsi/dr = -3 r^2 = -12 bei r = 2, fehler 2. ordnung
     fehler = []
@@ -779,50 +776,50 @@ def selbsttest():
         m.start(d, None, psi, np.zeros_like(psi))
         fehler.append(abs(m.sonde(psi) + 12.0))
     ordnung = [math.log2(fehler[0] / fehler[1]), math.log2(fehler[1] / fehler[2])]
-    pruefe(fehler[1] < 0.01 * 12 and 1.8 < min(ordnung) and max(ordnung) < 2.2,
-           f"psi = r^3 bei r = 2D: fehler {fehler[0]:.1e} / {fehler[1]:.1e} / {fehler[2]:.1e}, "
-           f"ordnung {ordnung[0]:.2f} / {ordnung[1]:.2f} (soll 2)")
+    pr.pruefe(fehler[1] < 0.01 * 12 and 1.8 < min(ordnung) and max(ordnung) < 2.2,
+             f"psi = r^3 bei r = 2D: fehler {fehler[0]:.1e} / {fehler[1]:.1e} / {fehler[2]:.1e}, "
+             f"ordnung {ordnung[0]:.2f} / {ordnung[1]:.2f} (soll 2)")
 
-    print("signalauswertung:")
+    pr.abschnitt("signalauswertung")
     t = np.arange(0.0, 150.0, 0.005)
     St_soll, A_soll, versatz = 0.1644, 0.55, 0.01
     huelle = A_soll / (1.0 + np.exp(-(t - 40.0) / 3.0))
     u = versatz + huelle * np.sin(2 * math.pi * St_soll * t)
     e = werte_signal_aus(t, u, 1.0, 1.0)
-    pruefe(e["status"] == "periodisch" and abs(e["St"] - St_soll) < 1e-5,
-           f"anlaufendes sinussignal: St = {e['St']:.6f} (soll {St_soll})")
-    pruefe(abs(e["amplitude"] / A_soll - 1) < 0.01, f"amplitude = {e['amplitude']:.4f} (soll {A_soll})")
-    pruefe(abs(e["mittelwert"] - versatz) < 1e-3, f"mittelwert = {e['mittelwert']:.5f} (soll {versatz})")
-    pruefe(40.0 <= e["t_einsatz"] <= 40.0 + 1.0 / St_soll,
-           f"einsatz bei t = {e['t_einsatz']:.2f} (halbe amplitude ab t = 40)")
-    pruefe(e["t_fenster_start"] > 40.0 + 3.0 * math.log(49.0) - 1.0 / St_soll,
-           f"fenster beginnt bei t = {e['t_fenster_start']:.1f} (huelle erst ab t = 51.7 innerhalb 2 %)")
+    pr.pruefe(e["status"] == "periodisch" and abs(e["St"] - St_soll) < 1e-5,
+             f"anlaufendes sinussignal: St = {e['St']:.6f} (soll {St_soll})")
+    pr.pruefe(abs(e["amplitude"] / A_soll - 1) < 0.01, f"amplitude = {e['amplitude']:.4f} (soll {A_soll})")
+    pr.pruefe(abs(e["mittelwert"] - versatz) < 1e-3, f"mittelwert = {e['mittelwert']:.5f} (soll {versatz})")
+    pr.pruefe(40.0 <= e["t_einsatz"] <= 40.0 + 1.0 / St_soll,
+             f"einsatz bei t = {e['t_einsatz']:.2f} (halbe amplitude ab t = 40)")
+    pr.pruefe(e["t_fenster_start"] > 40.0 + 3.0 * math.log(49.0) - 1.0 / St_soll,
+             f"fenster beginnt bei t = {e['t_fenster_start']:.1f} (huelle erst ab t = 51.7 innerhalb 2 %)")
 
     e = werte_signal_aus(t, 0.3 * np.exp(-t / 10.0) * np.sin(2 * math.pi * St_soll * t), 1.0, 1.0)
-    pruefe(e["status"] == "keine_abloesung", f"abklingendes signal: status {e['status']}")
+    pr.pruefe(e["status"] == "keine_abloesung", f"abklingendes signal: status {e['status']}")
     kurz = t < 15.0    #volle amplitude, aber nur 2.5 perioden
     e = werte_signal_aus(t[kurz], A_soll * np.sin(2 * math.pi * St_soll * t[kurz]), 1.0, 1.0)
-    pruefe(e["status"] == "nicht_periodisch", f"zu kurzes signal (2.5 perioden): status {e['status']}")
+    pr.pruefe(e["status"] == "nicht_periodisch", f"zu kurzes signal (2.5 perioden): status {e['status']}")
 
-    print("wandwirbelstaerke und abloesewinkel:")
+    pr.abschnitt("wandwirbelstaerke und abloesewinkel")
     #laufendes integral von f(t) = a + b cos(wt), mittel ueber ganze perioden = a
     a, b, w = 2.0, 5.0, 2 * math.pi * St_soll
     kt = np.arange(0.0, 100.0, 0.05)
     KI = (a * kt + b / w * np.sin(w * kt))[:, None]
     t_a = 20.0
     mittel = mittel_aus_integral(kt, KI, t_a, t_a + 10.0 / St_soll)[0]
-    pruefe(abs(mittel - a) < 1e-3 * b, f"zeitmittel ueber 10 perioden: {mittel:.6f} (soll {a})")
+    pr.pruefe(abs(mittel - a) < 1e-3 * b, f"zeitmittel ueber 10 perioden: {mittel:.6f} (soll {a})")
 
     d = Domain(BENCHMARK_BASIS)
     th_s = math.radians(180.0 - 117.0)
     omega_wand = -np.sin(d.theta) * (math.cos(th_s) - np.cos(d.theta))
     oben, unten = abloesewinkel(d.theta, omega_wand)
-    pruefe(abs(oben - 117.0) < 0.1 and abs(unten - 117.0) < 0.1,
-           f"vorgegebene abloesung bei 117°: oben {oben:.3f}°, unten {unten:.3f}°")
+    pr.pruefe(abs(oben - 117.0) < 0.1 and abs(unten - 117.0) < 0.1,
+             f"vorgegebene abloesung bei 117°: oben {oben:.3f}°, unten {unten:.3f}°")
     oben, unten = abloesewinkel(d.theta, -np.sin(d.theta))
-    pruefe(math.isnan(oben) and math.isnan(unten), "anliegende stroemung ohne vorzeichenwechsel: keine abloesung")
+    pr.pruefe(math.isnan(oben) and math.isnan(unten), "anliegende stroemung ohne vorzeichenwechsel: keine abloesung")
 
-    print("rueckstroemlaenge:")
+    pr.abschnitt("rueckstroemlaenge")
     d = Domain(BENCHMARK_BASIS)
     #u linear in xi mit nulldurchgang bei r = R + 1.0 D: die lineare interpolation in xi
     #muss diesen punkt exakt treffen
@@ -830,33 +827,32 @@ def selbsttest():
     u_achse = d.xi - xi_null
     u_achse[0] = 0.0                      #an der wand gilt die haftbedingung
     L = rueckstroemlaenge(d.xi, u_achse, BENCHMARK_BASIS.R, BENCHMARK_BASIS.D)
-    pruefe(abs(L - 1.0) < 1e-12, f"vorgegebener nulldurchgang bei L/D = 1: gemessen {L:.12f}")
+    pr.pruefe(abs(L - 1.0) < 1e-12, f"vorgegebener nulldurchgang bei L/D = 1: gemessen {L:.12f}")
 
     ohne = np.ones(d.n_xi)
     ohne[0] = 0.0
-    pruefe(math.isnan(rueckstroemlaenge(d.xi, ohne, BENCHMARK_BASIS.R, BENCHMARK_BASIS.D)),
-           "stroemung ueberall nach aussen: keine rueckstroemlaenge")
+    pr.pruefe(math.isnan(rueckstroemlaenge(d.xi, ohne, BENCHMARK_BASIS.R, BENCHMARK_BASIS.D)),
+             "stroemung ueberall nach aussen: keine rueckstroemlaenge")
 
     #eine negative zone weiter aussen, die den zylinder nicht beruehrt, zaehlt nicht
     getrennt = np.ones(d.n_xi)
     getrennt[0] = 0.0
     getrennt[20:30] = -1.0
-    pruefe(math.isnan(rueckstroemlaenge(d.xi, getrennt, BENCHMARK_BASIS.R, BENCHMARK_BASIS.D)),
-           "abgeloeste negative zone ohne wandkontakt: keine rueckstroemlaenge")
+    pr.pruefe(math.isnan(rueckstroemlaenge(d.xi, getrennt, BENCHMARK_BASIS.R, BENCHMARK_BASIS.D)),
+             "abgeloeste negative zone ohne wandkontakt: keine rueckstroemlaenge")
 
-    print("restschwankung:")
+    pr.abschnitt("restschwankung")
     t_s = np.arange(0.0, 150.0, 0.005)
     rest_ab = restschwankung(t_s, 0.3 * np.exp(-t_s / 10.0) * np.sin(2 * math.pi * 0.1644 * t_s))
     rest_per = restschwankung(t_s, 0.55 * np.sin(2 * math.pi * 0.1644 * t_s))
-    pruefe(rest_ab < 1e-4, f"abgeklungenes signal: restschwankung {rest_ab:.2e} (soll klein)")
-    pruefe(rest_per > 0.9 * 0.55, f"periodisches signal: restschwankung {rest_per:.4f} (soll ~ amplitude)")
+    pr.pruefe(rest_ab < 1e-4, f"abgeklungenes signal: restschwankung {rest_ab:.2e} (soll klein)")
+    pr.pruefe(rest_per > 0.9 * 0.55, f"periodisches signal: restschwankung {rest_per:.4f} (soll ~ amplitude)")
 
-    print("richardson:")
+    pr.abschnitt("richardson")
     p, extra = richardson([1.0, 0.5, 0.25], [0.17 - 0.02 * hh**2 for hh in (1.0, 0.5, 0.25)])
-    pruefe(abs(p - 2.0) < 1e-9 and abs(extra - 0.17) < 1e-12, f"f = 0.17 - 0.02 h^2: p = {p:.6f}, h->0: {extra:.6f}")
+    pr.pruefe(abs(p - 2.0) < 1e-9 and abs(extra - 0.17) < 1e-12, f"f = 0.17 - 0.02 h^2: p = {p:.6f}, h->0: {extra:.6f}")
 
-    print("selbsttest " + ("bestanden" if alles_ok else "FEHLGESCHLAGEN"))
-    return alles_ok
+    return pr.fazit("selbsttest benchmark")
 
 
 if __name__ == "__main__":

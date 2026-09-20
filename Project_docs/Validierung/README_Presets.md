@@ -17,12 +17,21 @@ Alle Befehle werden im Ordner `Project_docs` ausgeführt.
 | `loeser.py` | Randbedingungen (Wand/Thom, Fernfeld), Poisson-Löser ∇²ψ = −ω (LR-Zerlegung und FFT, siehe unten), Geschwindigkeiten, rechte Seite, CFL-Zeitschritt, RK4 |
 | `main.py` | Anfangszustand, Zeitschleife `eine_Schleife`, Presets `EINZELLAEUFE` |
 | `Animation.py` | Auswertung eines Einzellaufs: Wirbelstärke, Strouhal-Zahl, FTLE |
-| `benchmark/benchmark.py` | Benchmark-Serien (Orts-/Zeitauflösung, Gebietsgröße) |
-| `benchmark/presets.py` | Voreinstellungen der Benchmark-Serien |
+| `Validierung/benchmark.py` | Benchmark-Serien (Orts-/Zeit-/Gebiets-/Reynolds-Serie) |
+| `Validierung/presets.py` | Voreinstellungen der Benchmark-Serien |
+| `Validierung/taylor_green.py` | Validierung am Taylor-Green-Wirbel (exakte Lösung) |
+| `Validierung/selbsttest_operatoren.py` | Differenzenmatrizen gegen analytische Ableitungen |
+| `Validierung/selbsttest_loeser.py` | Poisson-Löser gegen die Potentialströmung, FFT gegen LR |
+| `Validierung/selbsttest_alle.py` | führt alle schnellen Prüfprogramme aus |
+| `Validierung/pruefung.py` | gemeinsames Gerüst der Prüfprogramme |
+
+**Löser und Tests sind getrennt:** `gitter.py`, `operatoren.py`, `loeser.py` und `main.py`
+enthalten nur rechnenden Code, alle Prüfprogramme liegen in `Validierung/` und rufen den
+Löser von außen auf.
 
 Aufrufreihenfolge der Module: `gitter` → `operatoren` → `loeser` → `main` → `Animation` bzw.
-`benchmark`. `benchmark/benchmark.py` lässt sich aus jedem Verzeichnis starten; die
-Ergebnisse landen immer in `Project_docs/ergebnisse/benchmark/`.
+`Validierung`. Alles in `Validierung/` lässt sich aus jedem Verzeichnis starten; die
+Ergebnisse der Benchmark-Serien landen immer in `Project_docs/ergebnisse/benchmark/`.
 
 ## Poisson-Löser
 
@@ -45,7 +54,8 @@ Gemessen auf einem Ryzen 7 9800X3D, Zeit für **eine** Poisson-Lösung:
 
 Der FFT-Löser braucht zudem deutlich weniger Speicher (0,7 statt 14 MB bei 121×240) und ist
 schneller aufgebaut. Er setzt ein **gleichmäßiges, periodisches θ-Gitter** voraus – wird daran
-etwas geändert, gilt nur noch `PoissonSolver`. `python loeser.py` prüft beide gegeneinander.
+etwas geändert, gilt nur noch `PoissonSolver`. `Validierung/selbsttest_loeser.py` prüft beide
+gegeneinander.
 
 ## Einzelläufe (`main.py`)
 
@@ -73,17 +83,55 @@ Danach:
 python Animation.py       # schreibt ergebnisse/wirbelstaerke.png/.gif, ftle.png/.gif
 ```
 
-## Selbsttests
+## Selbsttests und Validierung (`Validierung/`)
+
+Alle Prüfprogramme zusammen laufen in unter zwei Sekunden und liefern den Rückgabewert 0,
+wenn alles bestanden ist:
 
 ```
-python operatoren.py                  # Ableitungsmatrizen, Laplace, Poisson gegen Potentialströmung
-python loeser.py                      # FFT-Löser gegen LR-Löser (lösen sie dasselbe System?)
-python benchmark/benchmark.py selbsttest   # Sonde und Auswertung des Benchmarks an bekannten Fällen
+python Validierung/selbsttest_alle.py
 ```
 
-## Benchmark (`benchmark/benchmark.py`)
+Einzeln:
 
-Die Serien stehen in `benchmark/presets.py`, die Auswertung in `benchmark/benchmark.py`.
+```
+python Validierung/selbsttest_operatoren.py   # Differenzenmatrizen gegen analytische Ableitungen
+python Validierung/selbsttest_loeser.py       # Poisson gegen Potentialströmung, Ordnung, FFT gegen LR
+python Validierung/taylor_green.py            # Taylor-Green-Wirbel: exakte Lösung, Ordnung, nu = 0
+python Validierung/benchmark.py selbsttest    # Sonde und Auswertung des Benchmarks
+```
+
+### Taylor-Green-Wirbel
+
+Das Pflichtbeispiel der Aufgabenstellung und der einzige Test, der Advektion,
+Poisson-Lösung und RK4 **gemeinsam** gegen eine exakte Lösung der nichtlinearen Gleichungen
+stellt. Die log-polaren Gleichungen enthalten den kartesischen Fall als exakten Spezialfall:
+mit r = 1 (metrischer Vorfaktor 1) und ξ = x, θ = y werden Laplace, Geschwindigkeiten,
+Advektion und Zeitschrittformel Zeile für Zeile zu den kartesischen. `geschwindigkeit`,
+`berechne_rhs`, `cfl_zeitschritt` und `rk4` laufen deshalb **unverändert** – es ist derselbe
+Code, der auch die Zylinderumströmung rechnet. Ersetzt werden nur der Poisson-Löser (periodisch
+statt Dirichlet) und die Randbedingungen (`rk4` bekommt dafür eine leere Funktion übergeben).
+
+| Prüfung | Ergebnis |
+|---|---|
+| Poisson-Löser (periodisch), Residuum | 7·10⁻¹⁵ |
+| Advektionsterm gegen analytische Ableitung, Ordnung | 1,91 / 1,98 |
+| Taylor-Green ν = 0,1, rel. L2-Fehler ω (16/32/64) | 1,3·10⁻³ / 3,2·10⁻⁴ / 8,0·10⁻⁵, Ordnung 2,00 |
+| Abklingrate gegen 2ν | −0,08 % |
+| ν = 0: stationäre Lösung nach 100 Schritten | 1·10⁻¹⁷ |
+| ν = 0: Enstrophie-Drift | exakt 0 |
+
+**Was der Test nicht abdeckt:** Mit r = 1 und periodischen Rändern sind die Metrik 1/r²,
+die Thom-Formel, die Fernfeld-Randbedingung und die einseitigen Randzeilen von
+`build_D_xi`/`build_D2_xi` abgeschaltet. Und weil die Nichtlinearität im Taylor-Green-Fall
+identisch verschwindet, sagt er über die Genauigkeit des Advektionsterms nichts aus – dafür
+steht der separate Test mit einer Lösung, bei der ω kein Vielfaches von ψ ist. Die
+zylinderspezifischen Teile decken `selbsttest_loeser.py` (Abnahmetest gegen die
+Potentialströmung) und die Benchmark-Serie `reynolds` (Literaturvergleich) ab.
+
+## Benchmark (`Validierung/benchmark.py`)
+
+Die Serien stehen in `Validierung/presets.py`, die Auswertung in `Validierung/benchmark.py`.
 Der Benchmark rechnet Serien von Läufen, in denen jeweils **ein** Parameter verändert wird,
 und bestimmt für jeden Lauf Genauigkeits- und Aufwandsgrößen. Die Serien `gitter`, `zeit` und
 `gebiet` verändern nur die **Numerik** (bei Re = 100) und prüfen damit, ob die Lösung
@@ -95,13 +143,13 @@ halbiert).
 ### Aufruf
 
 ```
-python benchmark/benchmark.py                          # Übersicht über alle Serien und Stufen
-python benchmark/benchmark.py gitter                   # Serie "gitter", Stufe "schnell"
-python benchmark/benchmark.py gitter --stufe voll      # alle Läufe der Serie
-python benchmark/benchmark.py alle --stufe mittel      # alle Serien bis Stufe "mittel"
-python benchmark/benchmark.py zeit --parallel 4        # 4 Läufe gleichzeitig (siehe Hinweise)
-python benchmark/benchmark.py gitter --nur-auswerten   # nur Tabelle, CSV und Diagramm neu erstellen
-python benchmark/benchmark.py gitter --neu             # vorhandene Ergebnisse neu rechnen
+python Validierung/benchmark.py                          # Übersicht über alle Serien und Stufen
+python Validierung/benchmark.py gitter                   # Serie "gitter", Stufe "schnell"
+python Validierung/benchmark.py gitter --stufe voll      # alle Läufe der Serie
+python Validierung/benchmark.py alle --stufe mittel      # alle Serien bis Stufe "mittel"
+python Validierung/benchmark.py zeit --parallel 4        # 4 Läufe gleichzeitig (siehe Hinweise)
+python Validierung/benchmark.py gitter --nur-auswerten   # nur Tabelle, CSV und Diagramm neu erstellen
+python Validierung/benchmark.py gitter --neu             # vorhandene Ergebnisse neu rechnen
 ```
 
 Weitere Optionen: `--t-end` (Simulationsende, Standard 150), `--ausgabe` (Ergebnisordner).

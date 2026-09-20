@@ -7,14 +7,14 @@ import sys
 from dataclasses import replace
 
 #der loeser liegt eine ebene hoeher (Project_docs). der eintrag macht ihn importierbar,
-#egal aus welchem ordner heraus benchmark/benchmark.py aufgerufen wird
+#egal aus welchem ordner heraus Validierung/benchmark.py aufgerufen wird
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from gitter import Config
 
 
 # ---------------------------------------------------------------------------
-# benchmark-serien fuer benchmark.py:  python benchmark.py <serie> --stufe <stufe>
+# benchmark-serien fuer benchmark.py:  python Validierung/benchmark.py <serie> --stufe <stufe>
 # ---------------------------------------------------------------------------
 
 #basis aller serien. n_xi - 1 = 80 statt 79, damit sich die gitterweite bei
